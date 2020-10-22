@@ -4,6 +4,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { RolesCollection } from '/imports/api/roles';
 
 import '/imports/api/publications/roles';
+import '/imports/api/publications/opinions';
 
 Meteor.startup(() => {
     const SEED_USERNAME = 'admin';
@@ -40,5 +41,11 @@ Meteor.startup(() => {
       description: 'Zugriff nur für Mitarbeiter'
      });
   
+     RolesCollection.insert({
+      _id: 'ADMIN',
+      rolename: 'Administrator',
+      score: 99999,
+      description: 'Admin darf alles'
+     });
   }
 });

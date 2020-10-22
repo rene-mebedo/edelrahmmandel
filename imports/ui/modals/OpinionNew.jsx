@@ -1,19 +1,19 @@
 import { Meteor } from 'meteor/meteor';
 import React, {Fragment, useState} from 'react';
 import { 
-    PageHeader, 
-    Breadcrumb,
     Button,
     Select,
     Modal
 } from 'antd';
+
+import { PlusOutlined } from '@ant-design/icons';
 
 import { useTracker } from 'meteor/react-meteor-data';
 import { RolesCollection } from '/imports/api/roles';
 
 const { Option } = Select;
 
-export const ModalOpinionNew = ( { show } ) => {
+export const ModalOpinionNew = ( props ) => {
     const { roles, isLoadingRoles } = useTracker(() => {
         const noDataAvailable = { roles: [] };
 
@@ -30,10 +30,16 @@ export const ModalOpinionNew = ( { show } ) => {
         return { roles, isLoadingRoles: false };
     });
 
-
     const [ showModalNewOpinion, setShowModalNewOpinion ] = useState(false);
 
     const handleModalNewOpinionOk = e => {
+        Meteor.call('opinion.insert', {
+            title: 'Marcs Welthandelsgesellschaft mbH - 3745', 
+            description: 'Unser erstes Gutachten per client-Befehl'
+        }, (err, res) => {
+            console.log('Finish:', err, res);
+        });
+
         setShowModalNewOpinion(false);
     }
 
@@ -45,19 +51,30 @@ export const ModalOpinionNew = ( { show } ) => {
         setShowModalNewOpinion(true);
     }
 
-    return ( !show ? null :
-        <Modal
-            title="Neues Gutachten"
-            visible={show || showModalNewOpinion}
-            onOk={handleModalNewOpinionOk}
-            onCancel={handleModalNewOpinionOk}
-        >
-            <p>Zum Erstellen eines neuen Gutachten füllen Sie bitte die nachfolgenden Felder aus und bestätigen Sie den Dialog mit OK.</p>
+    return (
+        <Fragment>
+            <Button
+                type="dashed" block
+                icon={<PlusOutlined />}
+                onClick={createNewGutachten}>
+                    Erstellen eines neuen Gutachten
+            </Button>
 
-            Rolle:
-            <Select style={{ width: 120 }} loading={isLoadingRoles}>
-                { roles.map (role => <Option key={role._id} value={role._id}>{role.rolename}</Option>) } 
-            </Select>
-        </Modal>
+            { !showModalNewOpinion ? null :
+                <Modal
+                    title="Neues Gutachten"
+                    visible={showModalNewOpinion}
+                    onOk={handleModalNewOpinionOk}
+                    onCancel={handleModalNewOpinionCancel}
+                >
+                    <p>Zum Erstellen eines neuen Gutachten füllen Sie bitte die nachfolgenden Felder aus und bestätigen Sie den Dialog mit OK.</p>
+
+                    Rolle:
+                    <Select style={{ width: 120 }} loading={isLoadingRoles}>
+                        { roles.map (role => <Option key={role._id} value={role._id}>{role.rolename}</Option>) } 
+                    </Select>
+                </Modal>
+            }
+        </Fragment>
     );
 }

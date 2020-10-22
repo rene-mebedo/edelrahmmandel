@@ -10,7 +10,7 @@ import { LoginForm } from '/imports/ui/LoginForm';
 import { SiteLayout } from '/imports/ui/SiteLayout';
 
 
-export const App = props => {
+export const App = ({content}) => {
   const currentUser = useTracker(() => Meteor.user());
 
   if (currentUser === undefined) {
@@ -21,5 +21,5 @@ export const App = props => {
     return <LoginForm />
   }
 
-  return <SiteLayout>{props.content || null}</SiteLayout>;
+  return <SiteLayout>{content || null}</SiteLayout>;
 }

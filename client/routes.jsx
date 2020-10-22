@@ -36,11 +36,11 @@ FlowRouter.route('/opinions', {
     },
 });
 
-FlowRouter.route('/opinions/new', {
-    name: 'opinions.new',
-    action() {
+FlowRouter.route('/opinions/:id', {
+    name: 'opinion.detail',
+    action({ id }) {
         mount(App, {
-            content: <OpinionsForm />,
+            content: <div>{id}</div>,
         });
     },
 });
