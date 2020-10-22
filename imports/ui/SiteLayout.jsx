@@ -5,12 +5,10 @@ import React, {
   
 import { useTracker } from 'meteor/react-meteor-data';
   
-import { Routes, Route, Switch, Link } from 'react-router-dom';
-import { withRouter } from 'react-router';
-  
+
 import { 
     Layout, 
-    Menu
+    Menu, Link
 } from 'antd';
   
 import {
@@ -21,9 +19,6 @@ import {
     UploadOutlined,
 } from '@ant-design/icons';
 
-import { AktivitaetenForm } from './AktivitaetenForm';
-import { GutachtenForm } from './GutachtenForm';
-  
 const {
     Header, 
     Sider, 
@@ -31,51 +26,43 @@ const {
 } = Layout;
  
   
-class SiteLayout extends React.Component {
-    //const [collapsed, setCollapsed] = useState(false);
-
+export const SiteLayout = props => {
+    const [collapsed, setCollapsed] = useState(false);
+    
     toggle = () => {
         setCollapsed(!collapsed);
     };
 
-    render() {
-        return (
+    return (
 
-            <Layout>
-                <Sider trigger={null} collapsible collapsed={false/*collapsed*/}>
-                    <div className="logo" />
-                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                        <Menu.Item key="1" icon={<UserOutlined />}>
-                            <Link to="activities">Aktivitäten</Link>
-                        </Menu.Item>
-                        <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-                            <Link to="gutachten">Gutachten</Link>
-                        </Menu.Item>
-                        <Menu.Item key="3" icon={<UploadOutlined />}>
-                            Aufgaben
-                        </Menu.Item>
-                    </Menu>
-                </Sider>
-                <Layout className="site-layout">
-                    <Header className="site-layout-background" style={{ padding: 0 }}>
-                        {React.createElement(false /*collapsed*/ ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                            className: 'trigger',
-                            onClick: this.toggle,
-                        })}
-                    </Header>
-                    <Content className="site-layout-content">
-                        <Switch>
-                            <Route path="/" element={<div>Akt</div>} />
-                            <Route path="activities" element={<AktivitaetenForm />} />
-                            <Route path="gutachten" element={<GutachtenForm />} />
-                        </Switch>
-                    </Content>
-                </Layout>
+        <Layout>
+            <Sider trigger={null} collapsible collapsed={collapsed}>
+                <div className="logo" />
+                <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+                    <Menu.Item key="1" icon={<UserOutlined />}>
+                        <a href="/activities">Aktivitäten</a>
+                    </Menu.Item>
+                    <Menu.Item key="2" icon={<VideoCameraOutlined />}>
+                        <a href="/opinions">Gutachten</a>
+                    </Menu.Item>
+                    <Menu.Item key="3" icon={<UploadOutlined />}>
+                        Aufgaben
+                    </Menu.Item>
+                </Menu>
+            </Sider>
+            <Layout className="site-layout">
+                <Header className="site-layout-background" style={{ padding: 0 }}>
+                    {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+                        className: 'trigger',
+                        onClick: this.toggle,
+                    })}
+                </Header>
+                <Content className="site-layout-content">
+                    { props.children }
+                </Content>
             </Layout>
-        );
-    }
+        </Layout>
+    );
 }
-
-export default withRouter(SiteLayout);
   
   

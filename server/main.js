@@ -1,45 +1,44 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 
-import { LinksCollection } from '/imports/api/links';
+import { RolesCollection } from '/imports/api/roles';
 
-const SEED_USERNAME = 'admin';
-const SEED_PASSWORD = 'password';
-
-function insertLink({ title, url }) {
-  LinksCollection.insert({title, url, createdAt: new Date()});
-}
-
-
+import '/imports/api/publications/roles';
 
 Meteor.startup(() => {
-  if (!Accounts.findUserByUsername(SEED_USERNAME)) {
+    const SEED_USERNAME = 'admin';
+    const SEED_PASSWORD = 'password';  
+    
+    if (!Accounts.findUserByUsername(SEED_USERNAME)) {
     Accounts.createUser({
       username: SEED_USERNAME,
       password: SEED_PASSWORD,
     });
   }
 
-  // If the Links collection is empty, add some data.
-  if (LinksCollection.find().count() === 0) {
-    insertLink({
-      title: 'Do the Tutorial',
-      url: 'https://www.meteor.com/tutorials/react/creating-an-app'
-    });
+  if (RolesCollection.find().count() != 3) {
+    RolesCollection.remove({});
 
-    insertLink({
-      title: 'Follow the Guide',
-      url: 'http://guide.meteor.com'
-    });
+    RolesCollection.insert({
+      _id: 'EVERYBODY',
+      rolename: 'Jeder',
+      score: 0,
+      description: 'Zugriff für jeden Benutzer'
+     });
 
-    insertLink({
-      title: 'Read the Docs',
-      url: 'https://docs.meteor.com'
-    });
+     RolesCollection.insert({
+      _id: 'EXTERNAL',
+      rolename: 'Externer',
+      score: 100,
+      description: 'Zugriff nur für externe - Kunden, Projektleiter, etc.'
+     });
 
-    insertLink({
-      title: 'Discussions',
-      url: 'https://forums.meteor.com'
-    });
+     RolesCollection.insert({
+      _id: 'EMPLOYEE',
+      rolename: 'Mitarbeiter',
+      score: 200,
+      description: 'Zugriff nur für Mitarbeiter'
+     });
+  
   }
 });

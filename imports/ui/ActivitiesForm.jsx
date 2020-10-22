@@ -1,23 +1,23 @@
 import { Meteor } from 'meteor/meteor';
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import { 
     PageHeader, 
     Breadcrumb 
 } from 'antd';
 
-export const GutachtenForm = () => {
+export const ActivitiesForm = () => {
     return (
         <Fragment>
             <Breadcrumb>
                 <Breadcrumb.Item>Start</Breadcrumb.Item>
-                <Breadcrumb.Item>
-                    <a href="">Gutachten</a>
-                </Breadcrumb.Item>
+                    <Breadcrumb.Item>
+                        <a href="">Aktivitäten</a>
+                    </Breadcrumb.Item>
             </Breadcrumb>
             <PageHeader
                 className="site-page-header"
-                title="Gutachten"
-                subTitle="Übersicht der Ihnen zugewiesenen oder von Ihnen erstellten Gutachten."
+                title="Aktivitäten"
+                subTitle="Übersicht und Zusammenfassung der letzten Aktivitäten"
             />
         </Fragment>
     );
