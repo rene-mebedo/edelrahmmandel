@@ -3,7 +3,10 @@ import React, {Fragment, useState} from 'react';
 import { 
     Button,
     Select,
-    Modal
+    Modal,
+    Form,
+    Input,
+    DatePicker
 } from 'antd';
 
 import { PlusOutlined } from '@ant-design/icons';
@@ -12,6 +15,22 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { RolesCollection } from '/imports/api/roles';
 
 const { Option } = Select;
+
+const layout = {
+    labelCol: {
+        span: 8,
+    },
+    wrapperCol: {
+        span: 16,
+    },
+};
+
+const tailLayout = {
+    wrapperCol: {
+        offset: 8,
+        span: 16,
+    },
+};
 
 export const ModalOpinionNew = ( props ) => {
     const { roles, isLoadingRoles } = useTracker(() => {
@@ -32,24 +51,51 @@ export const ModalOpinionNew = ( props ) => {
 
     const [ showModalNewOpinion, setShowModalNewOpinion ] = useState(false);
 
+
+    const [form] = Form.useForm();
+
     const handleModalNewOpinionOk = e => {
-        Meteor.call('opinion.insert', {
+        form.validateFields()
+            .then((values) => {
+                Meteor.call('opinion.insert', {
+                    title: 'Marcs Welthandelsgesellschaft mbH - 3745', 
+                    description: 'Unser erstes Gutachten per client-Befehl'
+                }, (err, res) => {
+                    console.log('Finish:', err, res);
+                });
+
+                form.resetFields();
+                setShowModalNewOpinion(false);
+            }).catch((info) => {
+                console.log('Validate Failed:', info);
+            }
+        );
+        
+        //return false;
+
+        /*Meteor.call('opinion.insert', {
             title: 'Marcs Welthandelsgesellschaft mbH - 3745', 
             description: 'Unser erstes Gutachten per client-Befehl'
         }, (err, res) => {
             console.log('Finish:', err, res);
         });
 
-        setShowModalNewOpinion(false);
+        setShowModalNewOpinion(false);*/
     }
 
     const handleModalNewOpinionCancel = e => {
+        form.resetFields();
         setShowModalNewOpinion(false);
     }
 
     const createNewGutachten = () => {
         setShowModalNewOpinion(true);
     }
+
+/*    Rolle:
+    <Select style={{ width: 120 }} loading={isLoadingRoles}>
+        { roles.map (role => <Option key={role._id} value={role._id}>{role.rolename}</Option>) } 
+    </Select>*/
 
     return (
         <Fragment>
@@ -69,10 +115,50 @@ export const ModalOpinionNew = ( props ) => {
                 >
                     <p>Zum Erstellen eines neuen Gutachten füllen Sie bitte die nachfolgenden Felder aus und bestätigen Sie den Dialog mit OK.</p>
 
-                    Rolle:
-                    <Select style={{ width: 120 }} loading={isLoadingRoles}>
-                        { roles.map (role => <Option key={role._id} value={role._id}>{role.rolename}</Option>) } 
-                    </Select>
+                    <Form
+                        {...layout}
+                        form={form}
+                        onFinish={handleModalNewOpinionOk}
+                    >
+                        <Form.Item
+                            label="Gutachten"
+                            name="title"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie einen Namen für das Gutachten ein.',
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Eindeutiger Name des Gutachtens"/>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Beschreibung"
+                            name="description"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie eine kurze Beschreibung zu diesem Gutachten ein.',
+                                },
+                            ]}
+                        >
+                            <Input.TextArea placeholder="Beschreibung" autoSize={{minRows:3}} />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Zeitraum"
+                            name="dateFromTill"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie den Zeitraum des Gutachtens an.',
+                                },
+                            ]}
+                        >
+                            <DatePicker.RangePicker />
+                        </Form.Item>
+                    </Form>
                 </Modal>
             }
         </Fragment>
