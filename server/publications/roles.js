@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import { RolesCollection } from '/imports/api/roles';
+import { Roles } from '/imports/api/collections/roles';
 
 Meteor.publish('roles', function publishRoles() {
-    return RolesCollection.find({});
+    return Roles.find({});
 });

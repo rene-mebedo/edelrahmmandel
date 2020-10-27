@@ -6,13 +6,15 @@ import {
     Modal,
     Form,
     Input,
-    DatePicker
+    DatePicker,
+    Divider,
+    ConfigProvider
 } from 'antd';
 
 import { PlusOutlined } from '@ant-design/icons';
 
 import { useTracker } from 'meteor/react-meteor-data';
-import { RolesCollection } from '/imports/api/roles';
+import { Roles } from '/imports/api/collections/roles';
 
 const { Option } = Select;
 
@@ -32,6 +34,11 @@ const tailLayout = {
     },
 };
 
+
+//import moment from 'moment';
+//import 'moment/locale/de';
+import locale_deDE from 'antd/es/locale/de_DE';
+
 export const ModalOpinionNew = ( props ) => {
     const { roles, isLoadingRoles } = useTracker(() => {
         const noDataAvailable = { roles: [] };
@@ -45,7 +52,7 @@ export const ModalOpinionNew = ( props ) => {
           return { ...noDataAvailable, isLoadingRoles: true };
         }
     
-        const roles = RolesCollection.find({}).fetch();
+        const roles = Roles.find({}).fetch();
         return { roles, isLoadingRoles: false };
     });
 
@@ -55,32 +62,28 @@ export const ModalOpinionNew = ( props ) => {
     const [form] = Form.useForm();
 
     const handleModalNewOpinionOk = e => {
-        form.validateFields()
-            .then((values) => {
-                Meteor.call('opinion.insert', {
-                    title: 'Marcs Welthandelsgesellschaft mbH - 3745', 
-                    description: 'Unser erstes Gutachten per client-Befehl'
-                }, (err, res) => {
-                    console.log('Finish:', err, res);
-                });
+        form.validateFields().then( values => {
+            // transform dateFromTill
+            values.dateFrom = values.dateFromTill[0].toDate();
+            values.dateTill = values.dateFromTill[1].toDate();
+            delete values.dateFromTill;
+
+            Meteor.call('opinion.insert', values, (err, res) => {
+                if (err) {
+                    // do somthing to show error
+                    console.log(err);
+                    return Modal.error({
+                        title: 'Fehler',
+                        content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
+                    });
+                }
 
                 form.resetFields();
-                setShowModalNewOpinion(false);
-            }).catch((info) => {
-                console.log('Validate Failed:', info);
-            }
-        );
-        
-        //return false;
-
-        /*Meteor.call('opinion.insert', {
-            title: 'Marcs Welthandelsgesellschaft mbH - 3745', 
-            description: 'Unser erstes Gutachten per client-Befehl'
-        }, (err, res) => {
-            console.log('Finish:', err, res);
+                setShowModalNewOpinion(false);    
+            });        
+        }).catch( info => {
+            console.log('Validate Failed:', info);
         });
-
-        setShowModalNewOpinion(false);*/
     }
 
     const handleModalNewOpinionCancel = e => {
@@ -146,18 +149,80 @@ export const ModalOpinionNew = ( props ) => {
                             <Input.TextArea placeholder="Beschreibung" autoSize={{minRows:3}} />
                         </Form.Item>
 
+                        <Divider orientation="left" plain>Auftraggeber</Divider>
+
                         <Form.Item
-                            label="Zeitraum"
-                            name="dateFromTill"
+                            label="Firma"
+                            name={['customer', 'name']}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Bitte geben Sie den Zeitraum des Gutachtens an.',
+                                    message: 'Bitte geben Sie den Firmenname des Auftraggebers ein.',
                                 },
                             ]}
                         >
-                            <DatePicker.RangePicker />
+                            <Input placeholder="Firmenname"/>
                         </Form.Item>
+                        
+                        <Form.Item
+                            label="Straße"
+                            name={['customer', 'street']}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie die Straße des Auftraggebers an.',
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Straße"/>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Postleitzahl"
+                            name={['customer', 'postalCode']}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie die Postleitzahl des Auftraggebers an.',                                    
+                                },
+                                {
+                                    len: 5,
+                                    message: 'Bitte geben Sie eine 5-stellig Postleitzahl ein.', 
+                                },
+                            ]}
+                        >
+                            <Input placeholder="PLZ"/>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Ort"
+                            name={['customer', 'city']}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie den Ort des Auftraggebers an.',
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Ort"/>
+                        </Form.Item>
+
+                        <Divider orientation="left" plain>Weitere Informationen</Divider>
+
+                        <ConfigProvider locale={locale_deDE}>
+                            <Form.Item
+                                label="Zeitraum"
+                                name="dateFromTill"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Bitte geben Sie den Zeitraum des Gutachtens an.',
+                                    },
+                                ]}
+                            >
+                                <DatePicker.RangePicker format="DD.MM.YYYY"/>
+                            </Form.Item>
+                        </ConfigProvider>
                     </Form>
                 </Modal>
             }

@@ -24,9 +24,21 @@ export const UserWithRoleSchema = new SimpleSchema({
     },
     role: {
         type: String,
-        optional: true,
-        label: 'Benutzerrolle'
+        label: 'Benutzerrolle',
+        optional: true
     }
+});
+
+export const CreationSchema = new SimpleSchema({
+    createdAt: {
+        type: Date,
+        label: 'Erstellt am',
+        defaultValue: new Date
+    },
+    createdBy: {
+        type: UserSchema,
+        label: 'Erstellt von'
+    },
 });
 
 export const SharedWithSchema = new SimpleSchema({

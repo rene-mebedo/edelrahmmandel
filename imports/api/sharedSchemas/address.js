@@ -5,6 +5,10 @@ export const AddressSchema = new SimpleSchema({
         type: String,
         label: 'Firma'
     },
+    street: {
+        type: String,
+        label: 'Straße'
+    },
     postalCode: {
         type: String,
         min: 5,

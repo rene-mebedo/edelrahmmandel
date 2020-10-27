@@ -6,7 +6,7 @@ import {
 } from 'antd';
 
 import { useTracker } from 'meteor/react-meteor-data';
-import { OpinionsCollection } from '/imports/api/opinions';
+import { Opinions } from '/imports/api/collections/opinions';
 
 export const ListOpinions = () => {
 
@@ -23,7 +23,7 @@ export const ListOpinions = () => {
           return { ...noDataAvailable, isLoadingOpinions: true };
         }
     
-        const opinions = OpinionsCollection.find({}).fetch();
+        const opinions = Opinions.find({}).fetch();
         console.log('ready', opinions);
         return { opinions, isLoadingOpinions: false };
     });

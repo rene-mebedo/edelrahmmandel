@@ -11,7 +11,6 @@ import { ListOpinions } from './ListOpinions';
 
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { useTracker } from 'meteor/react-meteor-data';
-import { RolesCollection } from '/imports/api/roles';
 
 const { Option } = Select;
 
