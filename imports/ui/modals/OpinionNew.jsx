@@ -34,13 +34,10 @@ const tailLayout = {
     },
 };
 
-
-//import moment from 'moment';
-//import 'moment/locale/de';
 import locale_deDE from 'antd/es/locale/de_DE';
 
 export const ModalOpinionNew = ( props ) => {
-    const { roles, isLoadingRoles } = useTracker(() => {
+    /*const { roles, isLoadingRoles } = useTracker(() => {
         const noDataAvailable = { roles: [] };
 
         if (!Meteor.user()) {
@@ -54,7 +51,7 @@ export const ModalOpinionNew = ( props ) => {
     
         const roles = Roles.find({}).fetch();
         return { roles, isLoadingRoles: false };
-    });
+    });*/
 
     const [ showModalNewOpinion, setShowModalNewOpinion ] = useState(false);
 
@@ -94,11 +91,6 @@ export const ModalOpinionNew = ( props ) => {
     const createNewGutachten = () => {
         setShowModalNewOpinion(true);
     }
-
-/*    Rolle:
-    <Select style={{ width: 120 }} loading={isLoadingRoles}>
-        { roles.map (role => <Option key={role._id} value={role._id}>{role.rolename}</Option>) } 
-    </Select>*/
 
     return (
         <Fragment>

@@ -35,7 +35,7 @@ export const LoginForm = () => {
     <Row>
       <Col xs={2} sm={2} md={4} lg={6} xl={8} />
         
-      <Col xs={20} sm={20} md={16} lg={12} xl={8}>
+      <Col xs={20} sm={20} md={16} lg={12} xl={8} id="Login">
         <Divider orientation="left">Login</Divider>
         <p>
           Herzlich Willkommen zum MEBEDO GutachtenPlus!

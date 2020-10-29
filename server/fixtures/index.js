@@ -3,3 +3,4 @@
 
 import './accounts';
 import './roles';
+import './layouttypes';

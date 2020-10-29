@@ -8,6 +8,7 @@ import { App } from '/imports/ui/App';
 import { Home } from '../imports/ui/Home';
 import { ActivitiesForm } from '../imports/ui/ActivitiesForm';
 import { OpinionsForm } from '../imports/ui/OpinionsForm';
+import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
 
 FlowRouter.route('/', {
     name: 'root',
@@ -40,7 +41,7 @@ FlowRouter.route('/opinions/:id', {
     name: 'opinion.detail',
     action({ id }) {
         mount(App, {
-            content: <div>{id}</div>,
+            content: <OpinionsDetailsForm refOpinion={id} />,
         });
     },
 });

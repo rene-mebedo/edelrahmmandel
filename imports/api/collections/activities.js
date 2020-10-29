@@ -9,7 +9,12 @@ export const ActivitySchema = new SimpleSchema({
         type: String,
         label: 'Gutachten-Referenz'
     },
-    refOpinionLayerA: {
+    refDetail: {
+        type: String,
+        label: 'Gutachten-Referenz auf Detailpunkt',
+        optional: true
+    },
+    /*refOpinionLayerA: {
         type: String,
         label: 'Gutachten-Referenz auf Unterpunkt A',
         optional: true
@@ -18,7 +23,7 @@ export const ActivitySchema = new SimpleSchema({
         type: String,
         label: 'Gutachten-Referenz auf Unterpunkt B',
         optional: true
-    },
+    },*/
     type: {
         type: String // USER-POST, SYSTEM-LOG
     },
@@ -30,10 +35,16 @@ export const ActivitySchema = new SimpleSchema({
         type: Array,
         optional: true
     },
+    "feedback.$": {
+        type: Object
+    },
     response: {
         type: Array,
         optional: true
-    }
+    },
+    "response.$": {
+        type: Object
+    },
 });
 
 ActivitySchema.extend(CreationSchema);

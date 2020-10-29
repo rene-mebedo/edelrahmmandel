@@ -1,23 +1,37 @@
 @import '{}/node_modules/antd/dist/antd.less';
 
+body {
+  background-color: #f1f1f1;
+}
+
+.ant-page-header {
+  padding: 16px 0;
+}
 
 .site-layout-content {
-  background: #fff;
-  padding: 24px;
+  background: #f1f1f1;
+  padding: 8px;
   min-height: 280px;
 }
-#components-layout-demo-top .logo {
-  width: 120px;
-  height: 31px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px 24px 16px 0;
-  float: left;
+
+.ant-layout-sider-light {
+  background: #f1f1f1;
+  padding: 16px;
 }
 
+.ant-layout-sider-light.ant-layout-sider-zero-width {
+  padding: 0;
 
-#LoginForm {
-  padding: 16px;
-  //border: 1px solid #ccc;
+  .ant-layout-sider-children {
+    display:none;
+  }
+}
+
+#Login {
+    background-color: #fff;
+    padding: 16px;
+    top: 10vh;
+    border: 1px solid #ccc;
 }
 
 

@@ -1,10 +1,12 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+
 import { Roles } from '../collections/roles';
 
-export const hasPermission = async (userId, permissionPath) => {
-    let user = Meteor.users.findOne(userId);
+export const hasPermission = async ({ userId, currentUser }, permission) => {
+    if (!currentUser) currentUser = Meteor.users.findOne(userId);
 
-    if (!user) {
+    if (!currentUser) {
         throw new Meteor.Error('hasPermission: User not found!');
     }
 
@@ -17,10 +19,10 @@ export const hasPermission = async (userId, permissionPath) => {
             {
                 $group: {
                     _id: 0,
-                    isPermitted: { $sum: "$permissions." + permissionPath }
+                    isPermitted: { $sum: "$permissions." + permission }
                 }
             }
-        ]).toArray()
+        ]).toArray();
         permitted = permitted[0];
     } else {
         // cant use rawCollection on client side
@@ -33,4 +35,37 @@ export const hasPermission = async (userId, permissionPath) => {
     return (
         permitted.isPermitted > 0
     );
+}
+
+
+export const injectUserData = async ({ userId, currentUser }, data, options) => {
+    check(data, Object);
+    
+    if (!currentUser) currentUser = Meteor.users.findOne(userId);
+    
+    if (!currentUser) {
+        throw new Meteor.Error('User not found!');
+    }
+
+    if (!options || options.created){
+        data.createdAt = new Date;
+        data.createdBy = {
+            userId: currentUser._id,
+            firstName: currentUser.userData.firstName,
+            lastName: currentUser.userData.lastName
+        };
+    }
+
+    if (!options || options.sharedWith) {
+        data.sharedWith = [{ 
+            user: {
+                userId: currentUser._id,
+                firstName: currentUser.userData.firstName,
+                lastName: currentUser.userData.lastName
+            }, 
+            role: "OWNER"
+        }];
+    }
+
+    return data;
 }
