@@ -24,13 +24,9 @@ export const OpinionDetailSchema = new SimpleSchema({
     },
     text: {
         type: String,
-        label: 'Text'
+        label: 'Text',
+        optional: true // z.B. der Punkte 4. Befragung hat keinen weiteren Detailtext
     },
-    /*descriptionEx: {
-        type: String,
-        label: 'Kommentar 2',
-        optional: true
-    },*/
     actionCode: {
         type: String,
         label: 'Handlungsbedarf',

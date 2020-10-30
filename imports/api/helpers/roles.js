@@ -3,7 +3,7 @@ import { check } from 'meteor/check';
 
 import { Roles } from '../collections/roles';
 
-export const hasPermission = async ({ userId, currentUser }, permission) => {
+export const hasPermission = async ({ userId, currentUser, sharedRole }, permission) => {
     if (!currentUser) currentUser = Meteor.users.findOne(userId);
 
     if (!currentUser) {
@@ -14,7 +14,7 @@ export const hasPermission = async ({ userId, currentUser }, permission) => {
     if (Meteor.isServer) {
         permitted = await Roles.rawCollection().aggregate([
             { 
-                $match: { _id: { $in:["EMPLOYEE", "EVERYBODY", "EXTERNAL", "ADMIN"] }}
+                $match: { _id: { $in: (sharedRole ? [sharedRole] : currentUser.userData.roles) }}
             },
             {
                 $group: {

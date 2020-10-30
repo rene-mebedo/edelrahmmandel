@@ -5,16 +5,20 @@ import {
     Select,
     Modal,
     Form,
-    Input,
-    DatePicker,
-    Divider,
-    ConfigProvider
+    Input
 } from 'antd';
 
-import { PlusOutlined } from '@ant-design/icons';
+import {
+    EditOutlined,
+    DeleteOutlined
+} from '@ant-design/icons';
+
 
 import { useTracker } from 'meteor/react-meteor-data';
 import { Layouttypes } from '/imports/api/collections/layouttypes';
+
+import { OpinionDetails } from '/imports/api/collections/opinionDetails';
+
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -33,7 +37,7 @@ const tailLayout = {
     },
 };
 
-export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
+export const ModalOpinionDetailEdit = ( { opinionDetailId }) => {
     const { layouttypes, isLoadingLayouttypes } = useTracker(() => {
         const noDataAvailable = { layouttypes: [] };
 
@@ -56,10 +60,7 @@ export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
 
     const handleModalOk = e => {
         form.validateFields().then( values => {
-            values.refOpinion = refOpinion;
-            values.refParentDetail = refParentDetail;       
-
-            Meteor.call('opinionDetail.insert', values, (err, res) => {
+            Meteor.call('opinionDetail.update', { id: opinionDetailId, data: values}, (err, res) => {
                 if (err) {
                     return Modal.error({
                         title: 'Fehler',
@@ -71,7 +72,10 @@ export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
                 setShowModal(false);    
             });
         }).catch( info => {
-            //console.log('Validate Failed:', info);
+            Modal.error({
+                title: 'Fehler',
+                content: 'Es ist ein interner Fehler aufgetreten. ' + info
+            });
         });
     }
 
@@ -81,26 +85,39 @@ export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
     }
 
     const showModalVisible = () => {
+        const od = OpinionDetails.find(opinionDetailId).fetch();
+
+        if (!od && !od[0]) {
+            return Modal.error({
+                title: 'Fehler',
+                content: 'Es ist ein Fehler beim Lesen der Gutachtendetails aufgetreten. ' + err.message
+            });
+        }
+        
+        form.setFieldsValue({
+            title: od[0].title,
+            type: od[0].type,
+            text: od[0].text
+        });
+
         setShowModal(true);
     }
 
     return (
         <Fragment>
-            <Button
-                style={{marginTop:24}}
-                type="dashed" block
-                icon={<PlusOutlined />}
-                onClick={ showModalVisible }>
-                    Erstellen eines neuen Detailpunkt
-            </Button>
+            <Button 
+                onClick={ showModalVisible }
+                shape="round" icon={<EditOutlined />} style={{marginBottom:'8px'}}
+            />
 
             { !showModal ? null :
                 <Modal
-                    title="Neue Details zum Gutachten"
+                    title="Bearbeite Detail zum Gutachten"
                     width="80%"
                     visible={ showModal }
                     onOk={ handleModalOk }
                     onCancel={ handleModalCancel }
+                    cancelText="Abbruch"
                     //closable={false}
                     maskClosable={false}
                 >
