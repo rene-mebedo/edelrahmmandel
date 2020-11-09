@@ -1,5 +1,32 @@
 @import '{}/node_modules/antd/dist/antd.less';
 
+/* The emerging W3C standard
+   that is currently Firefox-only */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #666 #fff;
+}
+  
+  /* Works on Chrome/Edge/Safari */
+*::-webkit-scrollbar {
+    width: 8px;
+}
+*::-webkit-scrollbar-track {
+    background: #fff;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #666;
+    border-radius: 20px;
+    border-right: 2px solid #fff;
+}
+
+.active-detail-panel {
+  border: 1px solid orange !important;
+}
+.detail-deleted {
+  filter:blur(2px);
+}
+
 body {
   background-color: #f1f1f1;
 }
@@ -10,12 +37,14 @@ body {
 
 .site-layout-content {
   background: #f1f1f1;
-  padding: 8px;
+  padding: 16px;
   min-height: 280px;
 }
 
 .ant-layout-sider-light {
-  background: #f1f1f1;
+  //background: #f1f1f1;
+  background-color: #fff;
+  //border:1px solid black;
   padding: 16px;
 }
 
@@ -47,12 +76,46 @@ body {
   color: #1890ff;
 }
 
-#components-layout-demo-custom-trigger .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px;
+.ant-collapse-extra {
+    .anticon {
+        margin-left: 16px;
+        font-size: 18px;
+
+        :hover {
+            color: orange
+        }
+    }
 }
 
 .site-layout .site-layout-background {
   background: #fff;
 }
+
+
+.diff-drawer {
+  h3 {
+    color: #666
+  }
+  .ant-divider {
+    color: #999;
+    //font-weight: 400;
+  }
+
+  .Difference {
+    font-family: monospace;
+  }
+  
+  .Difference > del {
+    background-color: rgb(255, 224, 224);
+    text-decoration: line-through;
+    padding: 2px;
+  }
+  
+  .Difference > ins {
+    background-color: rgb(201, 238, 211);
+    text-decoration: none;
+    padding: 2px;
+  }
+  
+}
+

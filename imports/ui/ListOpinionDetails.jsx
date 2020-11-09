@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
 
 import React, {Fragment, useState} from 'react';
-import { Button, Row, Col, Collapse, Modal } from 'antd';
+import { Button, Row, Col, Collapse, Modal, Space, Typography } from 'antd';
+
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import {
     ExclamationCircleOutlined,
@@ -17,6 +19,8 @@ import { OpinionDetails } from '/imports/api/collections/opinionDetails';
 import { layouttypesObject } from '/imports/api/constData/layouttypes';
 
 const { Panel } = Collapse;
+
+const { Text, Link } = Typography;
 
 export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
     const [ showModalEdit, setShowModalEdit ] = useState(false);
@@ -35,9 +39,9 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
     
         let opinionDetails;
         if (refParentDetail) {
-            opinionDetails = OpinionDetails.find({ refParentDetail }).fetch();
+            opinionDetails = OpinionDetails.find({ refParentDetail }, { sort: {orderString: 1}}).fetch();
         } else {
-            opinionDetails = OpinionDetails.find({ refOpinion, refParentDetail: null }).fetch();
+            opinionDetails = OpinionDetails.find({ refOpinion, refParentDetail: null }, { sort: {orderString: 1}}).fetch();
         }
 
         return { opinionDetails, isLoading: false };
@@ -69,24 +73,57 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
         });
     }
 
-    const renderTypedetails = type => {
-        if (type == 'INFO') {
+    const renderTypedetails = detail => {
+        if (detail.type == 'INFO') {
             return (
                 <div>
                     <strong>I N F O:</strong>
+                    <div dangerouslySetInnerHTML={ {__html: detail.text}} />
                 </div>
             )
         }
+
+        return (
+            <div dangerouslySetInnerHTML={ {__html: detail.text}} />
+        );
     }
 
     const renderOpinionDetails = () => {
+        const currentDetailId = FlowRouter.getQueryParam("detail");
         return opinionDetails.map( detail => {
+            let cN = currentDetailId == detail._id ? ['active-detail-panel']: [];
+            if (detail.deleted) {
+                cN.push('detail-deleted');
+            }
+            
             return (
-                <Panel header={detail.title} key={detail._id}>
-                    <Row>
+                <Panel
+                    className={cN.join(' ')}
+                    header={
+                        <Fragment>
+                            <Space>
+                                <Text mark>{detail.orderString}</Text>
+                                <Text>{detail.title}</Text>
+                            </Space>
+                        </Fragment>
+                    }
+                    key={detail._id} 
+                    extra={detail.deleted ? null :
+                        <Fragment>
+                            <ModalOpinionDetailEdit opinionDetailId={detail._id} />
+                            <Space />
+                            <DeleteOutlined onClick={ e => {e.stopPropagation();removeDetail(detail._id)}} />
+                            {/*<Button 
+                                onClick={ e => {e.stopPropagation(); removeDetail(detail._id)} }
+                                danger ghost type="text" size="small" icon={<DeleteOutlined />} 
+                            />*/}
+                        </Fragment>
+                    }
+                >
+                    { renderTypedetails(detail) }
+                    { /*<Row>
                         <Col flex="1 1">
-                            { renderTypedetails(detail.type) }
-                            <div dangerouslySetInnerHTML={ {__html: detail.text}} />
+                            { renderTypedetails(detail) }
                         </Col>
                         <Col flex="60px" style={{minHeight:'80px'}}>
                             <ModalOpinionDetailEdit opinionDetailId={detail._id} />
@@ -96,7 +133,7 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
                                 danger type="dashed" shape="round" icon={<DeleteOutlined />} 
                             />
                         </Col>
-                    </Row>
+                    </Row>*/}
                     
                     <ListOpinionDetails 
                         refOpinion={refOpinion}
@@ -114,13 +151,18 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
         });
     }
 
-    const handleChange = () => {
-
+    const handleChangeCollapse = (detailId) => {
+        let lastDetailId = FlowRouter.getQueryParam("lastdetail");
+ 
+        if (!lastDetailId) lastDetailId = detailId;
+        if (!detailId) detailId = lastDetailId;
+ 
+        FlowRouter.setQueryParams({detail: detailId, lastdetail: lastDetailId});
     }
 
     return (
         <Fragment>
-            <Collapse onChange={handleChange}>
+            <Collapse accordion onChange={handleChangeCollapse}>
                 { renderOpinionDetails() }
             </Collapse>
         </Fragment>

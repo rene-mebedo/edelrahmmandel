@@ -42,6 +42,7 @@ FlowRouter.route('/opinions/:id', {
     action({ id }) {
         mount(App, {
             content: <OpinionsDetailsForm refOpinion={id} />,
+            refOpinion: id
         });
     },
 });

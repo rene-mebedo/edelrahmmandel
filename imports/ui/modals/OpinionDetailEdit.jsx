@@ -59,6 +59,8 @@ export const ModalOpinionDetailEdit = ( { opinionDetailId }) => {
     const [form] = Form.useForm();
 
     const handleModalOk = e => {
+        e.stopPropagation();
+
         form.validateFields().then( values => {
             Meteor.call('opinionDetail.update', { id: opinionDetailId, data: values}, (err, res) => {
                 if (err) {
@@ -80,11 +82,16 @@ export const ModalOpinionDetailEdit = ( { opinionDetailId }) => {
     }
 
     const handleModalCancel = e => {
+        e.stopPropagation();
+
         form.resetFields();
         setShowModal(false);
     }
 
-    const showModalVisible = () => {
+    const showModalVisible = e => {
+        // prevent collapse-trigger to react
+        e.stopPropagation();
+
         const od = OpinionDetails.find(opinionDetailId).fetch();
 
         if (!od && !od[0]) {
@@ -95,9 +102,11 @@ export const ModalOpinionDetailEdit = ( { opinionDetailId }) => {
         }
         
         form.setFieldsValue({
+            orderString: od[0].orderString,
             title: od[0].title,
+            printTitle: od[0].printTitle,
             type: od[0].type,
-            text: od[0].text
+            text: od[0].text || ''
         });
 
         setShowModal(true);
@@ -105,10 +114,11 @@ export const ModalOpinionDetailEdit = ( { opinionDetailId }) => {
 
     return (
         <Fragment>
-            <Button 
+            <EditOutlined onClick={ showModalVisible } />
+            {/*<Button 
                 onClick={ showModalVisible }
-                shape="round" icon={<EditOutlined />} style={{marginBottom:'8px'}}
-            />
+                ghost type="text" size="small" icon={<EditOutlined />} //style={{marginBottom:'8px'}}
+            />*/}
 
             { !showModal ? null :
                 <Modal
@@ -129,6 +139,19 @@ export const ModalOpinionDetailEdit = ( { opinionDetailId }) => {
                         form={form}
                         onFinish={handleModalOk}
                     >
+                        <Form.Item
+                            label="Sortierung"
+                            name="orderString"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie einen Wert für die Sortierung an.',
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Sortierung" style={{width:150}}/>
+                        </Form.Item>
+                        
                         <Form.Item
                             label="Typ"
                             name="type"
@@ -155,6 +178,13 @@ export const ModalOpinionDetailEdit = ( { opinionDetailId }) => {
                             ]}
                         >
                             <Input placeholder="Eindeutiger Name des Gutachtens"/>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="abw. Titel (im Druck)"
+                            name="printTitle"
+                        >
+                            <Input placeholder="Nur einzugeben wenn dieser im Druck abwechend ist zum o.g. Titel"/>
                         </Form.Item>
 
                         <Form.Item

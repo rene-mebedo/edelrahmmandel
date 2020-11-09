@@ -2,7 +2,9 @@ import React, {
     Fragment,
     useState 
 } from 'react';
-  
+
+import { ListActivities } from './ListActivities';
+
 import { 
     Layout, 
     Menu
@@ -53,7 +55,7 @@ export const SiteLayout = props => {
                     </Menu.Item>
                 </Menu>
             </Sider>
-            <Layout className="site-layout" style={{ marginLeft: 200 }}>
+            <Layout className="site-layout" style={{ marginLeft: 200, marginRight: 300 }}>
                 <Header className="site-layout-background" style={{ padding: 0 }}>
                     {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                         className: 'trigger',
@@ -66,6 +68,18 @@ export const SiteLayout = props => {
                 
             </Layout>
             
+            { !props.refOpinion ? null :
+                <Sider 
+                    style={{
+                        overflow: 'auto',
+                        height: '100vh',
+                        position: 'fixed',
+                        right: 0,
+                    }}
+                    theme="light" width="300" collapsible collapsedWidth="0" reverseArrow>
+                    <ListActivities refOpinion={props.refOpinion} />
+                </Sider>
+            }
         </Layout>
     );
 }

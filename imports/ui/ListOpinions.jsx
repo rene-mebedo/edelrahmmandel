@@ -16,7 +16,7 @@ export const ListOpinions = () => {
         if (!Meteor.user()) {
           return noDataAvailable;
         }
-        const handler = Meteor.subscribe('opinions', Meteor.userId());
+        const handler = Meteor.subscribe('opinions');
     
         if (!handler.ready()) { 
             console.log('not ready')

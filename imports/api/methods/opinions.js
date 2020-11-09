@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 
 import { Opinions, OpinionsSchema } from '../collections/opinions';
 import { Activities } from '../collections/activities';
@@ -34,5 +35,17 @@ Meteor.methods({
         }, { created: true });
 
         Activities.insert(activity);
+    },
+
+    'opinion.getSharedWith'(refOpinion, searchText) {
+        check(refOpinion, String);
+
+        if (searchText) check(searchText, String);
+
+        const opinion = Opinions.findOne(refOpinion);
+
+        return opinion && opinion.sharedWith.map( shared => {
+            return shared.user;
+        });
     }
 });

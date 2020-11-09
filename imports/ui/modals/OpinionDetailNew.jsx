@@ -113,6 +113,19 @@ export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
                         onFinish={handleModalOk}
                     >
                         <Form.Item
+                            label="Sortierung"
+                            name="orderString"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie einen Wert für die Sortierung an.',
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Sortierung" style={{width:150}}/>
+                        </Form.Item>
+
+                        <Form.Item
                             label="Typ"
                             name="type"
                             rules={[
@@ -137,7 +150,14 @@ export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
                                 },
                             ]}
                         >
-                            <Input placeholder="Eindeutiger Name des Gutachtens"/>
+                            <Input placeholder="Eindeutiger Titel des Gutachtendetails"/>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="abw. Titel (im Druck)"
+                            name="printTitle"
+                        >
+                            <Input placeholder="Nur einzugeben wenn dieser im Druck abwechend ist zum o.g. Titel"/>
                         </Form.Item>
 
                         <Form.Item

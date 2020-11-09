@@ -1,5 +1,5 @@
 import './routes';
-//import '../imports/api/methods';
+import '../imports/api/methods';
 
 import React from 'react';
 import { Meteor } from 'meteor/meteor';

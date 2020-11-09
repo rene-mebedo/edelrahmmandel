@@ -33,6 +33,7 @@ Meteor.methods({
             refOpinion: detail.refOpinion,
             refDetail: newId,
             type: 'SYSTEM-LOG',
+            action: 'INSERT',
             message: 'Detail wurde erstellt.'
         }, { created: true });
 
@@ -48,31 +49,106 @@ Meteor.methods({
         const old = OpinionDetails.findOne(opinionDetail.id);
 
         // check if opinion was sharedWith the current User
-        const shared = Opinions.findOne({
-            _id: old.refOpinion,
-            "sharedWith.user.userId": this.userId
-        });
+        if (Meteor.isServer) {
+            const shared = Opinions.findOne({
+                _id: old.refOpinion,
+                "sharedWith.user.userId": this.userId
+            });
 
-        if (!shared) {
-            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+            if (!shared) {
+                throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+            }
+
+            const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+            
+            if (!await hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+                throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten.');
+            }
         }
 
-        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
-        
-        if (!await hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
-            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten.');
+        // check what has changed
+        let changes = [];
+
+        if (opinionDetail.data.orderString && old.orderString !== opinionDetail.data.orderString) {
+            changes.push ({
+                what: "die Sortierreihenfolge", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                message: "Die Sortierreihenfolge wurde geändert.",
+                propName: "orderString",
+                oldValue: old.orderString,
+                newValue: opinionDetail.data.orderString
+            });
         }
 
-        OpinionDetails.update(opinionDetail.id, { $set: opinionDetail.data });
-        
-        let activity = await injectUserData({ currentUser }, {
-            refOpinion: old.refOpinion,
-            refDetail: opinionDetail.id,
-            type: 'SYSTEM-LOG',
-            message: 'Detail wurde geändert.',
-        }, { created: true });
-        
-        Activities.insert(activity);
+        if (opinionDetail.data.type && old.type !== opinionDetail.data.type) {
+            changes.push ({
+                what: "den Typ", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                message: "Der Typ wurde geändert.",
+                propName: "type",
+                oldValue: old.type,
+                newValue: opinionDetail.data.type
+            });
+        }
+        if (opinionDetail.data.title && old.title !== opinionDetail.data.title) {
+            //msg += "Der Titel wurde geändert.";
+            changes.push ({
+                what: "den Titel", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                message: "Der Titel wurde geändert.",
+                propName: "title",
+                oldValue: old.title,
+                newValue: opinionDetail.data.title
+            });
+        }
+
+        if (opinionDetail.data.text && old.text !== opinionDetail.data.text) {
+            //msg += "Der Text wurde geändert.";
+            changes.push ({
+                what: "den Text", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                message: "Der Text wurde geändert.",
+                propName: "text",
+                oldValue: old.text,
+                newValue: opinionDetail.data.text
+            });
+        }
+
+        if (opinionDetail.data.printTitle && old.printTitle !== opinionDetail.data.printTitle) {
+            changes.push ({
+                what: "den Drucktitel", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                message: "Der Drucktitel wurde geändert.",
+                propName: "orderString",
+                oldValue: old.printTitle,
+                newValue: opinionDetail.data.printTitle
+            });
+        }
+
+        if (opinionDetail.data.deleted === false) {
+            changes.push ({
+                what: "die Löschmarkierung",
+                message: "Die Löschmarkierung wurde zurückgesetzt.",
+                propName: "deleted",
+                oldValue: true,
+                newValue: false
+            });
+        }
+
+        let message = "hat " + changes.map( ({ what }) => what).join(', ') + " geändert.";
+
+        // are there changes to commit
+        if (changes.length) {
+            OpinionDetails.update(opinionDetail.id, { $set: opinionDetail.data });
+            
+            let activity = await injectUserData({ currentUser }, {
+                refOpinion: old.refOpinion,
+                refDetail: opinionDetail.id,
+                type: 'SYSTEM-LOG',
+                action: 'UPDATE',
+                message,
+                changes
+            }, { created: true });
+            
+            Activities.insert(activity);
+            
+            return changes;
+        }
     },
 
     async 'opinionDetail.remove'(id) {
@@ -101,15 +177,33 @@ Meteor.methods({
             throw new Meteor.Error('Keine Berechtigung zum Löschen dieses Details zum Gutachten.');
         }
 
-        OpinionDetails.remove(id);
+        OpinionDetails.update(id, {
+            $set:{ deleted: true }
+        });
+        /*OpinionDetails.remove(id);
         
         let activity = await injectUserData({ currentUser }, {
             refOpinion: old.refOpinion,
             refDetail: id._str || id,
             type: 'SYSTEM-LOG',
-            message: 'Detail wurde gelöscht.',
+            action: 'REMOVE',
+            message: "Das Detail mit dem Titel '" + old.title + "' wurde gelöscht.",
+        }, { created: true });*/
+
+        let activity = await injectUserData({ currentUser }, {
+            refOpinion: old.refOpinion,
+            refDetail: id._str || id,
+            type: 'SYSTEM-LOG',
+            action: 'REMOVE',
+            message: "hat es als gelöscht markiert.",
+            changes: [{
+                message: "Das Detail wurde als gelöscht markiert",
+                propName: "deleted",
+                oldValue: false,
+                newValue: true
+            }]
         }, { created: true });
-        
+
         Activities.insert(activity);
     }
 });

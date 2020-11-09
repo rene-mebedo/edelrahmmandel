@@ -22,10 +22,20 @@ export const OpinionDetailSchema = new SimpleSchema({
         type: String,
         label: 'Titel',
     },
+    printTitle: {
+        type: String,
+        optional: true,
+        defaultValue: null,
+        label: 'Titel im Druck',
+    },
     text: {
         type: String,
         label: 'Text',
         optional: true // z.B. der Punkte 4. Befragung hat keinen weiteren Detailtext
+    },
+    orderString: {
+        type: String,
+        label: 'Sortierung'
     },
     actionCode: {
         type: String,
@@ -47,6 +57,11 @@ export const OpinionDetailSchema = new SimpleSchema({
         label: 'Vorschrift',
         optional: true
     },
+    deleted: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    }
 });
 
 OpinionDetailSchema.extend(CreationSchema);

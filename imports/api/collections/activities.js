@@ -17,6 +17,10 @@ export const ActivitySchema = new SimpleSchema({
     type: {
         type: String // USER-POST, SYSTEM-LOG
     },
+    action: {
+        type: String, // INSERT, UPDATE, REMOVE
+        optional: true // only supported if type was SYSTEM-LOG
+    },
     message: {
         type: String,
         label: 'Aktivitätsnachricht'
@@ -34,6 +38,14 @@ export const ActivitySchema = new SimpleSchema({
     },
     "response.$": {
         type: Object
+    },
+    changes: {
+        type: Array,
+        optional: true
+    },
+    "changes.$": {
+        type: Object,
+        blackbox: true
     }
 });
 
