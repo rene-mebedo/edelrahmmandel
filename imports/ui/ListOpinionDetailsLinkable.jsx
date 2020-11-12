@@ -2,16 +2,20 @@ import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
 
 import React, {Fragment, useState} from 'react';
-import { Button, Row, Col, Collapse, Modal, Space, Typography } from 'antd';
+import { Button, Row, Col, Collapse, Modal, Space, Typography, List } from 'antd';
 
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import {
     ExclamationCircleOutlined,
-    DeleteOutlined
+    DeleteOutlined,
+    LikeOutlined,
+    StarOutlined,
+    MessageOutlined
 } from '@ant-design/icons';
 
 import { ModalOpinionDetail } from './modals/OpinionDetail';
+import { ActionCodeDropdown } from './components/ActionCodeDropdown';
 
 import { OpinionDetails } from '/imports/api/collections/opinionDetails';
 
@@ -19,9 +23,21 @@ import { layouttypesObject } from '/imports/api/constData/layouttypes';
 
 const { Panel } = Collapse;
 
-const { Text, Link } = Typography;
+const { Text, Link, Paragraph } = Typography;
 
-export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
+
+const IconText = ({ icon, text }) => (
+    <Space>
+        {React.createElement(icon)}
+        {text}
+    </Space>
+);
+
+
+import HTMLEllipsis from 'react-lines-ellipsis/lib/html'
+
+
+export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
     const [ showModalEdit, setShowModalEdit ] = useState(false);
 
     const { opinionDetails, isLoading } = useTracker(() => {
@@ -98,13 +114,13 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
             return (
                 <Panel
                     className={cN.join(' ')}
-                    header={
-                        <Fragment>
+                    header={ 
+                        <Link href={"/opinions/" + refOpinion + '/' + detail._id}>
                             <Space>
                                 <Text mark>{detail.orderString}</Text>
                                 <Text>{detail.title}</Text>
                             </Space>
-                        </Fragment>
+                        </Link>
                     }
                     key={detail._id} 
                     extra={detail.deleted ? null :
@@ -120,7 +136,7 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
                 >
                     { renderTypedetails(detail) }
                     
-                    <ListOpinionDetails 
+                    <ListOpinionDetailsLinkable
                         refOpinion={refOpinion}
                         refParentDetail={detail._id}
                     />
@@ -146,10 +162,47 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail }) => {
     }
 
     return (
-        <Fragment>
-            <Collapse accordion onChange={handleChangeCollapse}>
-                { renderOpinionDetails() }
-            </Collapse>
-        </Fragment>
+        <List
+            className="opinion-details-list"
+            itemLayout="vertical"
+            loading={isLoading}
+            dataSource={opinionDetails}
+            renderItem={item => (
+                <List.Item
+                    className={item.deleted ? "item-deleted" : null }
+                    key={item._id}
+                    actions={[
+                        <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
+                        <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
+                        <IconText icon={MessageOutlined} text="2" key="list-vertical-message" />,
+                        <DeleteOutlined key="1" onClick={ e => {e.stopPropagation();removeDetail(item._id)}} />
+                    ]}
+                    extra={
+                        item.type == 'QUESTION' || item.type == 'ANSWER' ? 
+                            <ActionCodeDropdown
+                                refDetail={item._id}
+                                actionCode={item.actionCode}
+                            />
+                        : null
+                    }
+                >
+                    <List.Item.Meta
+                        //avatar={<Avatar src={item.avatar} />}
+                        title={<Link href={`/opinions/${item.refOpinion}/${item._id}`}>{item.title}</Link>}
+                        description={
+                            <HTMLEllipsis
+                                unsafeHTML={item.text}
+                                maxLine='2'
+                                ellipsis='...'
+                                basedOn='letters'
+                            />
+                        }
+                    />
+                    {
+                        //Irgendeintext als Content und noch mehr....
+                    }
+                </List.Item>
+            )}
+        />
     );
 }

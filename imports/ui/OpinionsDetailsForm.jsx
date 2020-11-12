@@ -13,7 +13,7 @@ const { Sider, Content } = Layout;
 
 import { ModalOpinionDetailNew } from './modals/OpinionDetailNew';
 import { ListOpinionDetails } from './ListOpinionDetails';
-
+import { ListOpinionDetailsLinkable } from './ListOpinionDetailsLinkable';
 
 export const OpinionsDetailsForm = ({refOpinion}) => {
     const collapseGeneralChanged = () => {
@@ -51,7 +51,7 @@ export const OpinionsDetailsForm = ({refOpinion}) => {
 
                     </Collapse>
 
-                    <ListOpinionDetails 
+                    <ListOpinionDetailsLinkable
                         refOpinion={refOpinion} 
                         refParentDetail={null}
                     />

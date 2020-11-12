@@ -19,14 +19,14 @@
     border-radius: 20px;
     border-right: 2px solid #fff;
 }
-
+/*
 .active-detail-panel {
   border: 1px solid orange !important;
 }
 .detail-deleted {
   filter:blur(2px);
 }
-
+*/
 body {
   background-color: #f1f1f1;
 }
@@ -102,20 +102,65 @@ body {
   }
 
   .Difference {
-    font-family: monospace;
+      font-family: monospace;
+      
+      > del {
+          background-color: rgb(255, 224, 224);
+          text-decoration: line-through;
+          padding: 2px;
+      }
+      
+      > ins {
+          background-color: rgb(201, 238, 211);
+          text-decoration: none;
+          padding: 2px;
+      }
   }
-  
-  .Difference > del {
-    background-color: rgb(255, 224, 224);
-    text-decoration: line-through;
-    padding: 2px;
-  }
-  
-  .Difference > ins {
-    background-color: rgb(201, 238, 211);
-    text-decoration: none;
-    padding: 2px;
-  }
-  
 }
 
+
+
+.summernote-airmode {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+
+main {
+  section.ant-layout {
+    padding: 16px;
+    border: 1px solid #ddd;
+    background: #fff;
+  }
+}
+
+.affix-opiniondetail {
+    background-color: #fff !important;
+    border-bottom: 2px solid #666;
+    margin-bottom: 16px;
+    .ant-affix {
+        //padding-top: 4px !important;
+        background-color: #fff !important;
+        border-bottom: 2px solid #666;
+    }
+}
+
+.opinion-details-list {
+    background-color: #fff;
+    //border: 1px solid #ddd;
+
+    .item-deleted {
+        filter: blur(4px);
+    }
+}
+
+/*.dropdown-handlungsbedarf {
+    border: 1px solid;
+    border-radius: 2px;
+    cursor: pointer;
+
+    padding: 8px;
+    :hover {
+        filter: brightness(150%);
+    }
+}*/

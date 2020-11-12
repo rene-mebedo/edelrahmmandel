@@ -15,7 +15,7 @@ Meteor.publish('activities', function publishActivities({ refOpinion, refDetail 
     });
 
     if (!permitted) return null;
-
+    
     // elemenating undefned
     refDetail = refDetail || null;
     if (refDetail)

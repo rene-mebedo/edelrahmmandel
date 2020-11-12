@@ -19,12 +19,11 @@ export const ListOpinions = () => {
         const handler = Meteor.subscribe('opinions');
     
         if (!handler.ready()) { 
-            console.log('not ready')
           return { ...noDataAvailable, isLoadingOpinions: true };
         }
     
         const opinions = Opinions.find({}).fetch();
-        console.log('ready', opinions);
+        
         return { opinions, isLoadingOpinions: false };
     });
 

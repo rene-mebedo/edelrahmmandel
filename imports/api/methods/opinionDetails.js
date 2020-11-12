@@ -71,7 +71,7 @@ Meteor.methods({
 
         if (opinionDetail.data.orderString && old.orderString !== opinionDetail.data.orderString) {
             changes.push ({
-                what: "die Sortierreihenfolge", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                what: "die Sortierreihenfolge",
                 message: "Die Sortierreihenfolge wurde geändert.",
                 propName: "orderString",
                 oldValue: old.orderString,
@@ -81,7 +81,7 @@ Meteor.methods({
 
         if (opinionDetail.data.type && old.type !== opinionDetail.data.type) {
             changes.push ({
-                what: "den Typ", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                what: "den Typ",
                 message: "Der Typ wurde geändert.",
                 propName: "type",
                 oldValue: old.type,
@@ -89,9 +89,8 @@ Meteor.methods({
             });
         }
         if (opinionDetail.data.title && old.title !== opinionDetail.data.title) {
-            //msg += "Der Titel wurde geändert.";
             changes.push ({
-                what: "den Titel", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                what: "den Titel",
                 message: "Der Titel wurde geändert.",
                 propName: "title",
                 oldValue: old.title,
@@ -100,9 +99,8 @@ Meteor.methods({
         }
 
         if (opinionDetail.data.text && old.text !== opinionDetail.data.text) {
-            //msg += "Der Text wurde geändert.";
             changes.push ({
-                what: "den Text", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                what: "den Text",
                 message: "Der Text wurde geändert.",
                 propName: "text",
                 oldValue: old.text,
@@ -112,11 +110,21 @@ Meteor.methods({
 
         if (opinionDetail.data.printTitle && old.printTitle !== opinionDetail.data.printTitle) {
             changes.push ({
-                what: "den Drucktitel", //"Der Typ wurde von '" + old.type + "' auf '" + opinionDetail.data.type + "' geändert.",
+                what: "den Drucktitel",
                 message: "Der Drucktitel wurde geändert.",
                 propName: "orderString",
                 oldValue: old.printTitle,
                 newValue: opinionDetail.data.printTitle
+            });
+        }
+
+        if (opinionDetail.data.actionCode && old.actionCode !== opinionDetail.data.actionCode) {
+            changes.push ({
+                what: "den Handlungsbedarf",
+                message: "Der Handlungsbedarf wurde geändert.",
+                propName: "actionCode",
+                oldValue: old.actionCode,
+                newValue: opinionDetail.data.actionCode
             });
         }
 
@@ -205,5 +213,26 @@ Meteor.methods({
         }, { created: true });
 
         Activities.insert(activity);
-    }
+    },
+
 });
+
+if (Meteor.isServer) {
+    Meteor.methods({
+        'opinionDetail.getBreadcrumbItems'({refOpinion, refDetail}) {
+            console.log(refOpinion, refDetail);
+            let items = [];
+
+            const getRecursive = id => {
+                let item = OpinionDetails.findOne(id);
+                if (item && item.refParentDetail !== null) {
+                    getRecursive(item.refParentDetail);
+                }
+                items.push(item);
+            }
+            getRecursive(refDetail);
+
+            return items;
+        }
+    });
+}

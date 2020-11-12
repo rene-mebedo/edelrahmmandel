@@ -9,6 +9,7 @@ import { Home } from '../imports/ui/Home';
 import { ActivitiesForm } from '../imports/ui/ActivitiesForm';
 import { OpinionsForm } from '../imports/ui/OpinionsForm';
 import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
+import { OpinionsDetailsFormLinkable } from '../imports/ui/OpinionsDetailsFormLinkable';
 
 FlowRouter.route('/', {
     name: 'root',
@@ -43,6 +44,17 @@ FlowRouter.route('/opinions/:id', {
         mount(App, {
             content: <OpinionsDetailsForm refOpinion={id} />,
             refOpinion: id
+        });
+    },
+});
+
+FlowRouter.route('/opinions/:id/:refDetail', {
+    name: 'opinion.detail.show',
+    action({ id, refDetail }) {
+        mount(App, {
+            content: <OpinionsDetailsFormLinkable refOpinion={id} refDetail={refDetail} />,
+            refOpinion: id,
+            refDetail: refDetail
         });
     },
 });

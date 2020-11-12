@@ -8,6 +8,7 @@ import {
 } from '../sharedSchemas/user';
 import { AddressSchema } from '../sharedSchemas/address';
 import { ParticipantSchema } from '../sharedSchemas/participant';
+import { UserSchema } from '../sharedSchemas/user';
 
 SimpleSchema.defineValidationErrorTransform(error => {
     const ddpError = new Meteor.Error(error.message);
@@ -50,7 +51,16 @@ export const OpinionsSchema = new SimpleSchema({
     'participants.$': {
         type: ParticipantSchema,
         minCount: 0
-    }
+    },
+    // Gutachter 1 + 2
+    expert1: {
+        type: UserSchema,
+        optional: true
+    },
+    expert2: {
+        type: UserSchema,
+        optional: true
+    },
 });
 
 OpinionsSchema.extend(CreationSchema);

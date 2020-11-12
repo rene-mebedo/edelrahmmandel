@@ -16,8 +16,9 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Layouttypes } from '/imports/api/collections/layouttypes';
 
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+//import ReactQuill from 'react-quill';
+//import 'react-quill/dist/quill.snow.css';
+import { Summernote } from '../components/Summernote';
 
 const { Option } = Select;
 
@@ -84,6 +85,23 @@ export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
         setShowModal(true);
     }
 
+    const uploadImage = function(images, insertImage) {
+        console.log('onImageUpload', images);
+        /* FileList does not support ordinary array methods */
+        for (let i = 0; i < images.length; i++) {
+            /* Stores as bas64enc string in the text.
+             * Should potentially be stored separately and include just the url
+             */
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                insertImage(reader.result);
+            };
+
+            reader.readAsDataURL(images[i]);
+        }
+    }
+    
     return (
         <Fragment>
             <Button
@@ -157,14 +175,19 @@ export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
                             label="abw. Titel (im Druck)"
                             name="printTitle"
                         >
-                            <Input placeholder="Nur einzugeben wenn dieser im Druck abwechend ist zum o.g. Titel"/>
+                            <Input placeholder="Nur einzugeben wenn dieser im Druck abweichend ist zum o.g. Titel"/>
                         </Form.Item>
 
                         <Form.Item
                             label="Text"
                             name="text"
                         >
-                            <ReactQuill theme="snow" /> 
+                            <Summernote
+                                className="summernote-airmode"
+                                onImageUpload={uploadImage}
+                                options={ { airMode: true } }
+                            />
+                            
                         </Form.Item>
                     </Form>
                 </Modal>
@@ -172,3 +195,5 @@ export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
         </Fragment>
     );
 }
+
+//<ReactQuill theme="snow" /> 

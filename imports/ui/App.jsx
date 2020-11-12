@@ -10,7 +10,7 @@ import { LoginForm } from '/imports/ui/LoginForm';
 import { SiteLayout } from '/imports/ui/SiteLayout';
 
 
-export const App = ({content, refOpinion}) => {
+export const App = ({content, refOpinion, refDetail}) => {
   const currentUser = useTracker(() => Meteor.user());
 
   if (currentUser === undefined) {
@@ -21,5 +21,5 @@ export const App = ({content, refOpinion}) => {
     return <LoginForm />
   }
 
-  return <SiteLayout refOpinion={refOpinion}>{content || null}</SiteLayout>;
+  return <SiteLayout refOpinion={refOpinion} refDetail={refDetail}>{content || null}</SiteLayout>;
 }

@@ -30,7 +30,7 @@ export const SiteLayout = props => {
     toggle = () => {
         setCollapsed(!collapsed);
     };
-
+    console.log('Sitelayout:', props);
     return (
 
         <Layout>
@@ -76,8 +76,10 @@ export const SiteLayout = props => {
                         position: 'fixed',
                         right: 0,
                     }}
-                    theme="light" width="300" collapsible collapsedWidth="0" reverseArrow>
-                    <ListActivities refOpinion={props.refOpinion} />
+                    theme="light" width="300" collapsible collapsedWidth="0" reverseArrow
+                >
+                    
+                    <ListActivities refOpinion={props.refOpinion} refDetail={props.refDetail} />
                 </Sider>
             }
         </Layout>

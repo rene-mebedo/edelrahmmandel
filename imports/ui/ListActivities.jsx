@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useEffect, useRef} from 'react';
 import { 
     Avatar,
     List,
@@ -25,15 +25,15 @@ import localization from 'moment/locale/de';
 import { DiffDrawer } from './components/DiffDrawer';
 import { ReplyTo } from './components/ReplyTo';
 
-export const ListActivities = ( { refOpinion } ) => {
+export const ListActivities = ( { refOpinion, refDetail } ) => {
     const { activities, isLoading } = useTracker(() => {
-        const currentDetailId = FlowRouter.getQueryParam("detail");
         const noDataAvailable = { activities: [] };
 
         if (!Meteor.user()) {
           return noDataAvailable;
         }
-        const handler = Meteor.subscribe('activities', { refOpinion, refDetail: currentDetailId });
+        
+        const handler = Meteor.subscribe('activities', { refOpinion, refDetail });
     
         if (!handler.ready()) { 
             return { ...noDataAvailable, isLoading: true };
@@ -44,8 +44,14 @@ export const ListActivities = ( { refOpinion } ) => {
         return { activities, isLoading: false };
     });
 
+    const scrollToBottom = () => {
+        activitiesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+  
+    const activitiesEndRef = useRef(null);
+    useEffect(scrollToBottom, [activities]);
+
     return (
-        
         <Fragment>
             <List
                 className="comment-list"
@@ -89,6 +95,8 @@ export const ListActivities = ( { refOpinion } ) => {
                     </Button>
                 </Form.Item>
             </Form>
+
+            <div ref={activitiesEndRef} />
         </Fragment>
     );
 }
