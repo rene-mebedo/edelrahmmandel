@@ -8,18 +8,18 @@ import { Activities } from '../collections/activities';
 import { hasPermission, injectUserData } from '../helpers/roles';
 
 Meteor.methods({
-    async 'opinionDetail.insert'(detailData) {
+    /*async*/ 'opinionDetail.insert'(detailData) {
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
         
         let currentUser = Meteor.users.findOne(this.userId);
 
-        if (!await hasPermission({ currentUser }, 'opinion.create')) {
+        if (!/*await*/ hasPermission({ currentUser }, 'opinion.create')) {
             throw new Meteor.Error('Keine Berechtigung zum Erstellen eines neuen Details zu einem Gutachten.');
         }
         
-        let detail = await injectUserData({ currentUser }, {...detailData}, { created: true });
+        let detail = /*await*/ injectUserData({ currentUser }, {...detailData}, { created: true });
         
         try {
             OpinionDetailSchema.validate(detail);
@@ -29,7 +29,7 @@ Meteor.methods({
         
         let newId = OpinionDetails.insert(detail);
         
-        let activity = await injectUserData({ currentUser }, {
+        let activity = /*await*/ injectUserData({ currentUser }, {
             refOpinion: detail.refOpinion,
             refDetail: newId,
             type: 'SYSTEM-LOG',
@@ -45,7 +45,7 @@ Meteor.methods({
      * 
      * @param {Object} opinionDetail 
      */
-    async 'opinionDetail.update'(opinionDetail) {
+    /*async*/ 'opinionDetail.update'(opinionDetail) {
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
@@ -53,22 +53,19 @@ Meteor.methods({
         let currentUser = Meteor.users.findOne(this.userId);
         const old = OpinionDetails.findOne(opinionDetail.id);
 
-        // check if opinion was sharedWith the current User
-        if (Meteor.isServer) {
-            const shared = Opinions.findOne({
-                _id: old.refOpinion,
-                "sharedWith.user.userId": this.userId
-            });
+        const shared = Opinions.findOne({
+            _id: old.refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
 
-            if (!shared) {
-                throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
-            }
+        if (!shared) {
+            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+        }
 
-            const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
-            
-            if (!await hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
-                throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten.');
-            }
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!/*await*/ hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten.');
         }
 
         // check what has changed
@@ -149,7 +146,7 @@ Meteor.methods({
         if (changes.length) {
             OpinionDetails.update(opinionDetail.id, { $set: opinionDetail.data });
             
-            let activity = await injectUserData({ currentUser }, {
+            let activity = /*await*/ injectUserData({ currentUser }, {
                 refOpinion: old.refOpinion,
                 refDetail: opinionDetail.id,
                 type: 'SYSTEM-LOG',
@@ -158,13 +155,14 @@ Meteor.methods({
                 changes
             }, { created: true });
             
+            console.log('Insert Activity', this.isSimulation);
             Activities.insert(activity);
             
             return changes;
         }
     },
 
-    async 'opinionDetail.remove'(id) {
+    /*async*/ 'opinionDetail.remove'(id) {
         //check(id, String);
 
         if (!this.userId) {
@@ -186,7 +184,7 @@ Meteor.methods({
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
-        if (!await hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
+        if (!/*await*/ hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
             throw new Meteor.Error('Keine Berechtigung zum Löschen dieses Details zum Gutachten.');
         }
 
@@ -203,7 +201,7 @@ Meteor.methods({
             message: "Das Detail mit dem Titel '" + old.title + "' wurde gelöscht.",
         }, { created: true });*/
 
-        let activity = await injectUserData({ currentUser }, {
+        let activity = /*await*/ injectUserData({ currentUser }, {
             refOpinion: old.refOpinion,
             refDetail: id._str || id,
             type: 'SYSTEM-LOG',
@@ -217,6 +215,7 @@ Meteor.methods({
             }]
         }, { created: true });
 
+        console.log('Insert Activity', this.isSimulation);
         Activities.insert(activity);
     },
 

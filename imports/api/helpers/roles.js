@@ -37,7 +37,7 @@ const isRolePermitted = (permissionName, roleObj) => {
  * 
  * @return {Boolean} True if user is permitted otherwise false
  */
-export const hasPermission = async ({ userId, currentUser, sharedRole }, permissionName) => {
+export const hasPermission = /*async*/ ({ userId, currentUser, sharedRole }, permissionName) => {
     if (!currentUser) currentUser = Meteor.users.findOne(userId);
 
     if (!currentUser) {
@@ -56,7 +56,7 @@ export const hasPermission = async ({ userId, currentUser, sharedRole }, permiss
 }
 
 
-export const injectUserData = async ({ userId, currentUser }, data, options) => {
+export const injectUserData = /*async*/ ({ userId, currentUser }, data, options) => {
     check(data, Object);
     
     if (!currentUser) currentUser = Meteor.users.findOne(userId);
@@ -64,7 +64,7 @@ export const injectUserData = async ({ userId, currentUser }, data, options) => 
     if (!currentUser) {
         throw new Meteor.Error('User not found!');
     }
-    console.log(currentUser);
+    
     if (!options || options.created){
         data.createdAt = new Date;
         data.createdBy = {

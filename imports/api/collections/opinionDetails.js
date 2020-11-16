@@ -68,3 +68,9 @@ OpinionDetailSchema.extend(CreationSchema);
 
 export const OpinionDetails = new Mongo.Collection('opinionDetails');
 OpinionDetails.attachSchema(OpinionDetailSchema);
+
+OpinionDetails.allow ({
+    insert() { return false; },
+    update() { return false; },
+    remove() { return false; },
+})
