@@ -1,6 +1,6 @@
 import { Roles } from '/imports/api/collections/roles';
 
-if (Roles.find().count() != 1) {
+//if (Roles.find().count() != 1) {
     Roles.remove({});
 
     Roles.insert({
@@ -98,8 +98,8 @@ if (Roles.find().count() != 1) {
             shareWith: 1,
             cancelSharedWith: 1,
             cancelOwnSharedWith: 1,
-            manageOpinionTemplate: 0,
+            manageOpinionTemplate: 1,
         },
         selectable: true
     });
-}
+//}

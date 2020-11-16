@@ -40,6 +40,11 @@ Meteor.methods({
         Activities.insert(activity);
     },
 
+    /**
+     * Aktualisieren eines Gutachtendetails in der Collection
+     * 
+     * @param {Object} opinionDetail 
+     */
     async 'opinionDetail.update'(opinionDetail) {
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
@@ -220,15 +225,14 @@ Meteor.methods({
 if (Meteor.isServer) {
     Meteor.methods({
         'opinionDetail.getBreadcrumbItems'({refOpinion, refDetail}) {
-            console.log(refOpinion, refDetail);
             let items = [];
 
             const getRecursive = id => {
                 let item = OpinionDetails.findOne(id);
                 if (item && item.refParentDetail !== null) {
                     getRecursive(item.refParentDetail);
+                    items.push(item);
                 }
-                items.push(item);
             }
             getRecursive(refDetail);
 

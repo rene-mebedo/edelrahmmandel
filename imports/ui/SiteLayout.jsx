@@ -30,7 +30,7 @@ export const SiteLayout = props => {
     toggle = () => {
         setCollapsed(!collapsed);
     };
-    console.log('Sitelayout:', props);
+    
     return (
 
         <Layout>

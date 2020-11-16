@@ -42,21 +42,21 @@ export const OpinionDetailSchema = new SimpleSchema({
         label: 'Handlungsbedarf',
         optional: true
     },
-    info: {
+    /*info: {
         type: String,
         label: 'Hinweis',
         optional: true
-    },
-    step: {
+    },*/
+    step: { // nur benötigt als Maßnahmentext für Einträge vom Typ "Antwort"
         type: String,
         label: 'Maßnahme',
         optional: true
     },
-    specification: {
+    /*specification: {
         type: String,
         label: 'Vorschrift',
         optional: true
-    },
+    },*/
     deleted: {
         type: Boolean,
         optional: true,

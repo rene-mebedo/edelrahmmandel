@@ -164,3 +164,22 @@ main {
         filter: brightness(150%);
     }
 }*/
+
+.loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 5px solid #FFFF00;
+    padding: 10px;
+
+    &.done {
+        position: unset;
+        left: unset;
+        top: unset;
+        transform: unset;
+        border: unset;
+        padding: unset;
+    }
+}
+

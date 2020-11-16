@@ -154,4 +154,20 @@ export const layouttypesObject = {
         }*/
     },
 
+    UNKNOWN: {
+        _id: 'UNKNOWN',
+        title: '<nicht festgelegt>',
+        description: 'Dies sollte nicht vorkommen',
+        hasChilds: false,
+        /*template: `
+            <div style="width:100%; bgcolor:orange">
+                {{title}}
+                {{text}}
+
+                {{todolist}}
+            </div>
+        `
+        }*/
+    }
+
 }

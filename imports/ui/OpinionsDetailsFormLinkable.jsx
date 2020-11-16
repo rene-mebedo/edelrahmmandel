@@ -10,7 +10,13 @@ import {
     Button,
     Modal,
     Typography,
-    Affix
+    Affix,
+    Divider,
+    Descriptions,
+    Tag,
+    Spin,
+    Skeleton,
+    Space
 } from 'antd';
 
 import {
@@ -22,36 +28,25 @@ const { Panel } = Collapse;
 const { Sider, Content } = Layout;
 const { Text, Link } = Typography;
 
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { OpinionDetails } from '/imports/api/collections/opinionDetails';
+import { layouttypesObject } from '/imports/api/constData/layouttypes';
 
 import { ModalOpinionDetail } from './modals/OpinionDetail';
 import { ListOpinionDetailsLinkable } from './ListOpinionDetailsLinkable';
 import { ActionCodeDropdown } from './components/ActionCodeDropdown';
+import { hasPermission } from '../api/helpers/roles';
+
+import { 
+    useOpinionSubscription,
+    useOpinionDetail
+} from '../client/trackers';
+
 
 export const DetailForm = ({refOpinion, refDetail}) => {
-    const { detail, isLoading } = useTracker(() => {
-        const noDataAvailable = { detail: {} };
+    const opinionIsLoading = useOpinionSubscription(refOpinion);
 
-        if (!Meteor.user()) {
-            return noDataAvailable;
-        }
-        const handler = Meteor.subscribe('opinionDetail', { refOpinion, refDetail });
-    
-        if (!handler.ready()) {
-            return { ...noDataAvailable, isLoading: true };
-        }
-    
-        let detail;
-        if (refDetail) {
-            detail = OpinionDetails.findOne(refDetail);
-        } else {
-            detail = OpinionDetails.findOne({ refOpinion, refParentDetail: null });
-        }
-
-        return { detail, isLoading: false };
-    });
+    const [detail, detailIsLoading] = useOpinionDetail(refOpinion, refDetail);
 
     const removeDetail = id => {
         Modal.confirm({
@@ -77,30 +72,57 @@ export const DetailForm = ({refOpinion, refDetail}) => {
 
     let pageHeaderButtons = [];
 
-    if (detail.type === "ANSWER" || detail.type === "QUESTION") {
+    if (detailIsLoading) {
+        pageHeaderButtons = [
+            <Space key="1">
+                <Skeleton.Button key="1"/>
+                <Skeleton.Button key="2"/>
+            </Space>
+        ];
+    } else {
+        if (detail.type === "ANSWER" || detail.type === "QUESTION") {
+            pageHeaderButtons.push(
+                <ActionCodeDropdown
+                    key="3"
+                    refDetail={detail._id}
+                    actionCode={detail.actionCode}
+                />
+            )
+        }
         pageHeaderButtons.push(
-            <ActionCodeDropdown
-                key="3"
+            <Button key="2"
+                onClick={ e => { removeDetail(detail._id) } }
+                icon={<DeleteOutlined />}
+            >
+                Löschen
+            </Button>
+        );
+        pageHeaderButtons.push(
+            <ModalOpinionDetail key="1"
+                mode="EDIT"
+                refOpinion={refOpinion}
                 refDetail={detail._id}
-                actionCode={detail.actionCode}
             />
-        )
+        );
     }
-    pageHeaderButtons.push(
-        <Button key="2"
-            onClick={ e => { removeDetail(detail._id) } }
-            icon={<DeleteOutlined />}
-        >
-            Löschen
-        </Button>
-    );
-    pageHeaderButtons.push(
-        <ModalOpinionDetail key="1"
-            mode="EDIT"
-            refOpinion={refOpinion}
-            refDetail={detail._id}
-        />
-    );
+
+    const renderStepText = ({type, stepText}) => {
+        if (type === "ANSWER" || type === "QUESTION") {
+            if (!stepText) {
+                return (
+                    <Button type="dashed">Bitte legen Sie noch eine Maßnahme fest</Button>
+                );
+            } else {
+                return (
+                    <div>
+                        {stepText}
+                    </div>
+                );
+            }
+        } else {
+            return null;
+        }
+    }
 
     return (
         <Fragment>
@@ -114,14 +136,47 @@ export const DetailForm = ({refOpinion, refDetail}) => {
                     <PageHeader
                         className="site-page-header"
                         onBack={() => history.back()}
-                        title={detail.title}
+                        title={detailIsLoading ? <Spin /> : detail.title}
                         extra={pageHeaderButtons}
                     />
                 </div>
             </Affix>
 
             <Content>
-                <div dangerouslySetInnerHTML={ {__html: detail.text}} />
+                { detailIsLoading ? <Skeleton paragraph={{ rows: 4 }} /> :
+                    <Descriptions 
+                        layout="horizontal" size="small"  
+                        //column={{ xxl: 4, xl: 4, lg: 2, md: 2, sm: 1, xs: 1 }}
+                        bordered
+                    >
+                        <Descriptions.Item label="Sortierung">
+                            <Tag color="blue">{detail.orderString}</Tag>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Typ">{layouttypesObject[detail.type || 'UNKNOWN'].title}</Descriptions.Item>
+                        <Descriptions.Item label="Maßnahme">
+                            <ActionCodeDropdown
+                                key="3"
+                                refDetail={detail._id}
+                                actionCode={detail.actionCode}
+                            />
+                        </Descriptions.Item>
+
+                        <Descriptions.Item label="Maßnahme (Text)">
+                            Irgend ein langer Text der unter Punkt 8 eingetragen wir als Maßnahme.
+                            Zu bewerten ist die Relevanz und die Einschätzung des Kunden.
+                            {detail.stepText}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Titel" span={2}>{detail.title}</Descriptions.Item>
+
+                        <Descriptions.Item label="Text" span={2}>
+                            <div dangerouslySetInnerHTML={ {__html: detail.text}} />
+                        </Descriptions.Item>
+                    </Descriptions>
+                }
+
+                { /*renderStepText(detail)*/ }
+
+                <Divider orientation="left">Details zu diesem Punkt</Divider>
 
                 <ListOpinionDetailsLinkable
                     refOpinion={refOpinion} 
@@ -151,6 +206,7 @@ export class OpinionBreadcrumb extends Component {
             if (err) {
                 console.log(err)
             } else {
+                console.log('result', result);
                 this.setState({
                     items: result,
                     loading: false
@@ -180,6 +236,9 @@ export class OpinionBreadcrumb extends Component {
                 </Breadcrumb.Item>
 
                 {items.map( (item, index) => {
+                    if (!item) {
+                        return;
+                    }
                     const uri = `/opinions/${item.refOpinion}/${item._id}`
                     return (
                         <Breadcrumb.Item key={index}>
@@ -192,17 +251,19 @@ export class OpinionBreadcrumb extends Component {
     }
 }
 
-export const OpinionsDetailsFormLinkable = ({refOpinion, refDetail}) => {
+export const OpinionsDetailsFormLinkable = ({refOpinion, refDetail, currentUser}) => {
     return (
         <Layout>
             <Content>
                 <DetailForm refOpinion={refOpinion} refDetail={refDetail} />
 
-                <ModalOpinionDetail
-                    mode="NEW" 
-                    refOpinion={refOpinion} 
-                    refParentDetail={refDetail}
-                />
+                { !hasPermission({currentUser}, 'opinion.create') ? null :
+                    <ModalOpinionDetail
+                        mode="NEW" 
+                        refOpinion={refOpinion} 
+                        refParentDetail={refDetail}
+                    />
+                }
             </Content>
         </Layout>
     );

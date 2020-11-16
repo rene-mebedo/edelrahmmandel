@@ -15,7 +15,7 @@ FlowRouter.route('/', {
     name: 'root',
     action() {
         mount(App, {
-            content: <Home />,
+            content: Home,
         });
     },
 });
@@ -24,7 +24,7 @@ FlowRouter.route('/activities', {
     name: 'activities.show',
     action() {
         mount(App, {
-            content: <ActivitiesForm />,
+            content: ActivitiesForm,
         });
     },
 });
@@ -33,7 +33,7 @@ FlowRouter.route('/opinions', {
     name: 'opinions.show',
     action() {
         mount(App, {
-            content: <OpinionsForm />,
+            content: OpinionsForm,
         });
     },
 });
@@ -42,7 +42,7 @@ FlowRouter.route('/opinions/:id', {
     name: 'opinion.detail',
     action({ id }) {
         mount(App, {
-            content: <OpinionsDetailsForm refOpinion={id} />,
+            content: OpinionsDetailsForm,
             refOpinion: id
         });
     },
@@ -52,7 +52,8 @@ FlowRouter.route('/opinions/:id/:refDetail', {
     name: 'opinion.detail.show',
     action({ id, refDetail }) {
         mount(App, {
-            content: <OpinionsDetailsFormLinkable refOpinion={id} refDetail={refDetail} />,
+            content: OpinionsDetailsFormLinkable,
+            //content: <OpinionsDetailsFormLinkable refOpinion={id} refDetail={refDetail} />,
             refOpinion: id,
             refDetail: refDetail
         });
