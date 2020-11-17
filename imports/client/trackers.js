@@ -3,6 +3,7 @@ import { useTracker } from 'meteor/react-meteor-data';
 
 import { OpinionDetails } from '../api/collections/opinionDetails';
 import { Opinions } from '../api/collections/opinions';
+import { Roles } from '../api/collections/roles';
 
 
 export const useOpinionSubscription = id => useTracker( () => {
@@ -10,26 +11,49 @@ export const useOpinionSubscription = id => useTracker( () => {
     return !subscription.ready();
 });
 
-// A hook for account
+/**
+ * Reactive current User Account
+ */
 export const useAccount = () => useTracker(() => {
     const user = Meteor.user();
     const userId = Meteor.userId();
 
-    const userDataSubscription = Meteor.subscribe('currentUser');
+    const subscription = Meteor.subscribe('currentUser');
     let currentUser = null;
 
-    if (userDataSubscription.ready()) {
+    if (subscription.ready()) {
         currentUser = Meteor.users.findOne({_id:userId}, { fields: { username: 1, userData: 1 }});
     }
 
     return {
-        //user,
-        //userId,
+        user,
+        userId,
         currentUser,
-        isLoggedIn: !!userId
+        isLoggedIn: !!userId,
+        accountsReady: user !== undefined && subscription.ready()
     }
-  }, [])
+}, [])
 
+/**
+ * Reactive Roles handling
+ * 
+ */
+export const useRoles = () => useTracker( () => {
+    const noDataAvailable = [ [] /*Roles*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const subscription = Meteor.subscribe('roles');
+
+    if (!subscription.ready()) { 
+        return noDataAvailable;
+    }
+
+    const roles = Roles.find({}, { sort: {title: 1}}).fetch();
+
+    return [roles, false];
+});
 
 /**
  * Load the given OpinionDetail reactivly.

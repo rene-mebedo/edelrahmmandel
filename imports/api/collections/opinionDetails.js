@@ -2,7 +2,7 @@ import { Mongo } from 'meteor/mongo';
 
 import SimpleSchema from  'simpl-schema';
 
-import { CreationSchema } from '../sharedSchemas/user';
+import { CreationSchema, UserSchema } from '../sharedSchemas/user';
 
 export const OpinionDetailSchema = new SimpleSchema({
     refOpinion: {
@@ -61,7 +61,29 @@ export const OpinionDetailSchema = new SimpleSchema({
         type: Boolean,
         optional: true,
         defaultValue: false
-    }
+    },
+    likes: {
+        type: Array,
+        defaultValue: []
+    },
+    'likes.$': {
+        type: UserSchema,
+    },
+    dislikes: {
+        type: Array,
+        defaultValue: []
+    },
+    'dislikes.$': {
+        type: UserSchema,
+    },
+    commentsCount: {
+        type: SimpleSchema.Integer,
+        defaultValue: 0
+    },
+    activitiesCount: {
+        type: SimpleSchema.Integer,
+        defaultValue: 0
+    },
 });
 
 OpinionDetailSchema.extend(CreationSchema);
@@ -73,4 +95,4 @@ OpinionDetails.allow ({
     insert() { return false; },
     update() { return false; },
     remove() { return false; },
-})
+});

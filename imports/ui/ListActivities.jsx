@@ -39,7 +39,7 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
             return { ...noDataAvailable, isLoading: true };
         }
     
-        const activities = Activities.find({}).fetch();
+        const activities = Activities.find({ refDetail }).fetch();
         
         return { activities, isLoading: false };
     });

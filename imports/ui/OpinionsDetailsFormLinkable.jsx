@@ -225,24 +225,19 @@ export class OpinionBreadcrumb extends Component {
 
     render() {
         const { items } = this.state;
-
-        return (
-            <Breadcrumb>
-                <Breadcrumb.Item>
+/*<Breadcrumb.Item>
                     <Link href="/">Start</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
                     <a href="/opinions">Gutachten</a>
-                </Breadcrumb.Item>
-
-                {items.map( (item, index) => {
-                    if (!item) {
-                        return;
-                    }
-                    const uri = `/opinions/${item.refOpinion}/${item._id}`
+                </Breadcrumb.Item>*/
+        return (
+            <Breadcrumb>
+                {items.map( ({ title, uri }, index) => {
+                    //const uri = `/opinions/${item.refOpinion}/${item._id}`
                     return (
                         <Breadcrumb.Item key={index}>
-                            <Link href={uri}>{item.title}</Link>
+                            <Link href={uri}>{title}</Link>
                         </Breadcrumb.Item>
                     );
                 })}

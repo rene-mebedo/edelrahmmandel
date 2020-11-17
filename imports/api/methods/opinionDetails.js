@@ -8,7 +8,116 @@ import { Activities } from '../collections/activities';
 import { hasPermission, injectUserData } from '../helpers/roles';
 
 Meteor.methods({
-    /*async*/ 'opinionDetail.insert'(detailData) {
+    /**
+     * User-Like or Dislike for opinionDetail by given id
+     */
+    'opinionDetail.doSocial'(action, id) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+
+        if (action !== 'like' && action !== 'dislike') {
+            throw new Meteor.Error('Unknown social command.');
+        }
+        
+        let currentUser = Meteor.users.findOne(this.userId);
+        const opinionDetail = OpinionDetails.findOne(id);
+
+        const isShared = Opinions.findOne({
+            _id: opinionDetail.refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!isShared) {
+            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        // check if we need to push or pop the like
+        const doneBefore = OpinionDetails.findOne({            
+            _id: id,
+            [action + 's.userId']: this.userId
+        });
+
+        if (!doneBefore) {
+            OpinionDetails.update({_id: id}, {
+                $push: {
+                    [action + 's']: {
+                        userId: this.userId,
+                        firstName: currentUser.userData.firstName,
+                        lastName: currentUser.userData.lastName
+                    }
+                }
+            });
+        } else {
+            // unlike
+            OpinionDetails.update({_id: id}, {
+                $pull: {
+                    [action + 's']: {
+                        userId: this.userId,
+                        firstName: currentUser.userData.firstName,
+                        lastName: currentUser.userData.lastName
+                    }
+                }
+            });
+        }
+    },
+
+    /**
+     * Toggels the delete flag of the given opinion detail
+     * 
+     * @param {String} id Id of the opinionDetail to be toggelt
+     */
+    'opinionDetail.toggleDeleted'(id) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+        
+        let currentUser = Meteor.users.findOne(this.userId);
+        const opinionDetail = OpinionDetails.findOne(id);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: opinionDetail.refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (! hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
+            throw new Meteor.Error('Keine Berechtigung zum Löschen dieses Details zum Gutachten.');
+        }
+
+        OpinionDetails.update(id, {
+            $set:{ deleted: !opinionDetail.deleted },
+            $inc: { activitiesCount: 1 }
+        });
+
+        let activity = injectUserData({ currentUser }, {
+            refOpinion: opinionDetail.refOpinion,
+            refDetail: id._str || id,
+            type: 'SYSTEM-LOG',
+            action: 'REMOVE',
+            message: opinionDetail.deleted ? "hat die Löschmarkierung zurückgenommen" : "hat es als gelöscht markiert.",
+            changes: [{
+                message: opinionDetail.deleted ? "Die Löschmarkierung wurde zurückgenommen" : "Das Detail wurde als gelöscht markiert",
+                propName: "deleted",
+                oldValue: opinionDetail.deleted,
+                newValue: !opinionDetail.deleted
+            }]
+        }, { created: true });
+
+        Activities.insert(activity);
+
+        /*OpinionDetails.update(id._str || id, {
+            $inc: { activitiesCount: 1 }
+        });*/
+    },
+    
+    'opinionDetail.insert'(detailData) {
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
@@ -162,7 +271,7 @@ Meteor.methods({
         }
     },
 
-    /*async*/ 'opinionDetail.remove'(id) {
+    'opinionDetail.remove'(id) {
         //check(id, String);
 
         if (!this.userId) {
@@ -224,13 +333,25 @@ Meteor.methods({
 if (Meteor.isServer) {
     Meteor.methods({
         'opinionDetail.getBreadcrumbItems'({refOpinion, refDetail}) {
-            let items = [];
+            let items = [
+                { title: 'Start', uri: '/' },
+                { title: 'Gutachten', uri: '/opinions' },
+            ];
+
+            const opinion = Opinions.findOne(refOpinion);
+            items.push({
+                title: opinion.title,
+                uri: `/opinions/${opinion._id}`
+            });
 
             const getRecursive = id => {
                 let item = OpinionDetails.findOne(id);
                 if (item && item.refParentDetail !== null) {
                     getRecursive(item.refParentDetail);
-                    items.push(item);
+                    items.push({
+                        title: item.title,
+                        uri: `/opinions/${item.refOpinion}/${item._id}`
+                    });
                 }
             }
             getRecursive(refDetail);

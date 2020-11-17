@@ -2,18 +2,19 @@ import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
 
 import React, {Fragment, useState} from 'react';
-import { Button, Row, Col, Collapse, Modal, Space, Typography, List, Tag, Skeleton, } from 'antd';
+import { Tooltip, Collapse, Modal, Space, Typography, List, Tag, Skeleton, } from 'antd';
 
 import {
     ExclamationCircleOutlined,
-    DeleteOutlined,
-    LikeOutlined,
-    StarOutlined,
+    DeleteOutlined, DeleteTwoTone,
+    LikeOutlined, LikeTwoTone,
+    DislikeOutlined, DislikeTwoTone,
     MessageOutlined
 } from '@ant-design/icons';
 
 //import { ModalOpinionDetail } from './modals/OpinionDetail';
 import { ActionCodeDropdown } from './components/ActionCodeDropdown';
+import { ActionCodeTag } from './components/ActionCodeTag';
 
 import { OpinionDetails } from '/imports/api/collections/opinionDetails';
 
@@ -62,6 +63,17 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
                             content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
                         });
                     }
+                });
+            }
+        });
+    }
+
+    const toggleDeleted = id => {
+        Meteor.call('opinionDetail.toggleDeleted', id, (err, res) => {
+            if (err) {
+                return Modal.error({
+                    title: 'Fehler',
+                    content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
                 });
             }
         });
@@ -140,6 +152,35 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
         FlowRouter.setQueryParams({detail: detailId, lastdetail: lastDetailId});
     }*/
 
+    const doSocial = (action, id) => {
+        Meteor.call('opinionDetail.doSocial', action, id, (err, res) => {
+            if (err) {
+                return Modal.error({
+                    title: 'Fehler',
+                    content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
+                });
+            }
+        });
+    }
+
+    const doneBefore = arr => {
+        const uid = Meteor.userId();
+        
+        return arr.filter( ({userId}) => userId == uid ).length > 0;
+    }
+
+    const listSocial = list => {
+        return (
+            <div className="mbac-tooltip-social-list">
+                <ul className="ant-list">
+                    {
+                        list.map( ({userId, firstName, lastName}) => <li className="ant-list-item" key={userId}>{firstName + (firstName ? ' ':'') + lastName}</li>)
+                    }
+                </ul>   
+            </div> 
+        );
+    }
+
     return (
         <Fragment>
             <List
@@ -152,13 +193,40 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
                         className={item.deleted ? "item-deleted" : null }
                         key={item._id}
                         actions={[
-                            <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
-                            <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
-                            <IconText icon={MessageOutlined} text="2" key="list-vertical-message" />,
-                            <DeleteOutlined key="1" onClick={ e => {e.stopPropagation();removeDetail(item._id)}} />
+                            <div key="like">
+                                <Space>
+                                    { doneBefore(item.likes)
+                                        ?<LikeTwoTone onClick={ e => {doSocial('like', item._id)} } />
+                                        :<LikeOutlined onClick={ e => {doSocial('like', item._id)} } />
+                                    }
+                                    <Tooltip className="mbac-simple-social-list" title={listSocial(item.likes)}>
+                                        <span>{item.likes.length}</span>
+                                    </Tooltip>
+                                </Space>
+                            </div>,
+                            <div key="dislike">
+                                <Space>
+                                    { doneBefore(item.dislikes)
+                                        ?<DislikeTwoTone onClick={ e => {doSocial('dislike', item._id)} } />
+                                        :<DislikeOutlined onClick={ e => {doSocial('dislike', item._id)} } />
+                                    }
+                                    <Tooltip className="mbac-simple-social-list" title={listSocial(item.dislikes)}>
+                                        <span>{item.dislikes.length}</span>
+                                    </Tooltip>
+                                </Space>
+                            </div>,
+
+                            <IconText icon={MessageOutlined} text={item.commentsCount + item.activitiesCount} key="list-vertical-message" />,
+
+                            <div key="deleted">
+                                { !item.deleted
+                                    ?<DeleteOutlined key="1" onClick={ e => {e.stopPropagation(); toggleDeleted(item._id)}} />
+                                    :<DeleteTwoTone key="1" onClick={ e => {e.stopPropagation(); toggleDeleted(item._id)}} />
+                                }
+                            </div>
                         ]}
                         extra={
-                            item.type == 'QUESTION' || item.type == 'ANSWER' ? 
+                            item.type == 'QUESTION' /*|| item.type == 'ANSWER'*/ ? 
                                 <ActionCodeDropdown
                                     refDetail={item._id}
                                     actionCode={item.actionCode}
@@ -170,7 +238,13 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
                             //avatar={<Avatar src={item.avatar} />}
                             title={
                                 <Link href={`/opinions/${item.refOpinion}/${item._id}`}>
-                                    <Tag color="blue">{item.orderString}</Tag> {item.title}
+                                    <Space>
+                                        <Tag color="blue">{item.orderString}</Tag>
+                                        <span>{item.title}</span>
+                                        { item.type !== 'ANSWER' ? null :
+                                            <ActionCodeTag actionCode={item.actionCode} />
+                                        }
+                                    </Space>
                                 </Link>
                             }
                             description={

@@ -150,7 +150,24 @@ main {
     //border: 1px solid #ddd;
 
     .item-deleted {
-        filter: blur(4px);
+        //filter: blur(4px);
+        text-decoration: line-through;
+        text-decoration-style: double;
+        text-decoration-color: red;
+
+        a {
+            text-decoration: line-through !important;
+            text-decoration-style: double ;
+            text-decoration-color: red !important;
+            color: #bbb !important;
+        }
+    }
+}
+
+.mbac-tooltip-social-list {
+    .ant-list-item {
+        color:#fff;
+        padding: 4px;
     }
 }
 

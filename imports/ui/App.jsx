@@ -10,25 +10,11 @@ import { Spin } from 'antd';
 import { LoginForm } from '/imports/ui/LoginForm';
 import { SiteLayout } from '/imports/ui/SiteLayout';
 import { Roles } from '/imports/api/collections/roles';
+import { useAccount, useRoles } from '../client/trackers';
 
 export const App = ({content, refOpinion, refDetail}) => {
-    const { currentUser, isLoading } = useTracker(() => {
-        const noDataAvailable = { currentUser: null };
-
-        if (!Meteor.user()) {
-            return noDataAvailable;
-        }
-        const hCurrentUser = Meteor.subscribe('currentUser');
-        const hRoles = Meteor.subscribe('roles');
-    
-        if (!hCurrentUser.ready() || !hRoles.ready()) { 
-            return { ...noDataAvailable, isLoading: true };
-        }
-        
-        const currentUser = Meteor.users.findOne({_id:Meteor.userId()});
-        
-        return { currentUser, isLoading: false };
-    });
+    const { currentUser, isLoggedIn, accountsReady } = useAccount();
+    const { roles, rolesLoading } = useRoles();
 
     useEffect(() => {
         const reactRoot = document.getElementById('react-root');
@@ -37,11 +23,11 @@ export const App = ({content, refOpinion, refDetail}) => {
         reactRoot.classList.add('done');
     });
 
-    if (currentUser === undefined) {
+    if (!accountsReady) {
         return <Spin size="large" />
     }
 
-    if (!currentUser) {
+    if (!isLoggedIn) {
         return <LoginForm />
     }
 
@@ -53,7 +39,7 @@ export const App = ({content, refOpinion, refDetail}) => {
         >
             {
                 //content || null
-                React.createElement(content || null, {refOpinion, refDetail, currentUser})
+                React.createElement(content || null, { refOpinion, refDetail, currentUser })
             }
         </SiteLayout>
     );
