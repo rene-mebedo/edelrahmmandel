@@ -13,9 +13,10 @@ import { Roles } from '../collections/roles';
  */
 const isRolePermitted = (permissionName, roleObj) => {
     let isPermitted = 0;
-    if (permissionName.startsWith('opinion.')) {
-        const n = permissionName.split('.')[1];
-        isPermitted = roleObj.permissions.opinion[n];
+    // check for permission like "opinion.create"
+    if (permissionName.indexOf('.') > 0) {
+        const [k, n] = permissionName.split('.');
+        isPermitted = roleObj.permissions[k][n];
     } else {
         isPermitted = roleObj.permissions[permissionName];
     }
@@ -56,7 +57,7 @@ export const hasPermission = /*async*/ ({ userId, currentUser, sharedRole }, per
 }
 
 
-export const injectUserData = /*async*/ ({ userId, currentUser }, data, options) => {
+export const injectUserData = ({ userId, currentUser }, data, options) => {
     check(data, Object);
     
     if (!currentUser) currentUser = Meteor.users.findOne(userId);

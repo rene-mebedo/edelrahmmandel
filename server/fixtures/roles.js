@@ -13,7 +13,8 @@ import { Roles } from '/imports/api/collections/roles';
                 create: 0,
                 edit: 0,
                 remove: 0,
-                admin: 0
+                admin: 0,
+                canPostMessage: 0
             },
             shareWith: 0,
             cancelSharedWith: 0,
@@ -33,7 +34,8 @@ import { Roles } from '/imports/api/collections/roles';
                 create: 0,
                 edit: 0,
                 remove: 0,
-                admin: 0
+                admin: 0,
+                canPostMessage: 1
             },
             shareWith: 1,
             cancelSharedWith: 0,
@@ -53,7 +55,8 @@ import { Roles } from '/imports/api/collections/roles';
                 create: 1,
                 edit: 1,
                 remove: 0,
-                admin: 0
+                admin: 0,
+                canPostMessage: 1
             },
             shareWith: 1,
             cancelSharedWith: 0,
@@ -73,7 +76,8 @@ import { Roles } from '/imports/api/collections/roles';
                 create: 0,
                 edit: 1,
                 remove: 1,
-                admin: 0
+                admin: 0,
+                canPostMessage: 1
             },
             shareWith: 1,
             cancelSharedWith: 1,
@@ -93,7 +97,8 @@ import { Roles } from '/imports/api/collections/roles';
                 create: 1,
                 edit: 1,
                 remove: 1,
-                admin: 1
+                admin: 1,
+                canPostMessage: 1
             },
             shareWith: 1,
             cancelSharedWith: 1,

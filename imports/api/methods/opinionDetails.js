@@ -6,6 +6,7 @@ import { OpinionDetails, OpinionDetailSchema } from '../collections/opinionDetai
 import { Activities } from '../collections/activities';
 
 import { hasPermission, injectUserData } from '../helpers/roles';
+import { determineChanges } from '../helpers/activities';
 
 Meteor.methods({
     /**
@@ -111,12 +112,13 @@ Meteor.methods({
         }, { created: true });
 
         Activities.insert(activity);
-
-        /*OpinionDetails.update(id._str || id, {
-            $inc: { activitiesCount: 1 }
-        });*/
     },
     
+    /**
+     * Create a new Detail for a opinion
+     * 
+     * @param {Object} detailData Object with all props of the new Detail
+     */
     'opinionDetail.insert'(detailData) {
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
@@ -124,12 +126,13 @@ Meteor.methods({
         
         let currentUser = Meteor.users.findOne(this.userId);
 
-        if (!/*await*/ hasPermission({ currentUser }, 'opinion.create')) {
+        if (!hasPermission({ currentUser }, 'opinion.create')) {
             throw new Meteor.Error('Keine Berechtigung zum Erstellen eines neuen Details zu einem Gutachten.');
         }
         
-        let detail = /*await*/ injectUserData({ currentUser }, {...detailData}, { created: true });
-        
+        let detail = injectUserData({ currentUser }, {...detailData}, { created: true });
+        detail.activitiesCount = 1;
+
         try {
             OpinionDetailSchema.validate(detail);
         } catch (err) {
@@ -138,7 +141,7 @@ Meteor.methods({
         
         let newId = OpinionDetails.insert(detail);
         
-        let activity = /*await*/ injectUserData({ currentUser }, {
+        let activity = injectUserData({ currentUser }, {
             refOpinion: detail.refOpinion,
             refDetail: newId,
             type: 'SYSTEM-LOG',
@@ -154,7 +157,7 @@ Meteor.methods({
      * 
      * @param {Object} opinionDetail 
      */
-    /*async*/ 'opinionDetail.update'(opinionDetail) {
+    'opinionDetail.update'(opinionDetail) {
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
@@ -173,87 +176,31 @@ Meteor.methods({
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
-        if (!/*await*/ hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
             throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten.');
         }
 
         // check what has changed
-        let changes = [];
-
-        if (opinionDetail.data.orderString && old.orderString !== opinionDetail.data.orderString) {
-            changes.push ({
-                what: "die Sortierreihenfolge",
-                message: "Die Sortierreihenfolge wurde geändert.",
-                propName: "orderString",
-                oldValue: old.orderString,
-                newValue: opinionDetail.data.orderString
-            });
-        }
-
-        if (opinionDetail.data.type && old.type !== opinionDetail.data.type) {
-            changes.push ({
-                what: "den Typ",
-                message: "Der Typ wurde geändert.",
-                propName: "type",
-                oldValue: old.type,
-                newValue: opinionDetail.data.type
-            });
-        }
-        if (opinionDetail.data.title && old.title !== opinionDetail.data.title) {
-            changes.push ({
-                what: "den Titel",
-                message: "Der Titel wurde geändert.",
-                propName: "title",
-                oldValue: old.title,
-                newValue: opinionDetail.data.title
-            });
-        }
-
-        if (opinionDetail.data.text && old.text !== opinionDetail.data.text) {
-            changes.push ({
-                what: "den Text",
-                message: "Der Text wurde geändert.",
-                propName: "text",
-                oldValue: old.text,
-                newValue: opinionDetail.data.text
-            });
-        }
-
-        if (opinionDetail.data.printTitle && old.printTitle !== opinionDetail.data.printTitle) {
-            changes.push ({
-                what: "den Drucktitel",
-                message: "Der Drucktitel wurde geändert.",
-                propName: "orderString",
-                oldValue: old.printTitle,
-                newValue: opinionDetail.data.printTitle
-            });
-        }
-
-        if (opinionDetail.data.actionCode && old.actionCode !== opinionDetail.data.actionCode) {
-            changes.push ({
-                what: "den Handlungsbedarf",
-                message: "Der Handlungsbedarf wurde geändert.",
-                propName: "actionCode",
-                oldValue: old.actionCode,
-                newValue: opinionDetail.data.actionCode
-            });
-        }
-
-        if (opinionDetail.data.deleted === false) {
-            changes.push ({
-                what: "die Löschmarkierung",
-                message: "Die Löschmarkierung wurde zurückgesetzt.",
-                propName: "deleted",
-                oldValue: true,
-                newValue: false
-            });
-        }
-
-        let message = "hat " + changes.map( ({ what }) => what).join(', ') + " geändert.";
+        const { message, changes }= determineChanges({ 
+            propList: {
+                orderString: { what: 'die Sortierreihenfolge', msg: 'Die Sortierreihenfolge wurde geändert.' },
+                type: { what: 'der Typ', msg: 'Der Typ wurde geändert.' },
+                title: { what: 'den Titel', msg: 'Der Titel wurde geändert.' },
+                text: { what: 'den Text', msg: 'Der Text wurde geändert.' },
+                printTitle: { what: 'den Drucktitel', msg: 'Der Drucktite wurde geändert.' },
+                actionCode: { what: 'der Handlungsbedarf', msg: 'Der Handlungsbedarf wurde geändert.' },
+                deleted: { what: 'die Löschmarkierung', msg: 'Die Löschmarkierung wurde geändert.' },
+            },
+            data: opinionDetail.data, 
+            oldData: old
+        });
 
         // are there changes to commit
         if (changes.length) {
-            OpinionDetails.update(opinionDetail.id, { $set: opinionDetail.data });
+            OpinionDetails.update(opinionDetail.id, { 
+                $set: opinionDetail.data,
+                $inc: { activitiesCount: 1 }
+            });
             
             let activity = /*await*/ injectUserData({ currentUser }, {
                 refOpinion: old.refOpinion,
@@ -264,13 +211,17 @@ Meteor.methods({
                 changes
             }, { created: true });
             
-            console.log('Insert Activity', this.isSimulation);
             Activities.insert(activity);
             
             return changes;
         }
     },
 
+    /**
+     * Deletes an opinions detail from the colection
+     * 
+     * @param {String} id Id of the detail to remove
+     */
     'opinionDetail.remove'(id) {
         //check(id, String);
 
@@ -293,7 +244,7 @@ Meteor.methods({
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
-        if (!/*await*/ hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
             throw new Meteor.Error('Keine Berechtigung zum Löschen dieses Details zum Gutachten.');
         }
 
@@ -310,7 +261,7 @@ Meteor.methods({
             message: "Das Detail mit dem Titel '" + old.title + "' wurde gelöscht.",
         }, { created: true });*/
 
-        let activity = /*await*/ injectUserData({ currentUser }, {
+        let activity = injectUserData({ currentUser }, {
             refOpinion: old.refOpinion,
             refDetail: id._str || id,
             type: 'SYSTEM-LOG',
@@ -324,7 +275,6 @@ Meteor.methods({
             }]
         }, { created: true });
 
-        console.log('Insert Activity', this.isSimulation);
         Activities.insert(activity);
     },
 

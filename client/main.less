@@ -150,16 +150,18 @@ main {
     //border: 1px solid #ddd;
 
     .item-deleted {
-        //filter: blur(4px);
-        text-decoration: line-through;
-        text-decoration-style: double;
-        text-decoration-color: red;
+        .ant-list-item-meta {
+            filter: blur(4px);
+            /*text-decoration: line-through;
+            text-decoration-style: double;
+            text-decoration-color: red;
 
-        a {
-            text-decoration: line-through !important;
-            text-decoration-style: double ;
-            text-decoration-color: red !important;
-            color: #bbb !important;
+            a {
+                text-decoration: line-through !important;
+                text-decoration-style: double ;
+                text-decoration-color: red !important;
+                color: #bbb !important;
+            }*/
         }
     }
 }
@@ -200,3 +202,9 @@ main {
     }
 }
 
+//.ant-mentions.ant-mentions-focused
+.mbac-emojis-input {
+    .ant-mentions-dropdown-menu-item {
+        font-size: 32px;
+    }
+}

@@ -1,5 +1,5 @@
 {
-  "name": "simple-todos-react",
+  "name": "edelrahmmandel",
   "private": true,
   "scripts": {
     "start": "meteor run",
@@ -17,6 +17,7 @@
     "draft-js-plugins-editor": "^3.0.0",
     "history": "^5.0.0",
     "jquery": "^3.5.1",
+    "lodash": "^4.17.20",
     "meteor-node-stubs": "^1.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

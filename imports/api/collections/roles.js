@@ -15,6 +15,11 @@ export const RolesSchema = new SimpleSchema({
         label: 'Auswählbar durch Benutzer',
         defaultValue: true
     },
+    score: {
+        type: SimpleSchema.Integer, 
+        label: 'Wertigkeit der ROlle im Vergleich zu allen anderen Rollen. Je höher der Score desto wertiger die Rolle.',
+        defaultValue: 0
+    },
     permissions: {
         type: new SimpleSchema({
             opinion: {
@@ -25,6 +30,7 @@ export const RolesSchema = new SimpleSchema({
                     admin: { type: SimpleSchema.Integer, label: 'Gutachten Administrator ???', defaultValue: 0 },
                     manageTemplate: { type: SimpleSchema.Integer, label: 'Gutachten Vorlage erstellen, bearbeiten ???', defaultValue: 0 },
                     // zum Löschen einer Vorlage benötigt der benutzer die remove Berechtigung UND manageTemplate Berechtigung
+                    canPostMessage: { type: SimpleSchema.Integer, label: 'Darf der Benutzer Nachrichten zu einem Gutachten/-Detail schreiben.', defaultValue: 0 },
                 }),
                 label: 'Berechtigungen für Gutachten'
             },

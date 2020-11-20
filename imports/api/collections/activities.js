@@ -4,6 +4,14 @@ import SimpleSchema from  'simpl-schema';
 
 import { CreationSchema } from '../sharedSchemas/user';
 
+export const AnswerSchema = new SimpleSchema({
+    message: {
+        type: String,
+        label: 'Antworttext'
+    }
+});
+AnswerSchema.extend(CreationSchema);
+
 export const ActivitySchema = new SimpleSchema({
     refOpinion: {
         type: String,
@@ -25,19 +33,15 @@ export const ActivitySchema = new SimpleSchema({
         type: String,
         label: 'Aktivitätsnachricht'
     },
-    feedback: {
+    answers: {
         type: Array,
-        optional: true
+        label: 'Antworten',
+        defaultValue: [],
+        optional: true,
     },
-    "feedback.$": {
-        type: Object
-    },
-    response: {
-        type: Array,
-        optional: true
-    },
-    "response.$": {
-        type: Object
+    "answers.$": {
+        label: 'Antwort',
+        type: AnswerSchema
     },
     changes: {
         type: Array,

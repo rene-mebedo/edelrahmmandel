@@ -4,6 +4,7 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { OpinionDetails } from '../api/collections/opinionDetails';
 import { Opinions } from '../api/collections/opinions';
 import { Roles } from '../api/collections/roles';
+import { Activities } from '../api/collections/activities';
 
 
 export const useOpinionSubscription = id => useTracker( () => {
@@ -106,3 +107,32 @@ export const useOpinionDetails = (refOpinion, refParentDetail) => useTracker( ()
 
     return [opinionDetails, false];
 }, [refOpinion, refParentDetail]);
+
+
+/**
+ * Load the given Activities reactivly an opinion or opinionDetail
+ * 
+ * @param {String} refOpinion   id of the Opinion
+ * @param {String} refDetail    id of the OpinionDetail
+ */
+export const useActivities = (refOpinion, refDetail) => useTracker( () => {
+    const noDataAvailable = [ [] /*activities*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const subscription = Meteor.subscribe('activities', { refOpinion, refDetail });
+
+    if (!subscription.ready()) {
+        return noDataAvailable;
+    }
+
+    let activities;
+    if (refDetail) {
+        activities = Activities.find({ refDetail }, { sort: { createdAt: 1}}).fetch();
+    } else {
+        activities = Activities.find({ refOpinion, refDetail: null }, { sort: { createdAt: 1} }).fetch();
+    }
+
+    return [ activities, false ];
+}, [refOpinion, refDetail]);

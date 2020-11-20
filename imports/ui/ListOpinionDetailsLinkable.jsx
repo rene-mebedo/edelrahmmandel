@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import { useTracker } from 'meteor/react-meteor-data';
 
 import React, {Fragment, useState} from 'react';
 import { Tooltip, Collapse, Modal, Space, Typography, List, Tag, Skeleton, } from 'antd';
@@ -16,13 +15,7 @@ import {
 import { ActionCodeDropdown } from './components/ActionCodeDropdown';
 import { ActionCodeTag } from './components/ActionCodeTag';
 
-import { OpinionDetails } from '/imports/api/collections/opinionDetails';
-
-import { layouttypesObject } from '/imports/api/constData/layouttypes';
-
-const { Panel } = Collapse;
-
-const { Text, Link, Paragraph } = Typography;
+const { Link } = Typography;
 
 
 const IconText = ({ icon, text }) => (
@@ -194,26 +187,26 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
                         key={item._id}
                         actions={[
                             <div key="like">
-                                <Space>
-                                    { doneBefore(item.likes)
-                                        ?<LikeTwoTone onClick={ e => {doSocial('like', item._id)} } />
-                                        :<LikeOutlined onClick={ e => {doSocial('like', item._id)} } />
-                                    }
-                                    <Tooltip className="mbac-simple-social-list" title={listSocial(item.likes)}>
+                                <Tooltip className="mbac-simple-social-list" title={listSocial(item.likes)}>
+                                    <Space>
+                                        { doneBefore(item.likes)
+                                            ?<LikeTwoTone onClick={ e => {doSocial('like', item._id)} } />
+                                            :<LikeOutlined onClick={ e => {doSocial('like', item._id)} } />
+                                        }
                                         <span>{item.likes.length}</span>
-                                    </Tooltip>
-                                </Space>
+                                    </Space>
+                                </Tooltip>
                             </div>,
                             <div key="dislike">
-                                <Space>
-                                    { doneBefore(item.dislikes)
-                                        ?<DislikeTwoTone onClick={ e => {doSocial('dislike', item._id)} } />
-                                        :<DislikeOutlined onClick={ e => {doSocial('dislike', item._id)} } />
-                                    }
-                                    <Tooltip className="mbac-simple-social-list" title={listSocial(item.dislikes)}>
+                                <Tooltip className="mbac-simple-social-list" title={listSocial(item.dislikes)}>
+                                    <Space>
+                                        { doneBefore(item.dislikes)
+                                            ?<DislikeTwoTone onClick={ e => {doSocial('dislike', item._id)} } />
+                                            :<DislikeOutlined onClick={ e => {doSocial('dislike', item._id)} } />
+                                        }
                                         <span>{item.dislikes.length}</span>
-                                    </Tooltip>
-                                </Space>
+                                    </Space>
+                                </Tooltip>
                             </div>,
 
                             <IconText icon={MessageOutlined} text={item.commentsCount + item.activitiesCount} key="list-vertical-message" />,
@@ -237,15 +230,17 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
                         <List.Item.Meta
                             //avatar={<Avatar src={item.avatar} />}
                             title={
-                                <Link href={`/opinions/${item.refOpinion}/${item._id}`}>
-                                    <Space>
-                                        <Tag color="blue">{item.orderString}</Tag>
-                                        <span>{item.title}</span>
-                                        { item.type !== 'ANSWER' ? null :
-                                            <ActionCodeTag actionCode={item.actionCode} />
-                                        }
-                                    </Space>
-                                </Link>
+                                <Tooltip title={item.title}>
+                                    <Link href={`/opinions/${item.refOpinion}/${item._id}`}>
+                                        <Space>
+                                            <Tag color="blue">{item.orderString}</Tag>
+                                            <span>{item.title}</span>
+                                            { item.type !== 'ANSWER' ? null :
+                                                <ActionCodeTag actionCode={item.actionCode} />
+                                            }
+                                        </Space>
+                                    </Link>                                
+                                </Tooltip>
                             }
                             description={
                                 <HTMLEllipsis
