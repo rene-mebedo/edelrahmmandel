@@ -6,12 +6,15 @@ import { OpinionDetails, OpinionDetailSchema } from '../collections/opinionDetai
 import { Activities, ActivitySchema, AnswerSchema } from '../collections/activities';
 
 import { hasPermission, injectUserData } from '../helpers/roles';
+import { UserActivities, UserActivitySchema } from '../collections/userActivities';
 
 Meteor.methods({
     /**
      * User-Like or Dislike for opinionDetail by given id
      */
     'activities.doSocial'(action, id) {
+        this.unblock();
+
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
@@ -68,10 +71,23 @@ Meteor.methods({
      * @param {String} msg Message that the user posts
      */
     'activities.postmessage'(refDetail, msg) {
+        this.unblock();
+
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
         
+        let { text, mentions } = msg;
+        let message = text.replace(/\n/g, '<br>');
+        // check mentions
+        if (mentions) {
+            Object.keys(mentions).forEach( userId => {
+                const username = mentions[userId];
+
+                message = message.replace(new RegExp('@' + username, 'g'), `<span class="mbac-user-mention" user-id="${userId}">${username}</span>`);
+            });
+        }
+
         const currentUser = Meteor.users.findOne(this.userId);
         
         const detail = OpinionDetails.findOne(refDetail);
@@ -96,7 +112,7 @@ Meteor.methods({
             refOpinion: sharedOpinion._id,
             refDetail: detail._id,
             type: 'USER-POST',
-            message: msg
+            message
         }, { created: true }); 
 
         try {
@@ -120,15 +136,48 @@ Meteor.methods({
      * @param {Object} msg (mentions, text) Message that the user posts
      */
     'activities.replyTo'(refOpinion, refActivity, msg) {
+        this.unblock();
+
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
-        console.log(refOpinion, refActivity, msg);
-        
+
         const currentUser = Meteor.users.findOne(this.userId);
         
         const activity = Activities.findOne(refActivity);
         const opinionDetail = OpinionDetails.findOne(activity.refDetail);
+
+        let { text, mentions } = msg;
+        let message = text.replace(/\n/g, '<br>');
+        // check mentions
+        if (mentions) {
+            Object.keys(mentions).forEach( userId => {
+                const username = mentions[userId];
+                const userMention = '@' + username;
+                if (message.indexOf('@' + username) > -1) {
+                    message = message.replace(new RegExp(userMention, 'g'), `<span class="mbac-user-mention" user-id="${userId}">${username}</span>`);
+
+                    const useractivity = injectUserData({ currentUser }, { 
+                        refUser: userId,
+                        type: 'MENTIONED',
+                        message: `${currentUser.userData.firstName} ${currentUser.userData.lastName} hat Sie erwähnt.`,
+                        refs: {
+                            refOpinion: refOpinion,
+                            refOpinionDetail: opinionDetail._id,
+                            refActivity: refActivity
+                        },
+                        unread: true
+                    }, { created: true });
+
+                    try {
+                        UserActivitySchema.validate(useractivity);
+                    } catch (err) {
+                        throw new Meteor.Error(err.message);
+                    }
+                    UserActivities.insert(useractivity);
+                }
+            });
+        }
 
         // check if opinion was sharedWith the current User
         const sharedOpinion = Opinions.findOne({
@@ -146,9 +195,7 @@ Meteor.methods({
             throw new Meteor.Error('Keine Berechtigung zum Erstellen eines Kommentars zu einem Gutachten.');
         }
         
-        const answer = injectUserData({ currentUser }, {
-            message: msg.text
-        }, { created: true });
+        const answer = injectUserData({ currentUser }, { message }, { created: true });
 
         try {
             AnswerSchema.validate(answer);

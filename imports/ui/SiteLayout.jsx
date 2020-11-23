@@ -7,7 +7,8 @@ import { ListActivities } from './ListActivities';
 
 import { 
     Layout, 
-    Menu
+    Menu,
+    Badge
 } from 'antd';
   
 import {
@@ -16,7 +17,10 @@ import {
     UserOutlined,
     VideoCameraOutlined,
     UploadOutlined,
+    ClockCircleOutlined
 } from '@ant-design/icons';
+
+import { useUserActivityCount } from '../client/trackers';
 
 const {
     Header, 
@@ -26,11 +30,36 @@ const {
 
 export const SiteLayout = props => {
     const [collapsed, setCollapsed] = useState(false);
-    
+    const [activitiesCount, acLoading] = useUserActivityCount();
+
     toggle = () => {
         setCollapsed(!collapsed);
     };
     
+    renderUserActivitiesMenuItem = () => {
+        const UserActivitiesLink = () => "Aktivitäten"; //<a href="/activities">Aktivitäten</a>;
+
+        let count = <ClockCircleOutlined style={{ color: '#f5222d' }} />;
+
+        if (acLoading) {
+            return (
+                <Badge count={count} size="small" offset={[10, 0]}>
+                    <UserActivitiesLink />
+                </Badge>
+            );
+        }
+
+        if (activitiesCount !== null && activitiesCount > 0) {
+            return (
+                <Badge count={activitiesCount} size="small" offset={[10, 0]}>
+                    <UserActivitiesLink />
+                </Badge>
+            );
+        }
+
+        return <UserActivitiesLink />;
+    }
+
     return (
 
         <Layout>
@@ -45,7 +74,7 @@ export const SiteLayout = props => {
                 <div className="logo" />
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
                     <Menu.Item key="1" icon={<UserOutlined />}>
-                        <a href="/activities">Aktivitäten</a>
+                        { renderUserActivitiesMenuItem() }
                     </Menu.Item>
                     <Menu.Item key="2" icon={<VideoCameraOutlined />}>
                         <a href="/opinions">Gutachten</a>

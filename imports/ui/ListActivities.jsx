@@ -25,7 +25,7 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
     const [form] = Form.useForm();
     const activitiesEndRef = useRef(null);
     const [ currentTime, setTime ] = useState(new Date());
-
+    const [ working, setWorking ] = useState(false);
 
     useEffect( () => {
         activitiesEndRef.current.scrollIntoView({ behavior: "smooth" })
@@ -41,17 +41,20 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
   
     const postMessage = () => {
         form.validateFields().then( values => {
-            console.log(values);
+            setWorking(true);
 
-            Meteor.call('activities.postmessage', refDetail, values.message.text, (err, res) => {
-                if (err) {
-                    return Modal.error({
-                        title: 'Fehler',
-                        content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
-                    }); 
-                }
-                form.resetFields();
-            });
+            setTimeout( _ => {
+                Meteor.call('activities.postmessage', refDetail, values.message, (err, res) => {
+                    if (err) {
+                        return Modal.error({
+                            title: 'Fehler',
+                            content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
+                        });
+                    }
+                    form.resetFields();
+                    setWorking(false);
+                });
+            }, 100);
         }).catch( info => {
             
         });
@@ -71,7 +74,7 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
                             author={item.createdBy.firstName + ' ' + item.createdBy.lastName}
                             avatar={<Avatar>{item.createdBy.firstName.charAt(0) + item.createdBy.lastName.charAt(0)}</Avatar>}
                             content={
-                                item.message
+                                <span dangerouslySetInnerHTML={ { __html: item.message } }></span>
                             }
                             datetime={
                                 <Tooltip title={moment(item.createdAt).format('DD.MM.YYYY HH:mm')}>
@@ -103,7 +106,7 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
                             avatar={ <Avatar>{item.createdBy.firstName.charAt(0) + item.createdBy.lastName.charAt(0)}</Avatar> }
                             content={
                                 <div>
-                                    { item.message }
+                                    <span dangerouslySetInnerHTML={ { __html: item.message } }></span>
                                     { item.type == 'SYSTEM-LOG' 
                                         ? <DiffDrawer opinionDetailId={item.refDetail} changes={item.changes} />
                                         : null
@@ -141,7 +144,7 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
                     />
                 </Form.Item>
                 <Form.Item>
-                    <Button htmlType="submit" loading={false} onClick={postMessage} type="primary">
+                    <Button htmlType="submit" loading={working} disabled={working} onClick={postMessage} type="primary">
                         Absenden
                     </Button>
                 </Form.Item>

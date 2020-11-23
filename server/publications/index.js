@@ -4,3 +4,4 @@ import './layouttypes';
 import './opinions';
 import './opinionDetails';
 import './activities';
+import './userActivities';

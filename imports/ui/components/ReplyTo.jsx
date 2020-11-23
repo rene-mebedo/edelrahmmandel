@@ -8,17 +8,21 @@ const { useForm } = Form;
 
 export const ReplyTo = ( { refOpinion, refActivity } ) => {
     const [ showInput, setShowInput ] = useState(false);
+    const [ working, setWorking ] = useState(false);
     const [ form ] = useForm();
     
     const toggleShowInput = () => { setShowInput(!showInput); }
 
     const onAnswerClick = () => {
         form.validateFields().then( values => {
-            console.log(values)
-            Meteor.call('activities.replyTo', refOpinion, refActivity, values.answer, (err, res) => {
-                console.log(err,res)
-                toggleShowInput();
-            });
+            setWorking(true);
+
+            setTimeout( _ => {
+                Meteor.call('activities.replyTo', refOpinion, refActivity, values.answer, (err, res) => {
+                    toggleShowInput();
+                    setWorking(false);
+                });
+            }, 100);
         }).catch( err => {
             // ignore
             console.log('catch', err);
@@ -45,7 +49,7 @@ export const ReplyTo = ( { refOpinion, refActivity } ) => {
                         />
                     </Form.Item>
                     <Form.Item>
-                        <Button onClick={onAnswerClick} loading={false} type="primary">
+                        <Button onClick={onAnswerClick} loading={working} disabled={working} type="primary">
                             Antworten
                         </Button>
                     </Form.Item>

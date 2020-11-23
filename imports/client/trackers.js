@@ -5,7 +5,7 @@ import { OpinionDetails } from '../api/collections/opinionDetails';
 import { Opinions } from '../api/collections/opinions';
 import { Roles } from '../api/collections/roles';
 import { Activities } from '../api/collections/activities';
-
+import { UserActivities } from '../api/collections/userActivities';
 
 export const useOpinionSubscription = id => useTracker( () => {
     const subscription = Meteor.subscribe('opinions', id)
@@ -136,3 +136,25 @@ export const useActivities = (refOpinion, refDetail) => useTracker( () => {
 
     return [ activities, false ];
 }, [refOpinion, refDetail]);
+
+
+/**
+ * Returns the count of unread user-activities reactively
+ * 
+ */
+export const useUserActivityCount = () => useTracker( () => {
+    const noDataAvailable = [ null , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const subscription = Meteor.subscribe('userActivities');
+
+    if (!subscription.ready()) {
+        return noDataAvailable;
+    }
+
+    const count = UserActivities.find({ unread: true }).count();
+
+    return [ count, false ];
+}, []);

@@ -43,6 +43,7 @@ export const ActivitySchema = new SimpleSchema({
         label: 'Antwort',
         type: AnswerSchema
     },
+    // is used when "action" == "SYSTEM-LOG"
     changes: {
         type: Array,
         optional: true

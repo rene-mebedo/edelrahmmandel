@@ -13,6 +13,8 @@ Meteor.methods({
      * User-Like or Dislike for opinionDetail by given id
      */
     'opinionDetail.doSocial'(action, id) {
+        this.unblock();
+
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
@@ -223,7 +225,7 @@ Meteor.methods({
      * @param {String} id Id of the detail to remove
      */
     'opinionDetail.remove'(id) {
-        //check(id, String);
+        this.unblock();
 
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
