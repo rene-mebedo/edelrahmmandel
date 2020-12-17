@@ -61,6 +61,9 @@ export const OpinionsSchema = new SimpleSchema({
         type: UserSchema,
         optional: true
     },
+    opinionNo: {
+        type: String
+    }
 });
 
 OpinionsSchema.extend(CreationSchema);

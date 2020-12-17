@@ -3,7 +3,7 @@ export const layouttypesObject = {
         _id: 'HEADING',
         title: 'Überschrift',
         description: 'Wird für die Hauptüberschriften verwandt',
-        hasChilds: true,
+        hasChilds: true
         /*template: {
             1: `<H1>{{title}}</h1>`,
             2: `<H2>{{title}}</h2>`

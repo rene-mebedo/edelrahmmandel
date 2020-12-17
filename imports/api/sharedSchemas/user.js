@@ -14,6 +14,11 @@ export const UserSchema = new SimpleSchema({
         type: String,
         max: 100,
         label: 'Nachname'
+    },
+    opinionTitle: {
+        type: String,
+        label: 'Titel des Gutachters',
+        optional: true
     }
 });
 

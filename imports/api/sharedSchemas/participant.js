@@ -20,6 +20,11 @@ export const ParticipantSchema = new SimpleSchema({
         type: String,
         label: 'Nachname'
     },
+    position: {
+        type: String,
+        label: 'Position',
+        optional: true
+    },
     comment: {
         type: String,
         label: 'Kommentar',

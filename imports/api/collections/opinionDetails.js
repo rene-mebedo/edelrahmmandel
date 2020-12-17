@@ -96,6 +96,11 @@ export const OpinionDetailSchema = new SimpleSchema({
         optional: true,
         defaultValue: 0
     },
+    showInToC: {        // soll das Detail im inhaltsverzeichnis gelistet werden oder nicht
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    }
 });
 
 OpinionDetailSchema.extend(CreationSchema);
