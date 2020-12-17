@@ -8,6 +8,52 @@ import { Activities, ActivitySchema, AnswerSchema } from '../collections/activit
 import { hasPermission, injectUserData } from '../helpers/roles';
 import { UserActivities, UserActivitySchema } from '../collections/userActivities';
 
+
+/**
+ * 
+ */
+const messageWithMentions = ({currentUser, msg, refs}) => {
+    let { text, mentions } = msg;
+
+    let message = text.replace(/\n/g, '<br>');
+
+    // check mentions
+    if (mentions) {
+        Object.keys(mentions).forEach( userId => {
+            const username = mentions[userId];
+            const userMentionRegExp = new RegExp('@' + username, 'g');
+
+            if (message.indexOf('@' + username) > -1) {
+                message = message.replace(userMentionRegExp, `<span class="mbac-user-mention" user-id="${userId}">${username}</span>`);
+
+                const useractivity = injectUserData({ currentUser }, { 
+                    refUser: userId,
+                    type: 'MENTIONED',
+                    message: `${currentUser.userData.firstName} ${currentUser.userData.lastName} hat Sie erwähnt.`,
+                    originalContent: message,
+                    refs/*: {
+                        refOpinion: sharedOpinion._id,
+                        refOpinionDetail: detail._id,
+                        refActivity: null
+                    }*/,
+                    unread: true
+                }, { created: true });
+
+                try {
+                    UserActivitySchema.validate(useractivity);
+                } catch (err) {
+                    throw new Meteor.Error(err.message);
+                }
+                
+                UserActivities.insert(useractivity);
+            }
+        });
+    }
+
+    return message;
+}
+
+
 Meteor.methods({
     /**
      * User-Like or Dislike for opinionDetail by given id
@@ -77,17 +123,6 @@ Meteor.methods({
             throw new Meteor.Error('Not authorized.');
         }
         
-        let { text, mentions } = msg;
-        let message = text.replace(/\n/g, '<br>');
-        // check mentions
-        if (mentions) {
-            Object.keys(mentions).forEach( userId => {
-                const username = mentions[userId];
-
-                message = message.replace(new RegExp('@' + username, 'g'), `<span class="mbac-user-mention" user-id="${userId}">${username}</span>`);
-            });
-        }
-
         const currentUser = Meteor.users.findOne(this.userId);
         
         const detail = OpinionDetails.findOne(refDetail);
@@ -107,6 +142,12 @@ Meteor.methods({
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.canPostMessage')) {
             throw new Meteor.Error('Keine Berechtigung zum Erstellen eines Kommentars zu einem Gutachten.');
         }
+        
+        const message = messageWithMentions({ currentUser, msg, refs: {
+            refOpinion: sharedOpinion._id,
+            refOpinionDetail: detail._id,
+            refActivity: null
+        }});
         
         let activity = injectUserData({ currentUser }, {
             refOpinion: sharedOpinion._id,
@@ -147,37 +188,11 @@ Meteor.methods({
         const activity = Activities.findOne(refActivity);
         const opinionDetail = OpinionDetails.findOne(activity.refDetail);
 
-        let { text, mentions } = msg;
-        let message = text.replace(/\n/g, '<br>');
-        // check mentions
-        if (mentions) {
-            Object.keys(mentions).forEach( userId => {
-                const username = mentions[userId];
-                const userMention = '@' + username;
-                if (message.indexOf('@' + username) > -1) {
-                    message = message.replace(new RegExp(userMention, 'g'), `<span class="mbac-user-mention" user-id="${userId}">${username}</span>`);
-
-                    const useractivity = injectUserData({ currentUser }, { 
-                        refUser: userId,
-                        type: 'MENTIONED',
-                        message: `${currentUser.userData.firstName} ${currentUser.userData.lastName} hat Sie erwähnt.`,
-                        refs: {
-                            refOpinion: refOpinion,
-                            refOpinionDetail: opinionDetail._id,
-                            refActivity: refActivity
-                        },
-                        unread: true
-                    }, { created: true });
-
-                    try {
-                        UserActivitySchema.validate(useractivity);
-                    } catch (err) {
-                        throw new Meteor.Error(err.message);
-                    }
-                    UserActivities.insert(useractivity);
-                }
-            });
-        }
+        const message = messageWithMentions({ currentUser, msg, refs: {
+            refOpinion: refOpinion,
+            refOpinionDetail: opinionDetail._id,
+            refActivity: refActivity
+        }});
 
         // check if opinion was sharedWith the current User
         const sharedOpinion = Opinions.findOne({

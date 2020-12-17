@@ -126,6 +126,13 @@ Meteor.methods({
             throw new Meteor.Error('Not authorized.');
         }
         
+        // check optional data for likes, dislikes, etc.
+        if (!detailData.files) detailData.files = [];
+        if (!detailData.likes) detailData.likes = [];
+        if (!detailData.dislikes) detailData.dislikes = [];
+        if (!detailData.commentsCount) detailData.commentsCount = 0;
+        if (!detailData.activitiesCount) detailData.activitiesCount = 0;
+
         let currentUser = Meteor.users.findOne(this.userId);
 
         if (!hasPermission({ currentUser }, 'opinion.create')) {

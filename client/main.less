@@ -31,6 +31,19 @@ body {
   background-color: #f1f1f1;
 }
 
+.mbac-logo {
+    background-color: #fff;
+
+    > img {
+        width:180px;
+        padding:8px;
+
+        &.small {
+          color:red;
+        }
+    }
+}
+
 .ant-page-header {
   padding: 16px 0;
 }
@@ -41,10 +54,16 @@ body {
   min-height: 280px;
 }
 
-.ant-layout-sider-light {
-  //background: #f1f1f1;
-  background-color: #fff;
-  //border:1px solid black;
+.ant-layout-sider {
+    &.ant-layout-sider-light {
+        //background: #f1f1f1;
+        background-color: #fff;
+        //border:1px solid black;
+        //padding: 16px;
+      }
+}
+
+.mbac-activities-sider {
   padding: 16px;
 }
 
@@ -213,4 +232,61 @@ span.mbac-user-mention {
     background-color: lightcyan;
     color: #666;
     padding: 2px;
+}
+
+.mbac-user-activies-drawer {
+    .ant-drawer-body {
+        padding: 0
+    }
+
+    .mbac-user-activities-list {
+        .mbac-user-activity-item {
+            padding: 0 16px;
+            border-bottom: 1px solid #eee;
+
+            &:hover {
+              cursor: pointer;
+              background-color: #f1f1f1;
+              color: #666;
+            }
+
+            &.unread {
+                .ant-comment-content-detail {
+                    .mbac-user-activity-content {
+                        .message {
+                            font-weight: 800;                
+                        }
+                        .original-text {
+                            font-weight: 600;
+                            opacity: 0.5;
+                        }
+                    }
+                }
+            }
+            &.read {
+              .ant-comment-content-detail {
+                  .mbac-user-activity-content {
+                      .message {
+                          color: #666;              
+                      }
+                      .original-text {
+                          color: #ccc;
+                      }
+                  }
+              }
+          }
+        }
+    }
+}
+
+
+.mbac-modal-upload-pictures {
+    .mbac-btn-cancel {
+        display: none;
+    }
+}
+
+
+.ant-descriptions-bordered .ant-descriptions-item-label {
+    font-weight: 500;
 }

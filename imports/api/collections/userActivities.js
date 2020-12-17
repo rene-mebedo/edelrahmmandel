@@ -10,7 +10,7 @@ export const UserActivitySchema = new SimpleSchema({
         label: 'Benutzer'
     },
     type: {
-        type: String, // "MENTIONED", ??
+        type: String, // "MENTIONED", etc. ??
         label: 'Typ',
     },
     refs: {
@@ -21,6 +21,10 @@ export const UserActivitySchema = new SimpleSchema({
     message: {
         type: String,
         label: 'Aktivitätsnachricht'
+    },
+    originalContent: {
+        type: String,
+        label: 'originaler Content'
     },
     unread: {
         type: Boolean,

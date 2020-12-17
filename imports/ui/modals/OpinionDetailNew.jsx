@@ -34,7 +34,7 @@ const tailLayout = {
     },
 };
 
-export const ModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
+export const XModalOpinionDetailNew = ( { refOpinion, refParentDetail }) => {
     const { layouttypes, isLoadingLayouttypes } = useTracker(() => {
         const noDataAvailable = { layouttypes: [] };
 

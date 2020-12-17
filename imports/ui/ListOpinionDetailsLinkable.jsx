@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import React, {Fragment, useState} from 'react';
-import { Tooltip, Collapse, Modal, Space, Typography, List, Tag, Skeleton, } from 'antd';
+import { Tooltip, Row, Col, Modal, Space, Typography, List, Tag, Skeleton, } from 'antd';
 
 import {
     ExclamationCircleOutlined,
@@ -11,7 +11,7 @@ import {
     MessageOutlined
 } from '@ant-design/icons';
 
-//import { ModalOpinionDetail } from './modals/OpinionDetail';
+import { ListImages } from './ListImages';
 import { ActionCodeDropdown } from './components/ActionCodeDropdown';
 import { ActionCodeTag } from './components/ActionCodeTag';
 
@@ -31,6 +31,45 @@ import {
     useOpinionSubscription,
     useOpinionDetails
 } from '../client/trackers';
+
+
+const OpinionDetailItemByType = ({ item }) => {
+    if (item.type == 'PICTURE') {
+        return (
+            <Row gutter={[16,16]}>
+                <Col xs={24} sm={24} md={12} lg={8} xl={8}>
+                    <ListImages imageOrImages={item.files} />
+                </Col>
+                <Col xs={24} sm={24} md={12} lg={16} xl={16}>
+                    <HTMLEllipsis
+                        unsafeHTML={item.text}
+                        maxLine='12'
+                        ellipsis='...'
+                        basedOn='letters'
+                    />
+                </Col>
+              </Row>            
+        );
+    }
+    
+    if (item.type == 'INFO') {
+        return (
+            <div>
+                <strong>I N F O</strong>
+                <div dangerouslySetInnerHTML={ {__html: item.text}} />
+            </div>
+        )
+    }
+
+    return (
+        <HTMLEllipsis
+            unsafeHTML={item.text}
+            maxLine='12'
+            ellipsis='...'
+            basedOn='letters'
+        />
+    )
+}
 
 
 export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
@@ -71,79 +110,6 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
             }
         });
     }
-
-    /*const renderTypedetails = detail => {
-        if (detail.type == 'INFO') {
-            return (
-                <div>
-                    <strong>I N F O:</strong>
-                    <div dangerouslySetInnerHTML={ {__html: detail.text}} />
-                </div>
-            )
-        }
-
-        return (
-            <div dangerouslySetInnerHTML={ {__html: detail.text}} />
-        );
-    }*/
-
-    /*const renderOpinionDetails = () => {
-        const currentDetailId = FlowRouter.getQueryParam("detail");
-        return opinionDetails.map( detail => {
-            let cN = currentDetailId == detail._id ? ['active-detail-panel']: [];
-            if (detail.deleted) {
-                cN.push('detail-deleted');
-            }
-            
-            return (
-                <Panel
-                    className={cN.join(' ')}
-                    header={ 
-                        <Link href={"/opinions/" + refOpinion + '/' + detail._id}>
-                            <Space>
-                                <Text mark>{detail.orderString}</Text>
-                                <Text>{detail.title}</Text>
-                            </Space>
-                        </Link>
-                    }
-                    key={detail._id} 
-                    extra={detail.deleted ? null :
-                        <Fragment>
-                            <ModalOpinionDetail
-                                mode="EDIT"
-                                refDetail={detail._id}
-                            />
-                            <Space />
-                            <DeleteOutlined onClick={ e => {e.stopPropagation();removeDetail(detail._id)}} />
-                        </Fragment>
-                    }
-                >
-                    { renderTypedetails(detail) }
-                    
-                    <ListOpinionDetailsLinkable
-                        refOpinion={refOpinion}
-                        refParentDetail={detail._id}
-                    />
-
-                    { !layouttypesObject[detail.type].hasChilds ? null : 
-                        <ModalOpinionDetail mode="NEW"
-                            refOpinion={refOpinion} 
-                            refParentDetail={detail._id}
-                        />
-                    }
-                </Panel>
-            )
-        });
-    }*/
-
-    /*const handleChangeCollapse = (detailId) => {
-        let lastDetailId = FlowRouter.getQueryParam("lastdetail");
- 
-        if (!lastDetailId) lastDetailId = detailId;
-        if (!detailId) detailId = lastDetailId;
- 
-        FlowRouter.setQueryParams({detail: detailId, lastdetail: lastDetailId});
-    }*/
 
     const doSocial = (action, id) => {
         Meteor.call('opinionDetail.doSocial', action, id, (err, res) => {
@@ -242,17 +208,14 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
                                     </Link>                                
                                 </Tooltip>
                             }
-                            description={
-                                <HTMLEllipsis
-                                    unsafeHTML={item.text}
-                                    maxLine='2'
-                                    ellipsis='...'
-                                    basedOn='letters'
-                                />
-                            }
+                            description={ <OpinionDetailItemByType item={item} /> }
                         />
                         {
+                            //<OpinionDetailItemByType item={item} />
                             //Irgendeintext als zusätzlicher Content und noch mehr....
+                            /*item.type == 'PICTURE'
+                                ? <ListImages imageOrImages={item.files} />
+                                : null*/
                         }
                     </List.Item>
                 )}

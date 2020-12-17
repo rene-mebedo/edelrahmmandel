@@ -42,6 +42,14 @@ export const OpinionDetailSchema = new SimpleSchema({
         label: 'Handlungsbedarf',
         optional: true
     },
+    files: {
+        type: Array,
+        defaultValue: []
+    },
+    'files.$': {
+        type: Object,
+        blackbox: true
+    },
     /*info: {
         type: String,
         label: 'Hinweis',
@@ -64,6 +72,7 @@ export const OpinionDetailSchema = new SimpleSchema({
     },
     likes: {
         type: Array,
+        optional: true,
         defaultValue: []
     },
     'likes.$': {
@@ -71,6 +80,7 @@ export const OpinionDetailSchema = new SimpleSchema({
     },
     dislikes: {
         type: Array,
+        optional: true,
         defaultValue: []
     },
     'dislikes.$': {
@@ -78,10 +88,12 @@ export const OpinionDetailSchema = new SimpleSchema({
     },
     commentsCount: {
         type: SimpleSchema.Integer,
+        optional: true,
         defaultValue: 0
     },
     activitiesCount: {
         type: SimpleSchema.Integer,
+        optional: true,
         defaultValue: 0
     },
 });

@@ -12,7 +12,7 @@ import { SiteLayout } from '/imports/ui/SiteLayout';
 import { Roles } from '/imports/api/collections/roles';
 import { useAccount, useRoles } from '../client/trackers';
 
-export const App = ({content, refOpinion, refDetail}) => {
+export const App = ({content, refOpinion, refDetail, activeMenuKey}) => {
     const { currentUser, isLoggedIn, accountsReady } = useAccount();
     const { roles, rolesLoading } = useRoles();
 
@@ -33,6 +33,7 @@ export const App = ({content, refOpinion, refDetail}) => {
 
     return (
         <SiteLayout 
+            activeMenuKey={activeMenuKey}
             refOpinion={refOpinion}
             refDetail={refDetail}
             currentUser={currentUser}

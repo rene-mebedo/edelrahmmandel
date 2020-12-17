@@ -3,16 +3,10 @@ import React, {Fragment, useState} from 'react';
 import { 
     PageHeader, 
     Breadcrumb,
-    Select,
 } from 'antd';
 
 import { ModalOpinionNew } from './modals/OpinionNew';
 import { ListOpinions } from './ListOpinions';
-
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { useTracker } from 'meteor/react-meteor-data';
-
-const { Option } = Select;
 
 export const OpinionsForm = () => {
     return (

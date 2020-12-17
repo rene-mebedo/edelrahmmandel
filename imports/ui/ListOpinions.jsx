@@ -36,10 +36,10 @@ export const ListOpinions = () => {
                 renderItem={opinion => (
                 <List.Item>
                     <List.Item.Meta
-                        avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                        //avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
                         title={<a href={"/opinions/" + opinion._id}>{opinion.title}</a>}
                         description={opinion.description}
-                    />
+                    />  
                 </List.Item>
                 )}
             />

@@ -30,22 +30,25 @@ const { Text, Link } = Typography;
 
 
 import { OpinionDetails } from '/imports/api/collections/opinionDetails';
-import { layouttypesObject } from '/imports/api/constData/layouttypes';
 
 import { ModalOpinionDetail } from './modals/OpinionDetail';
+import { ModalFileUpload } from './modals/FileUpload';
+import { OpinionBreadcrumb } from './components/OpinionBreadcrumb';
+import { OpinionContent } from './OpinionContent';
+import { OpinionDetailContent } from './OpinionDetailContent';
+
 import { ListOpinionDetailsLinkable } from './ListOpinionDetailsLinkable';
 import { ActionCodeDropdown } from './components/ActionCodeDropdown';
 import { hasPermission } from '../api/helpers/roles';
 
 import { 
-    useOpinionSubscription,
+    useOpinion,
     useOpinionDetail
 } from '../client/trackers';
 
 
-export const DetailForm = ({refOpinion, refDetail}) => {
-    const opinionIsLoading = useOpinionSubscription(refOpinion);
-
+export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
+    const [opinion, opinionIsLoading] = useOpinion(refOpinion);
     const [detail, detailIsLoading] = useOpinionDetail(refOpinion, refDetail);
 
     const removeDetail = id => {
@@ -77,50 +80,36 @@ export const DetailForm = ({refOpinion, refDetail}) => {
             <Space key="1">
                 <Skeleton.Button key="1"/>
                 <Skeleton.Button key="2"/>
+                <Skeleton.Button key="3"/>
             </Space>
         ];
-    } else {
-        if (detail.type === "ANSWER" || detail.type === "QUESTION") {
+    } else if (detail) {
+        if (hasPermission({currentUser}, 'opinion.remove')) {
             pageHeaderButtons.push(
-                <ActionCodeDropdown
-                    key="3"
-                    refDetail={detail._id}
-                    actionCode={detail.actionCode}
-                />
-            )
+                <Button key="2"
+                    onClick={ e => { removeDetail(detail._id) } }
+                    icon={<DeleteOutlined />}
+                >
+                    Löschen
+                </Button>
+            );
         }
-        pageHeaderButtons.push(
-            <Button key="2"
-                onClick={ e => { removeDetail(detail._id) } }
-                icon={<DeleteOutlined />}
-            >
-                Löschen
-            </Button>
-        );
-        pageHeaderButtons.push(
-            <ModalOpinionDetail key="1"
-                mode="EDIT"
-                refOpinion={refOpinion}
-                refDetail={detail._id}
-            />
-        );
-    }
-
-    const renderStepText = ({type, stepText}) => {
-        if (type === "ANSWER" || type === "QUESTION") {
-            if (!stepText) {
-                return (
-                    <Button type="dashed">Bitte legen Sie noch eine Maßnahme fest</Button>
-                );
-            } else {
-                return (
-                    <div>
-                        {stepText}
-                    </div>
-                );
-            }
-        } else {
-            return null;
+        if (hasPermission({currentUser}, 'opinion.edit')) {
+            pageHeaderButtons.push(
+                <ModalFileUpload key="1"
+                    mode="EDIT"
+                    refOpinion={refOpinion}
+                    refParentDetail={detail.refParentDetail}
+                    refDetail={detail._id}
+                />
+            );
+            pageHeaderButtons.push(
+                <ModalOpinionDetail key="0"
+                    mode="EDIT"
+                    refOpinion={refOpinion}
+                    refDetail={detail._id}
+                />
+            );
         }
     }
 
@@ -136,45 +125,17 @@ export const DetailForm = ({refOpinion, refDetail}) => {
                     <PageHeader
                         className="site-page-header"
                         onBack={() => history.back()}
-                        title={detailIsLoading ? <Spin /> : detail.title}
+                        title={detailIsLoading || opinionIsLoading ? <Spin /> : ( (refDetail && detail) ? detail.title : opinion.title) }
                         extra={pageHeaderButtons}
                     />
                 </div>
             </Affix>
 
             <Content>
-                { detailIsLoading ? <Skeleton paragraph={{ rows: 4 }} /> :
-                    <Descriptions 
-                        layout="horizontal" size="small"  
-                        //column={{ xxl: 4, xl: 4, lg: 2, md: 2, sm: 1, xs: 1 }}
-                        bordered
-                    >
-                        <Descriptions.Item label="Sortierung">
-                            <Tag color="blue">{detail.orderString}</Tag>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Typ">{layouttypesObject[detail.type || 'UNKNOWN'].title}</Descriptions.Item>
-                        <Descriptions.Item label="Maßnahme">
-                            <ActionCodeDropdown
-                                key="3"
-                                refDetail={detail._id}
-                                actionCode={detail.actionCode}
-                            />
-                        </Descriptions.Item>
-
-                        <Descriptions.Item label="Maßnahme (Text)">
-                            Irgend ein langer Text der unter Punkt 8 eingetragen wir als Maßnahme.
-                            Zu bewerten ist die Relevanz und die Einschätzung des Kunden.
-                            {detail.stepText}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Titel" span={2}>{detail.title}</Descriptions.Item>
-
-                        <Descriptions.Item label="Text" span={2}>
-                            <div dangerouslySetInnerHTML={ {__html: detail.text}} />
-                        </Descriptions.Item>
-                    </Descriptions>
+                { refDetail === null
+                    ? <OpinionContent refOpinion={refOpinion} /> // no content for a detail we need to display the Opinion-data itself
+                    : <OpinionDetailContent refOpinion={refOpinion} refDetail={refDetail} />
                 }
-
-                { /*renderStepText(detail)*/ }
 
                 <Divider orientation="left">Details zu diesem Punkt</Divider>
 
@@ -187,70 +148,13 @@ export const DetailForm = ({refOpinion, refDetail}) => {
     );
 }
 
-export class OpinionBreadcrumb extends Component {
-    constructor(props) {
-        super(props);
-        
-        const {refOpinion, refDetail} = props;
 
-        this.getBreadcrumbItems(refOpinion, refDetail);
-    }
-
-    state = {
-        loading: true,
-        items: []
-    }
-
-    getBreadcrumbItems(refOpinion, refDetail){
-        Meteor.call('opinionDetail.getBreadcrumbItems', {refOpinion, refDetail}, (err, result) => {
-            if (err) {
-                console.log(err)
-            } else {
-                console.log('result', result);
-                this.setState({
-                    items: result,
-                    loading: false
-                });
-            }
-        });
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const { refOpinion, refDetail } = this.props;
-
-        if (prevProps.refOpinion !== refOpinion || prevProps.refDetail !== refDetail) {
-            this.getBreadcrumbItems(refOpinion, refDetail);
-        }
-    }
-
-    render() {
-        const { items } = this.state;
-/*<Breadcrumb.Item>
-                    <Link href="/">Start</Link>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                    <a href="/opinions">Gutachten</a>
-                </Breadcrumb.Item>*/
-        return (
-            <Breadcrumb>
-                {items.map( ({ title, uri }, index) => {
-                    //const uri = `/opinions/${item.refOpinion}/${item._id}`
-                    return (
-                        <Breadcrumb.Item key={index}>
-                            <Link href={uri}>{title}</Link>
-                        </Breadcrumb.Item>
-                    );
-                })}
-            </Breadcrumb>
-        );
-    }
-}
 
 export const OpinionsDetailsFormLinkable = ({refOpinion, refDetail, currentUser}) => {
     return (
         <Layout>
             <Content>
-                <DetailForm refOpinion={refOpinion} refDetail={refDetail} />
+                <DetailForm refOpinion={refOpinion} refDetail={refDetail} currentUser={currentUser}/>
 
                 { !hasPermission({currentUser}, 'opinion.create') ? null :
                     <ModalOpinionDetail

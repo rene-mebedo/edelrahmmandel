@@ -19,6 +19,7 @@ import { MentionsWithEmojis } from './components/MentionsWithEmojis';
 
 import { useActivities } from '../client/trackers';
 
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 export const ListActivities = ( { refOpinion, refDetail } ) => {
     const [ activities, activitiesLoading ] = useActivities(refOpinion, refDetail);
@@ -28,7 +29,16 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
     const [ working, setWorking ] = useState(false);
 
     useEffect( () => {
-        activitiesEndRef.current.scrollIntoView({ behavior: "smooth" })
+        // check for hash in route
+        const hash = FlowRouter.current().context.hash;
+        if (!hash)
+            // scroll to end of list
+            activitiesEndRef.current.scrollIntoView({ behavior: "smooth" })
+        else {
+            // scroll to hashed item
+            const el = $('#' + hash).get(0);
+            if (el) el.scrollIntoView();
+        }
         
         const timer = setInterval( () => {
             setTime(new Date());
@@ -89,7 +99,7 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
     }
 
     return (
-        <Fragment>
+        <div className="mbac-activities-sider">
             <List
                 className="comment-list"
                 header={<strong>Aktivitäten</strong>}
@@ -97,7 +107,7 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
                 dataSource={activities}
                 loading={activitiesLoading}
                 renderItem={item => (
-                    <li>
+                    <li id={item._id}>
                         <Comment
                             actions={[
                                 <ReplyTo refOpinion={refOpinion} refActivity={item._id} />
@@ -151,6 +161,6 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
             </Form>
 
             <div ref={activitiesEndRef} />
-        </Fragment>
+        </div>
     );
 }

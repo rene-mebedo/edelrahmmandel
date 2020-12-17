@@ -21,6 +21,7 @@ import {
 } from '@ant-design/icons';
 
 import { useUserActivityCount } from '../client/trackers';
+import { UserActivitiesDrawer } from './components/UserActivitiesDrawer';
 
 const {
     Header, 
@@ -30,12 +31,27 @@ const {
 
 export const SiteLayout = props => {
     const [collapsed, setCollapsed] = useState(false);
+    const [showUserActivies, setShowUserActivies] = useState(false);
+    //const [lastActiveMenuKey, setLastActiveMenuKey] = useState(props.activeMenuKey);
+
     const [activitiesCount, acLoading] = useUserActivityCount();
 
     toggle = () => {
         setCollapsed(!collapsed);
     };
     
+    onMenuClick = ({ item, key, keyPath, domEvent }) => {
+        if (key == 'USERACTIVITIES') {
+            //setLastActiveMenuKey(props.activeMenuKey);
+            return setShowUserActivies(true);
+        }
+    }
+
+    closeUserActivities = () => {
+        //setLastActiveMenuKey(lastActiveMenuKey);
+        setShowUserActivies(false);
+    }
+
     renderUserActivitiesMenuItem = () => {
         const UserActivitiesLink = () => "Aktivitäten"; //<a href="/activities">Aktivitäten</a>;
 
@@ -63,7 +79,7 @@ export const SiteLayout = props => {
     return (
 
         <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed}
+            <Sider theme="dark" trigger={null} collapsible collapsed={collapsed}
                 style={{
                     overflow: 'auto',
                     height: '100vh',
@@ -71,20 +87,30 @@ export const SiteLayout = props => {
                     left: 0,
                   }}
             >
-                <div className="logo" />
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                    <Menu.Item key="1" icon={<UserOutlined />}>
+                <div className="mbac-logo" >
+                    { !collapsed 
+                        ? <img className="large" src="/MEBEDO_LOGO_PRINT_RGB-300x88.jpg" />
+                        : <img className="small" src="/favicon.ico" />
+                    }
+                </div>
+
+                <Menu 
+                    theme="dark" mode="inline" /*selectedKeys={ lastActiveMenuKey ? [lastActiveMenuKey]: [] }*/
+                    selectedKeys={ props.activeMenuKey ? [props.activeMenuKey]: []}
+                    onClick={onMenuClick}
+                >
+                    <Menu.Item key="USERACTIVITIES" icon={<UserOutlined />}>
                         { renderUserActivitiesMenuItem() }
                     </Menu.Item>
-                    <Menu.Item key="2" icon={<VideoCameraOutlined />}>
+                    <Menu.Item key="OPINIONS" icon={<VideoCameraOutlined />}>
                         <a href="/opinions">Gutachten</a>
                     </Menu.Item>
-                    <Menu.Item key="3" icon={<UploadOutlined />}>
-                        Aufgaben
+                    <Menu.Item key="TASKS" icon={<UploadOutlined />}>
+                        <a href="/tasks">Aufgaben</a>
                     </Menu.Item>
                 </Menu>
             </Sider>
-            <Layout className="site-layout" style={{ marginLeft: 200, marginRight: 300 }}>
+            <Layout className="site-layout" style={{ marginLeft: collapsed ? 80:200, marginRight: 300 }}>
                 <Header className="site-layout-background" style={{ padding: 0 }}>
                     {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                         className: 'trigger',
@@ -111,6 +137,11 @@ export const SiteLayout = props => {
                     <ListActivities refOpinion={props.refOpinion} refDetail={props.refDetail} />
                 </Sider>
             }
+
+            <UserActivitiesDrawer 
+                visible={ showUserActivies }
+                onClose={ closeUserActivities }
+            />
         </Layout>
     );
 }

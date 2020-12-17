@@ -154,6 +154,13 @@ export const layouttypesObject = {
         }*/
     },
 
+    PICTURE: {
+        _id: 'PICTURE',
+        title: 'Bild(er)',
+        description: 'Dieser Typ dient der Bilddokumentation und kann ein oder mehrer Bilder beinhalten',
+        hasChilds: false,
+    },
+
     UNKNOWN: {
         _id: 'UNKNOWN',
         title: '<nicht festgelegt>',

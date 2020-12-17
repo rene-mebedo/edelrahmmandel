@@ -18,20 +18,7 @@ import { Summernote } from '../components/Summernote';
 
 const { Option } = Select;
 
-/*
-const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 14 },
-};
-
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-*/
-export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
+export const ModalOpinionParticipant = ( { mode/*NEW||EDIT*/, refOpinion, Participant, refDetail }) => {
     const { layouttypes, isLoadingLayouttypes } = useTracker(() => {
         const noDataAvailable = { layouttypes: [] };
 

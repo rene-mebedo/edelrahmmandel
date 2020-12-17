@@ -8,7 +8,7 @@ import { App } from '/imports/ui/App';
 import { Home } from '../imports/ui/Home';
 import { ActivitiesForm } from '../imports/ui/ActivitiesForm';
 import { OpinionsForm } from '../imports/ui/OpinionsForm';
-import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
+//import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
 import { OpinionsDetailsFormLinkable } from '../imports/ui/OpinionsDetailsFormLinkable';
 
 FlowRouter.route('/', {
@@ -34,6 +34,7 @@ FlowRouter.route('/opinions', {
     action() {
         mount(App, {
             content: OpinionsForm,
+            activeMenuKey: 'OPINIONS',
         });
     },
 });
@@ -42,8 +43,10 @@ FlowRouter.route('/opinions/:id', {
     name: 'opinion.detail',
     action({ id }) {
         mount(App, {
-            content: OpinionsDetailsForm,
-            refOpinion: id
+            content: OpinionsDetailsFormLinkable, //OpinionsDetailsForm,
+            activeMenuKey: 'OPINIONS',
+            refOpinion: id,
+            refDetail: null,
         });
     },
 });
@@ -53,6 +56,7 @@ FlowRouter.route('/opinions/:id/:refDetail', {
     action({ id, refDetail }) {
         mount(App, {
             content: OpinionsDetailsFormLinkable,
+            activeMenuKey: 'OPINIONS',
             //content: <OpinionsDetailsFormLinkable refOpinion={id} refDetail={refDetail} />,
             refOpinion: id,
             refDetail: refDetail

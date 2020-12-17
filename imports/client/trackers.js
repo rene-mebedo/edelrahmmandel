@@ -6,6 +6,9 @@ import { Opinions } from '../api/collections/opinions';
 import { Roles } from '../api/collections/roles';
 import { Activities } from '../api/collections/activities';
 import { UserActivities } from '../api/collections/userActivities';
+import { Images } from '../api/collections/images';
+
+
 
 export const useOpinionSubscription = id => useTracker( () => {
     const subscription = Meteor.subscribe('opinions', id)
@@ -55,6 +58,28 @@ export const useRoles = () => useTracker( () => {
 
     return [roles, false];
 });
+
+/**
+ * Load the Opinion by its ID reactively
+ * 
+ * @param {String} refOpinion Id of the Opinion
+ */
+export const useOpinion = refOpinion => useTracker( () => {
+    const noDataAvailable = [ null /*opinion*/,  true /*loading*/ ];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+
+    const handler = Meteor.subscribe('opinions', refOpinion)
+    if (!handler.ready()) {
+        return noDataAvailable;
+    }
+
+    const opinion = Opinions.findOne(refOpinion);
+
+    return [opinion, false];
+}, [refOpinion]);
 
 /**
  * Load the given OpinionDetail reactivly.
@@ -110,7 +135,7 @@ export const useOpinionDetails = (refOpinion, refParentDetail) => useTracker( ()
 
 
 /**
- * Load the given Activities reactivly an opinion or opinionDetail
+ * Load Activities reactivly for a given opinion or opinionDetail
  * 
  * @param {String} refOpinion   id of the Opinion
  * @param {String} refDetail    id of the OpinionDetail
@@ -158,3 +183,65 @@ export const useUserActivityCount = () => useTracker( () => {
 
     return [ count, false ];
 }, []);
+
+/**
+ * Load the userActivities reactivly
+ * 
+ * @param {String} refOpinion   id of the Opinion
+ * @param {String} refDetail    id of the OpinionDetail
+ */
+export const useUserActivities = ({orderBy}) => useTracker( () => {
+    const noDataAvailable = [ [] /*activities*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const subscription = Meteor.subscribe('userActivities');
+
+    if (!subscription.ready()) {
+        return noDataAvailable;
+    }
+
+    const sort = orderBy || { createdAt: 1};
+    return [
+        UserActivities.find({}, { sort }).fetch(),
+        false
+    ];
+});
+
+
+/**
+ * Load the userActivities reactivly
+ * 
+ * @param {String} refOpinion   id of the Opinion
+ * @param {String} refDetail    id of the OpinionDetail
+ */
+export const useImages = refImages => useTracker( () => {
+    const noDataAvailable = [ [] /*images*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const subscription = Meteor.subscribe('images', refImages);
+
+    if (!subscription.ready()) {
+        return noDataAvailable;
+    }
+
+    let images = [];
+    if (Array.isArray(refImages)) {
+        images = Images.find( { _id: { $in: refImages } } ).fetch();    
+    } else if ((typeof refImages === 'string' || refImages instanceof String)) {
+        images = Images.find( { _id: refImages } ).fetch(); 
+    } else {
+        images = Images.find().fetch();
+    }
+    return [
+        images.map( file => {
+            let link = Images.findOne({_id: file._id}).link();
+            file.link = link;
+            return file;
+        }),
+        false
+    ];
+});
