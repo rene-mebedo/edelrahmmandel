@@ -22,6 +22,8 @@ import { useImages } from '../../client/trackers';
 
 const { Option } = Select;
 
+import { ModalBackground, preventClickPropagation } from '../components/ModalBackground';
+
 /*
 const layout = {
     labelCol: { span: 4 },
@@ -64,11 +66,6 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                 </Button>
             );
         }
-    }
-
-    const preventPropagation = e => {
-        e.stopPropagation();
-        e.preventDefault();
     }
 
     const doUpload = (file) => {
@@ -135,15 +132,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
             <ActionButton />
 
             { !showModal ? null :
-                <div style={{
-                    position:'absolute',
-                    top:0,
-                    left:0,
-                    width:'100%',
-                    height:'100%',
-                    opacity:1
-                }} onClick={preventPropagation}>
-            
+                <ModalBackground>
                     <Modal
                         className="mbac-modal-upload-pictures"
                         title="Bilder Hinzufügen"
@@ -154,7 +143,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                         cancelButtonProps={{className:"mbac-btn-cancel"}}
                         okText="Schließen"
                         maskClosable={false}
-                        onClick={ preventPropagation }
+                        onClick={ preventClickPropagation }
                     >
                         <Upload.Dragger {...props}>
                             <p className="ant-upload-drag-icon">
@@ -170,7 +159,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                             
                         </Upload.Dragger>
                     </Modal>
-                </div>
+                </ModalBackground>
             }
         </Fragment>
     );

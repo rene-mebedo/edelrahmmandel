@@ -118,7 +118,7 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
                                 <div>
                                     <span dangerouslySetInnerHTML={ { __html: item.message } }></span>
                                     { item.type == 'SYSTEM-LOG' 
-                                        ? <DiffDrawer opinionDetailId={item.refDetail} changes={item.changes} />
+                                        ? <DiffDrawer refOpinion={refOpinion} opinionDetailId={item.refDetail} changes={item.changes} action={item.action} />
                                         : null
                                     }
                                     { renderAnswers(item.answers) }

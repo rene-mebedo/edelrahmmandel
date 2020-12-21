@@ -18,6 +18,8 @@ import { Summernote } from '../components/Summernote';
 
 const { Option } = Select;
 
+import { ModalBackground, preventClickPropagation } from '../components/ModalBackground';
+
 /*
 const layout = {
     labelCol: { span: 4 },
@@ -157,12 +159,6 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
         }
     }
 
-    const preventPropagation = e => {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-
     const handlePaste = e => {
         const bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
         
@@ -175,15 +171,7 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
             <ActionButton />
 
             { !showModal ? null :
-                <div style={{
-                    position:'absolute',
-                    top:0,
-                    left:0,
-                    width:'100%',
-                    height:'100%',
-                    opacity:1
-                }} onClick={preventPropagation}>
-            
+                <ModalBackground>
                     <Modal
                         title="Neue Details zum Gutachten"
                         width="80%"
@@ -191,7 +179,7 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                         onOk={ handleModalOk }
                         onCancel={ handleModalCancel }
                         maskClosable={false}
-                        onClick={ preventPropagation }
+                        onClick={ preventClickPropagation }
                     >
                         <p>Zum Erstellen neuer Details zu diesem Gutachten füllen Sie bitte die nachfolgenden Felder aus und bestätigen Sie den Dialog mit OK.</p>
 
@@ -263,7 +251,7 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                             </Form.Item>
                         </Form>
                     </Modal>
-                </div>
+                </ModalBackground>
             }
         </Fragment>
     );

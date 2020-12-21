@@ -13,8 +13,10 @@ import { InfoCircleOutlined, RestOutlined } from '@ant-design/icons';
 
 import Diff from 'react-stylable-diff';
 
+import { isObject } from '../../api/helpers/basics';
 
-export const DiffDrawer = ( { opinionDetailId, changes } ) => {
+
+export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) => {
     const [visibleDiffDrawer, setVisibleDiffDrawer] = useState(false);
 
     const showDiffDrawer = () => {
@@ -25,16 +27,8 @@ export const DiffDrawer = ( { opinionDetailId, changes } ) => {
         setVisibleDiffDrawer(false);
     }
 
-    const restoreChange = (key, oldValue) => {
-        // undo the current change
-        let opinionDetail = {
-            id: opinionDetailId,
-            data: {
-                [key]: oldValue
-            }
-        }
-        
-        Meteor.call('opinionDetail.update', opinionDetail, (err, changes) => {
+    const restoreChange = (key, oldValue, newValue) => {
+        const handleResult = (err, changes) => {
             if (err) {
                 return Modal.error({
                     title: 'Fehler',
@@ -55,7 +49,27 @@ export const DiffDrawer = ( { opinionDetailId, changes } ) => {
             }
 
             closeDiffDrawer();
-        });
+        }
+
+        if (key === 'participants') {
+            if (action === 'INSERT') {
+                Meteor.call('opinion.removeParticipant', refOpinion, newValue, handleResult);
+            } else if (action === 'UPDATE') {
+                Meteor.call('opinion.updateParticipant', refOpinion, oldValue, handleResult);
+            } else if(action === 'REMOVE') {
+                Meteor.call('opinion.addParticipant', refOpinion, oldValue, handleResult);
+            }
+        } else {
+            // undo the current change
+            let opinionDetail = {
+                id: opinionDetailId,
+                data: {
+                    [key]: oldValue
+                }
+            }
+            
+            Meteor.call('opinionDetail.update', opinionDetail, handleResult);
+        }
     }
 
     const renderChanges = () => {
@@ -65,6 +79,16 @@ export const DiffDrawer = ( { opinionDetailId, changes } ) => {
 
         let i=0;
         return changes.map(item => {
+            let { oldValue, newValue } = item;
+            
+            if (isObject(oldValue)) {
+                oldValue = JSON.stringify(oldValue);
+            }
+
+            if (isObject(newValue)) {
+                newValue = JSON.stringify(newValue);
+            }
+
             return (
                 <div key={i++} style={{paddingBottom:'36px'}}>                    
                     <Divider orientation="left">{item.message}</Divider>
@@ -72,12 +96,12 @@ export const DiffDrawer = ( { opinionDetailId, changes } ) => {
                         <Diff
                             //type="chars"
                             type="words"
-                            inputA={item.oldValue}
-                            inputB={item.newValue}
+                            inputA={oldValue || ''}
+                            inputB={newValue || ''}
                         />
                     }
                     
-                    <Button onClick={ e => restoreChange(item.propName, item.oldValue)} 
+                    <Button onClick={ e => restoreChange(item.propName, item.oldValue, item.newValue)} 
                         icon={<RestOutlined />}
                         style={{marginTop:'16px'}}
                     >

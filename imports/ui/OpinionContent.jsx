@@ -45,8 +45,6 @@ export const OpinionContent = ({refOpinion}) => {
 
                 <Descriptions.Item label="Teilnehmer" span={2}>
                     <OpinionParticipants refOpinion={refOpinion} participants={opinion.participants} />
-                    { //opinion.participants
-                    }
                 </Descriptions.Item>
 
                 <Descriptions.Item label="Gutachter 1">{opinion.expert1}</Descriptions.Item>

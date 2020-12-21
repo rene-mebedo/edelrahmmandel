@@ -1,6 +1,9 @@
 import SimpleSchema from 'simpl-schema';
 
 export const ParticipantSchema = new SimpleSchema({
+    id: {
+        type: String
+    },
     gender: {
         type: String,
         label: 'Anrede',

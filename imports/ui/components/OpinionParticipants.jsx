@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react'
 
 import { List, Empty, Button } from 'antd';
 
+import { ModalOpinionParticipant } from '../modals/OpinionParticipant';
+
 import { 
     useOpinion
 } from '../../client/trackers';
@@ -26,26 +28,16 @@ export const OpinionParticipants = ({refOpinion, participants}) => {
                     image={Empty.PRESENTED_IMAGE_SIMPLE}
                     description={<span>keine Teilnehmer vorhanden</span>}
                 >
-                    <Button type="dashed">Jetzt Teilnehmer hinzufügen</Button>
+                    {//<Button type="dashed">Jetzt Teilnehmer hinzufügen</Button>
+                    }
                 </Empty>
             }}
-            renderItem={item => (
-                <List.Item
-                    actions={[
-                        <DeleteOutlined key="1" onClick={ e => {} } />,
-                        <EditOutlined key="2" onClick={ e => {} } />
-                    ]}
-                >
-                    <List.Item.Meta
-                        title={(item.gender + ' ' + item.firstName + (item.firstName && item.firstName.length ? ' ':'') + item.lastName)}
-                        description={item.comment}
-                    />
-                </List.Item>
-            )}
+            renderItem={
+                p => <ModalOpinionParticipant refOpinion={refOpinion} mode="EDIT" participant={p} />
+            }
+           
             footer={
-                <div>
-                    <Button block type="dashed" icon={<PlusOutlined />} >weiteren Teilnehmer hinzufügen</Button>
-                </div>
+                <ModalOpinionParticipant refOpinion={refOpinion} mode="NEW" />
             }
         />
     );

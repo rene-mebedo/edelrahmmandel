@@ -190,7 +190,7 @@ Meteor.methods({
         }
 
         // check what has changed
-        const { message, changes }= determineChanges({ 
+        const { message, changes } = determineChanges({ 
             propList: {
                 orderString: { what: 'die Sortierreihenfolge', msg: 'Die Sortierreihenfolge wurde geändert.' },
                 type: { what: 'der Typ', msg: 'Der Typ wurde geändert.' },
