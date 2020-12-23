@@ -13,23 +13,30 @@ geplanter `Going-Live: KW 3`
 - [ ] Prüfung anderer PDF-Reader-Tools
 - [ ] PDF Erstellung / Ablage des generierten PDFs
 - [ ] HTML/PDF-Formatierung / Rendering gem. Gutachtenvorlagen JK
-- [ ] Result des package sollte der generierte HTML-Code sein
-- [ ] npm Publish PDF-Erstellung
+- [x] Result des package sollte der generierte HTML-Code sein
+- [ ] Detail `Titel im Druck` immer im Ausdruck verwandt (auch Inhaltsverz.) Ist das Feld leer, so wird kein Titel gedruckt.
+- [x] npm Publish PDF-Erstellung
+- [ ] Zeige Detailpunkt im Inhaltsverzeichnis J/N
 - [ ] Auflistung aller verwandten Variablen z.B. "{{Kunde}}"
 - [ ] Dynamischer Replace von Opinion-Variablen
-- [ ] Zeige Detailpunkt im Inhaltsverzeichnis J/N
-- [ ] Generierung der Signaturen inkl. richtigem Stempel
+- [ ] Interne Variablen ausprogrammieren z.B. `${Druckdatum}`
+
+
+**Erledigte Punkte:**
+- [x] Generierung der Signaturen inkl. richtigem Stempel
+> Die Signaturen werden nicht generiert sondern über einen eigenen Detailpunkt am Ende des Gutachtens abgebildet und jeder Gutachter muss seinen Stempel und Unterschrift ind. als Bild einfügen.
 
 
 ### Development RStH
-- [ ] Generiere opinionNo beim Neuzugang
-- [ ] Opinion und OpininoDetail-Felder abgleichen und implementieren mit Edelrahm RS-MT
+- [x] Generiere opinionNo beim Neuzugang
+- [ ] Neues Feld im `OpinionDetail` > `showInToc` in Oberfläche integrieren
+- [x] Opinion und OpininoDetail-Felder abgleichen und implementieren mit Edelrahm RS-MT
 - [ ] Einbindung PDF-Erstellung in Edelrahm
 - [ ] Teilen des Gutachtens mit anderen Benutzers
-- [ ] Stammdatenverwaltung (Bearbeitung von Teilnehmern, Gutachter 1, 2 usw.)
-- [ ] Neuanlage Gutachten
+- [x] Stammdatenverwaltung (Bearbeitung von Teilnehmern, Gutachter 1, 2 usw.)
+- [x] Neuanlage Gutachten
   - [ ] Erstellen einer Vorlage
-  - [ ] Erstellen eines Gutachte auf Basis Vorlage X
+  - [x] Erstellen eines Gutachtens auf Basis eines anderen Gutachtens X
 - [ ] Bearbeitung eines Detailpunkts
   - [ ] Pflege des Maßnahmentextes zu einem Detail vom Typ "Frage"
   - [ ] Pflege des "Maßnahmen-Default" für den Typ "Antwort"
@@ -41,10 +48,18 @@ geplanter `Going-Live: KW 3`
 - [ ] Übernahme der Maßnahmen inkl. Maßnahmentexte in Punkt 8 - Abschlussbetrachtung
 - [ ] Verwaltung von Variablen, die dynamisch im Gutachten ersetzt werden
 - [ ] Zeige Detailpunkt im Inhaltsverzeichnis J/N
+- [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
+
 
 ### IT Operations
 - [ ] Hosting
 - [ ] Backup
+
+### Going-Live Vorbereitungen
+- [ ] Update `printTitle` mit Wert aus `Title` über alle `OpinionDetails`
+- [ ] Replace der Variablen `@Kunde@` und `@ProjektleiterKunde@` mit den neuen Variablen `{{xxx}}`
+- [ ] Hinzufügen der neuen Variablen in der Gutachtenvorlage
+
 
 ### Consulting Jürgen K./Marc Schlüter (über HP)
 
@@ -98,4 +113,4 @@ aus Teams/M-Files, so dass dieses Portal der zentrale Ort für den Kunden und un
 
 - [ ] Nennung der Uhrzeiten Tageweise sinnvoll? Ggf. alternative hierfür
 - [ ] Auflistung der TN mit oder ohne Anrede? Aktuell ohne Anrede, da ggf. Anrede falsch eingegeben wird der Fehler nicht gezeigt
-- [ ] 
+- [ ] Darstellung des Abkürzungsverzeichnis als eigene Detailpunkte und manuelle Pflege im Gutachten möglich?

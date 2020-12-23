@@ -10,12 +10,12 @@ import { AddressSchema } from '../sharedSchemas/address';
 import { ParticipantSchema } from '../sharedSchemas/participant';
 import { UserSchema } from '../sharedSchemas/user';
 
-SimpleSchema.defineValidationErrorTransform(error => {
+/*SimpleSchema.defineValidationErrorTransform(error => {
     const ddpError = new Meteor.Error(error.message);
     ddpError.error = 'validation-error';
     ddpError.details = error.details;
     return ddpError;
-  });
+});*/
 
 export const OpinionsSchema = new SimpleSchema({
     title: {
@@ -30,6 +30,11 @@ export const OpinionsSchema = new SimpleSchema({
     isTemplate: {
         type: Boolean,
         defaultValue: false,
+        optional: true
+    },
+    refTemplate: {
+        type: String,
+        label: 'Referenz auf verwendete Vorlage',
         optional: true
     },
     customer: {
@@ -72,3 +77,8 @@ OpinionsSchema.extend(SharedWithSchema);
 export const Opinions = new Mongo.Collection('opinions');
 Opinions.attachSchema(OpinionsSchema);
 
+Opinions.allow ({
+    insert() { return false; },
+    update() { return false; },
+    remove() { return false; },
+});

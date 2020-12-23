@@ -18,7 +18,7 @@ import { Roles } from '/imports/api/collections/roles';
 
 const { Option } = Select;
 
-const layout = {
+/*const layout = {
     labelCol: {
         span: 8,
     },
@@ -32,9 +32,10 @@ const tailLayout = {
         offset: 8,
         span: 16,
     },
-};
+};*/
 
 import locale_deDE from 'antd/es/locale/de_DE';
+import { UserSearchInput } from '../components/UserSearchInput';
 
 export const ModalOpinionNew = ( props ) => {
     /*const { roles, isLoadingRoles } = useTracker(() => {
@@ -111,7 +112,8 @@ export const ModalOpinionNew = ( props ) => {
                     <p>Zum Erstellen eines neuen Gutachten füllen Sie bitte die nachfolgenden Felder aus und bestätigen Sie den Dialog mit OK.</p>
 
                     <Form
-                        {...layout}
+                        //{...layout}
+                        layout="vertical"
                         form={form}
                         onFinish={handleModalNewOpinionOk}
                     >

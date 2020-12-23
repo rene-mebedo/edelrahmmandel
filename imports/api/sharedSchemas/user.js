@@ -5,6 +5,11 @@ export const UserSchema = new SimpleSchema({
         type: String,
         label: 'Benutzer-ID'
     },
+    title: {
+        type: String,
+        label: 'Titel',
+        optional: true
+    },
     firstName: {
         type: String,
         max: 100,
@@ -15,11 +20,26 @@ export const UserSchema = new SimpleSchema({
         max: 100,
         label: 'Nachname'
     },
-    opinionTitle: {
+    company: {
         type: String,
-        label: 'Titel des Gutachters',
+        label: 'Firma',
         optional: true
-    }
+    },
+    position: {
+        type: String,
+        label: 'Position',
+        optional: true
+    },
+    qualification: {
+        type: String,
+        label: 'Qualifikation',
+        optional: true
+    },
+    advancedQualification: {
+        type: String,
+        label: 'Weiterführende Qualifikation',
+        optional: true
+    },
 });
 
 export const UserWithRoleSchema = new SimpleSchema({

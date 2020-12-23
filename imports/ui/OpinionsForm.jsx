@@ -5,7 +5,9 @@ import {
     Breadcrumb,
 } from 'antd';
 
-import { ModalOpinionNew } from './modals/OpinionNew';
+//import { ModalOpinionNew } from './modals/OpinionNew';
+import { ModalOpinion } from './modals/Opinion';
+
 import { ListOpinions } from './ListOpinions';
 
 export const OpinionsForm = () => {
@@ -25,7 +27,7 @@ export const OpinionsForm = () => {
 
             <ListOpinions />
 
-            <ModalOpinionNew />
+            <ModalOpinion mode="NEW" />
         </Fragment>
     );
 }

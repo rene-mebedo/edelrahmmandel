@@ -46,11 +46,13 @@ import {
     useOpinionDetail
 } from '../client/trackers';
 
+import { ModalOpinion } from './modals/Opinion';
+
 
 export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
     const [opinion, opinionIsLoading] = useOpinion(refOpinion);
     const [detail, detailIsLoading] = useOpinionDetail(refOpinion, refDetail);
-
+    
     const removeDetail = id => {
         Modal.confirm({
             title: 'Löschen',
@@ -110,6 +112,18 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                     refDetail={detail._id}
                 />
             );
+        }
+    } else {
+        // no detail? and no refDetail, then we are at the top of the opinion
+        if (refDetail === null) {
+            if (hasPermission({currentUser}, 'opinion.edit')) {
+                pageHeaderButtons.push(
+                    <ModalOpinion key="1"
+                        mode="EDIT"
+                        refOpinion={refOpinion}
+                    />
+                );
+            }
         }
     }
 
