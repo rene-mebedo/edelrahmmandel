@@ -6,6 +6,7 @@ import {
     Modal,
     Form,
     Input,
+    Switch,
 } from 'antd';
 
 import { PlusOutlined, EditOutlined } from '@ant-design/icons';
@@ -56,6 +57,8 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
 
     const handleModalOk = e => {
         form.validateFields().then( values => {
+            console.log(values);
+
             if (mode === 'NEW') {
                 values.refOpinion = refOpinion;
                 values.refParentDetail = refParentDetail;       
@@ -116,7 +119,8 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                     title: od[0].title,
                     printTitle: od[0].printTitle,
                     type: od[0].type,
-                    text: od[0].text || ''
+                    text: od[0].text || '',
+                    showInToC: od[0].showInToC
                 });
             }, 100);
         }
@@ -200,6 +204,20 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                                 ]}
                             >
                                 <Input placeholder="Sortierung" style={{width:150}}/>
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Nennung im Inhaltsverzeichnis"
+                                name="showInToC"
+                                /*rules={[
+                                    {
+                                        required: true,
+                                        message: 'Bitte geben Sie einen Wert an.',
+                                    },
+                                ]}*/
+                                valuePropName="checked"
+                            >
+                                <Switch />
                             </Form.Item>
 
                             <Form.Item

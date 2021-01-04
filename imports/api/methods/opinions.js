@@ -110,7 +110,7 @@ Meteor.methods({
     },
 
     /**
-     * Updates the given data for the specified opinied by refOpinion (id)
+     * Updates the given data for the specified opinion by refOpinion (id)
      * 
      * @param {String} refOpinion ID of the opinion to be updated
      * @param {Object} data Properties/values to be updated

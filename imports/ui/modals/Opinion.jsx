@@ -77,7 +77,7 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
         if (mode === 'EDIT') {
             setTimeout(() => {
                 const dateFromTill = [ moment(opinion.dateFrom), moment(opinion.dateTill) ];
-                console.log('Opinion', opinion);
+                //console.log('Opinion', opinion);
                 form.setFieldsValue({ ...opinion, dateFromTill });
             }, 10);
         }

@@ -13,7 +13,7 @@ import { InfoCircleOutlined, RestOutlined } from '@ant-design/icons';
 
 import Diff from 'react-stylable-diff';
 
-import { isObject } from '../../api/helpers/basics';
+import { isObject, isBoolean } from '../../api/helpers/basics';
 
 
 export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) => {
@@ -80,26 +80,33 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
         let i=0;
         return changes.map(item => {
             let { oldValue, newValue } = item;
-            
+            let diffType = 'words';
+
+            // check for Boolean Type
+            if (isBoolean(oldValue)) {
+                oldValue = oldValue ? "Ja" : "Nein";
+            }
+            if (isBoolean(newValue)) {
+                newValue = newValue ? "Ja" : "Nein";
+            }
+
             if (isObject(oldValue)) {
-                oldValue = JSON.stringify(oldValue);
+                diffType = 'json';
             }
 
             if (isObject(newValue)) {
-                newValue = JSON.stringify(newValue);
+                diffType = 'json';
             }
-
+            
             return (
                 <div key={i++} style={{paddingBottom:'36px'}}>                    
                     <Divider orientation="left">{item.message}</Divider>
-                    { item.propName == "deleted" ? (item.newValue == true ? <div>gelöscht=Ja</div> : <div>gelöscht=Nein</div>) :
-                        <Diff
-                            //type="chars"
-                            type="words"
-                            inputA={oldValue || ''}
-                            inputB={newValue || ''}
-                        />
-                    }
+
+                    <Diff
+                        type={diffType}
+                        inputA={oldValue}
+                        inputB={newValue}
+                    />
                     
                     <Button onClick={ e => restoreChange(item.propName, item.oldValue, item.newValue)} 
                         icon={<RestOutlined />}

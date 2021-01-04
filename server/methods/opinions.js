@@ -28,7 +28,7 @@ Meteor.methods({
                 ]}
             ]
         }).map( o => {
-            console.log(o);
+            //console.log(o);
             const calcTitle = o.customer
                 ? o.title + ' Nr. ' + o.opinionNo + ' (' + o.customer.name + ' ' + o.customer.city + ')'
                 : o.title;

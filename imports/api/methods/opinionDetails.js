@@ -199,6 +199,7 @@ Meteor.methods({
                 printTitle: { what: 'den Drucktitel', msg: 'Der Drucktite wurde geändert.' },
                 actionCode: { what: 'der Handlungsbedarf', msg: 'Der Handlungsbedarf wurde geändert.' },
                 deleted: { what: 'die Löschmarkierung', msg: 'Die Löschmarkierung wurde geändert.' },
+                showInToC: { what: 'die Kennung "Innhaltsverzeichnis"', msg: 'Die Kennung "Inhaltsverzeichnis" wurde geändert.' }
             },
             data: opinionDetail.data, 
             oldData: old

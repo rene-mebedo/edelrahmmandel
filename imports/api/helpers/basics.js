@@ -9,6 +9,16 @@ export const isObject = val => {
     return ( (typeof val === 'function') || (typeof val === 'object') );
 }
 
+/**
+ * Tests if given Value is a Boolean or not
+ * 
+ * @param {Any} val Value to test
+ * @returns {Boolean} True if given Value is an Object otherwise false
+ */
+export const isBoolean = val => {
+    return (val === true || val === false);
+}
+
 
 /**
  * Will debounce the give function

@@ -29,7 +29,7 @@ geplanter `Going-Live: KW 3`
 
 ### Development RStH
 - [x] Generiere opinionNo beim Neuzugang
-- [ ] Neues Feld im `OpinionDetail` > `showInToc` in Oberfläche integrieren
+- [x] Neues Feld im `OpinionDetail` > `showInToc` in Oberfläche integrieren
 - [x] Opinion und OpininoDetail-Felder abgleichen und implementieren mit Edelrahm RS-MT
 - [ ] Einbindung PDF-Erstellung in Edelrahm
 - [ ] Teilen des Gutachtens mit anderen Benutzers
