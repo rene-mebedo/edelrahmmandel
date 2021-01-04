@@ -38,14 +38,12 @@ export const OpinionDetailContent = ({refOpinion, refDetail}) => {
                         <ActionCodeDropdown
                             key="3"
                             refDetail={detail._id}
-                            actionCode={detail.actionCode}
+                            value={detail.actionCode}
                         />
                     </Descriptions.Item>
 
                     <Descriptions.Item label="Maßnahme (Text)">
-                        Irgend ein langer Text der unter Punkt 8 eingetragen wir als Maßnahme.
-                        Zu bewerten ist die Relevanz und die Einschätzung des Kunden.
-                        {detail.stepText}
+                        <div dangerouslySetInnerHTML={ {__html: (detail.actionText ? detail.actionText : '').replace(/\n/g,'<br/>')} } />
                     </Descriptions.Item>
                 </Fragment>
             }

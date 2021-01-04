@@ -10,8 +10,8 @@ geplanter `Going-Live: KW 3`
 ## Offene Punkte
 
 ### Development MT
-- [ ] Prüfung anderer PDF-Reader-Tools
-- [ ] PDF Erstellung / Ablage des generierten PDFs
+- [x] Prüfung anderer PDF-Reader-Tools
+- [x] PDF Erstellung / Ablage des generierten PDFs
 - [ ] HTML/PDF-Formatierung / Rendering gem. Gutachtenvorlagen JK
 - [x] Result des package sollte der generierte HTML-Code sein
 - [ ] Detail `Titel im Druck` immer im Ausdruck verwandt (auch Inhaltsverz.) Ist das Feld leer, so wird kein Titel gedruckt.
@@ -38,8 +38,9 @@ geplanter `Going-Live: KW 3`
   - [x] Erstellen einer Vorlage
   - [x] Erstellen eines Gutachtens auf Basis eines anderen Gutachtens X
 - [ ] Bearbeitung eines Detailpunkts
-  - [ ] Pflege des Maßnahmentextes zu einem Detail vom Typ "Frage"
-  - [ ] Pflege des "Maßnahmen-Default" für den Typ "Antwort"
+  - [x] Pflege des Maßnahmentextes zu einem Detail vom Typ "Frage"
+  - [x] Pflege des "Maßnahmen-Default" für den Typ "Antwort"
+  - [ ] Pflege abhängig vom Typ machen
 - [ ] Bilder
   - [ ] Ablageort prüfen
   - [ ] Komprimierung

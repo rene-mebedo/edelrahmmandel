@@ -38,7 +38,6 @@ import { OpinionContent } from './OpinionContent';
 import { OpinionDetailContent } from './OpinionDetailContent';
 
 import { ListOpinionDetailsLinkable } from './ListOpinionDetailsLinkable';
-import { ActionCodeDropdown } from './components/ActionCodeDropdown';
 import { hasPermission } from '../api/helpers/roles';
 
 import { 

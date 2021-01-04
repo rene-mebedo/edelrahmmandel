@@ -12,7 +12,6 @@ import { ListOpinions } from './ListOpinions';
 import { hasPermission } from './../api/helpers/roles';
 
 export const OpinionsForm = ({currentUser}) => {
-    console.log('OpinionsForm', currentUser);
     return (
         <Fragment>
             <Breadcrumb>

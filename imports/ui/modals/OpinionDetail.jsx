@@ -20,20 +20,9 @@ import { Summernote } from '../components/Summernote';
 const { Option } = Select;
 
 import { ModalBackground, preventClickPropagation } from '../components/ModalBackground';
+import { ActionCodeDropdown } from '../components/ActionCodeDropdown';
+import TextArea from 'antd/lib/input/TextArea';
 
-/*
-const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 14 },
-};
-
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-*/
 export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
     const { layouttypes, isLoadingLayouttypes } = useTracker(() => {
         const noDataAvailable = { layouttypes: [] };
@@ -114,13 +103,16 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
             }
             
             setTimeout( _ => {
+                console.log(od[0]);
                 form.setFieldsValue({
                     orderString: od[0].orderString,
                     title: od[0].title,
                     printTitle: od[0].printTitle,
                     type: od[0].type,
                     text: od[0].text || '',
-                    showInToC: od[0].showInToC
+                    showInToC: od[0].showInToC,
+                    actionCode: od[0].actionCode,
+                    actionText: od[0].actionText
                 });
             }, 100);
         }
@@ -209,12 +201,6 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                             <Form.Item
                                 label="Nennung im Inhaltsverzeichnis"
                                 name="showInToC"
-                                /*rules={[
-                                    {
-                                        required: true,
-                                        message: 'Bitte geben Sie einen Wert an.',
-                                    },
-                                ]}*/
                                 valuePropName="checked"
                             >
                                 <Switch />
@@ -234,6 +220,20 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                                     { layouttypes.map (t => <Option key={t._id} value={t._id}>{t.title}</Option>) } 
                                 </Select>
                             </Form.Item>
+                            
+                            <Form.Item
+                                label="Maßnahme"
+                                name="actionCode"
+                            >
+                                <ActionCodeDropdown autoUpdate={false} />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Maßnahmentext"
+                                name="actionText"
+                            >
+                                <TextArea autoSize placeholder="" />
+                            </Form.Item>
 
                             <Form.Item
                                 label="Titel"
@@ -249,10 +249,10 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                             </Form.Item>
 
                             <Form.Item
-                                label="abw. Titel (im Druck)"
+                                label="Titel im Druck"
                                 name="printTitle"
                             >
-                                <Input placeholder="Nur einzugeben wenn dieser im Druck abweichend ist zum o.g. Titel"/>
+                                <Input placeholder="Ist kein Titel hinterlegt, so wird im Gutachten dieser nicht gedruckt."/>
                             </Form.Item>
 
                             <Form.Item

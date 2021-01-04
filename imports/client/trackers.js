@@ -82,6 +82,27 @@ export const useOpinion = refOpinion => useTracker( () => {
 }, [refOpinion]);
 
 /**
+ * Load all Opinions reactively
+ * 
+ */
+export const useOpinions = () => useTracker( () => {
+    const noDataAvailable = [ [] /*opinions*/,  true /*loading*/ ];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+
+    const handler = Meteor.subscribe('opinions');
+    if (!handler.ready()) {
+        return noDataAvailable;
+    }
+
+    const opinions = Opinions.find().fetch();
+
+    return [opinions, false];
+});
+
+/**
  * Load the given OpinionDetail reactivly.
  * 
  * @param {String} refOpinion   id of the Opinion

@@ -197,7 +197,8 @@ Meteor.methods({
                 title: { what: 'den Titel', msg: 'Der Titel wurde geändert.' },
                 text: { what: 'den Text', msg: 'Der Text wurde geändert.' },
                 printTitle: { what: 'den Drucktitel', msg: 'Der Drucktite wurde geändert.' },
-                actionCode: { what: 'der Handlungsbedarf', msg: 'Der Handlungsbedarf wurde geändert.' },
+                actionCode: { what: 'den Handlungsbedarf', msg: 'Der Handlungsbedarf wurde geändert.' },
+                actionText: { what: 'den Text des Handlungsbedarf', msg: 'Der Text des Handlungsbedarfs wurde geändert.' },
                 deleted: { what: 'die Löschmarkierung', msg: 'Die Löschmarkierung wurde geändert.' },
                 showInToC: { what: 'die Kennung "Innhaltsverzeichnis"', msg: 'Die Kennung "Inhaltsverzeichnis" wurde geändert.' }
             },
@@ -212,7 +213,7 @@ Meteor.methods({
                 $inc: { activitiesCount: 1 }
             });
             
-            let activity = /*await*/ injectUserData({ currentUser }, {
+            let activity = injectUserData({ currentUser }, {
                 refOpinion: old.refOpinion,
                 refDetail: opinionDetail.id,
                 type: 'SYSTEM-LOG',

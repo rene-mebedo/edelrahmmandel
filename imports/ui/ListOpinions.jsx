@@ -2,44 +2,39 @@ import { Meteor } from 'meteor/meteor';
 import React, {Fragment, useState} from 'react';
 import { 
     Avatar,
-    List
+    List,
+    Space,
+    Tag
 } from 'antd';
 
-import { useTracker } from 'meteor/react-meteor-data';
-import { Opinions } from '/imports/api/collections/opinions';
+import { useOpinions } from '../client/trackers';
 
 export const ListOpinions = () => {
-
-    const { opinions, isLoadingOpinions } = useTracker(() => {
-        const noDataAvailable = { opinions: [] };
-
-        if (!Meteor.user()) {
-          return noDataAvailable;
-        }
-        const handler = Meteor.subscribe('opinions');
-    
-        if (!handler.ready()) { 
-          return { ...noDataAvailable, isLoadingOpinions: true };
-        }
-    
-        const opinions = Opinions.find({}).fetch();
-        
-        return { opinions, isLoadingOpinions: false };
-    });
+    const [ opinions, isLoading ] = useOpinions();
 
     return (
         <Fragment>
             <List
                 itemLayout="horizontal"
                 dataSource={opinions}
-                loading={isLoadingOpinions}
+                loading={isLoading}
                 renderItem={opinion => (
                 <List.Item>
                     <List.Item.Meta
                         //avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                        title={<a href={"/opinions/" + opinion._id}>{opinion.title}</a>}
+                        title={
+                            <a href={"/opinions/" + opinion._id}>
+                                <Space>
+                                    {opinion.title}
+                                    {
+                                        opinion.isTemplate
+                                            ? <Tag color="green">Vorlage</Tag>
+                                            : null
+                                    }
+                                </Space>
+                            </a>}
                         description={opinion.description}
-                    />  
+                    />
                 </List.Item>
                 )}
             />

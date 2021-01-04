@@ -42,6 +42,11 @@ export const OpinionDetailSchema = new SimpleSchema({
         label: 'Handlungsbedarf',
         optional: true
     },
+    actionText: { // nur benötigt als Maßnahmentext für Einträge vom Typ "Antwort"
+        type: String,
+        label: 'Maßnahme',
+        optional: true
+    },
     files: {
         type: Array,
         defaultValue: []
@@ -55,11 +60,6 @@ export const OpinionDetailSchema = new SimpleSchema({
         label: 'Hinweis',
         optional: true
     },*/
-    step: { // nur benötigt als Maßnahmentext für Einträge vom Typ "Antwort"
-        type: String,
-        label: 'Maßnahme',
-        optional: true
-    },
     /*specification: {
         type: String,
         label: 'Vorschrift',

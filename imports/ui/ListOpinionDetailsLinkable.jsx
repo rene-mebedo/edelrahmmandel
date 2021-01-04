@@ -188,7 +188,7 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
                             item.type == 'QUESTION' /*|| item.type == 'ANSWER'*/ ? 
                                 <ActionCodeDropdown
                                     refDetail={item._id}
-                                    actionCode={item.actionCode}
+                                    value={item.actionCode}
                                 />
                             : null
                         }
