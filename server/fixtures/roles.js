@@ -3,7 +3,7 @@ import { Roles } from '/imports/api/collections/roles';
 //if (Roles.find().count() != 1) {
     Roles.remove({});
 
-    Roles.insert({
+        Roles.insert({
         _id: 'EVERYBODY',
         rolename: 'Jeder',
         score: 0,
@@ -14,12 +14,12 @@ import { Roles } from '/imports/api/collections/roles';
                 edit: 0,
                 remove: 0,
                 admin: 0,
-                canPostMessage: 0
+                canPostMessage: 0,
+                manageTemplate: 0
             },
             shareWith: 0,
             cancelSharedWith: 0,
             cancelOwnSharedWith: 0,
-            manageOpinionTemplate: 0,
         },
         selectable: true
     });
@@ -35,12 +35,12 @@ import { Roles } from '/imports/api/collections/roles';
                 edit: 0,
                 remove: 0,
                 admin: 0,
-                canPostMessage: 1
+                canPostMessage: 1,
+                manageTemplate: 0
             },
             shareWith: 1,
             cancelSharedWith: 0,
             cancelOwnSharedWith: 0,
-            manageOpinionTemplate: 0,
         },
         selectable: true
     });
@@ -56,12 +56,12 @@ import { Roles } from '/imports/api/collections/roles';
                 edit: 1,
                 remove: 0,
                 admin: 0,
-                canPostMessage: 1
+                canPostMessage: 1,
+                manageTemplate: 0
             },
             shareWith: 1,
             cancelSharedWith: 0,
             cancelOwnSharedWith: 1,
-            manageOpinionTemplate: 0,
         },
         selectable: true
     });
@@ -77,12 +77,12 @@ import { Roles } from '/imports/api/collections/roles';
                 edit: 1,
                 remove: 1,
                 admin: 0,
-                canPostMessage: 1
+                canPostMessage: 1,
+                manageTemplate: 0
             },
             shareWith: 1,
             cancelSharedWith: 1,
             cancelOwnSharedWith: 1,
-            manageOpinionTemplate: 0,
         },
         selectable: false
     });
@@ -98,12 +98,12 @@ import { Roles } from '/imports/api/collections/roles';
                 edit: 1,
                 remove: 1,
                 admin: 1,
-                canPostMessage: 1
+                canPostMessage: 1,
+                manageTemplate: 1
             },
             shareWith: 1,
             cancelSharedWith: 1,
             cancelOwnSharedWith: 1,
-            manageOpinionTemplate: 1,
         },
         selectable: true
     });

@@ -14,6 +14,7 @@ import { Roles } from '../collections/roles';
 const isRolePermitted = (permissionName, roleObj) => {
     let isPermitted = 0;
     // check for permission like "opinion.create"
+    
     if (permissionName.indexOf('.') > 0) {
         const [k, n] = permissionName.split('.');
         isPermitted = roleObj.permissions[k][n];
@@ -38,7 +39,7 @@ const isRolePermitted = (permissionName, roleObj) => {
  * 
  * @return {Boolean} True if user is permitted otherwise false
  */
-export const hasPermission = /*async*/ ({ userId, currentUser, sharedRole }, permissionName) => {
+export const hasPermission = ({ userId, currentUser, sharedRole }, permissionName) => {
     if (!currentUser) currentUser = Meteor.users.findOne(userId);
 
     if (!currentUser) {
@@ -46,10 +47,15 @@ export const hasPermission = /*async*/ ({ userId, currentUser, sharedRole }, per
     }
 
     // first getting the roles the user has assigned to
-    assignedRoles = Roles.find({ _id: { $in: sharedRole ? [sharedRole] : currentUser.userData.roles }}).fetch();
-    
+    let roles;
+    if (sharedRole) roles = [sharedRole];
+    if (!roles) {
+        if (currentUser.userData) roles = currentUser.userData.roles;
+    }
+    if (!roles || roles.length == 0) roles = ['EVERYBODY'];
+
     let isPermitted = 0;
-    assignedRoles.map( role => {
+    assignedRoles = Roles.find({ _id: { $in: roles } }).map( role => {
         if (isRolePermitted(permissionName, role)) isPermitted++;
     });
 

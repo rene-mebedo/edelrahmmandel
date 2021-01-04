@@ -3,14 +3,16 @@ import React, {Fragment, useState} from 'react';
 import { 
     PageHeader, 
     Breadcrumb,
+    Space,
 } from 'antd';
 
-//import { ModalOpinionNew } from './modals/OpinionNew';
 import { ModalOpinion } from './modals/Opinion';
-
 import { ListOpinions } from './ListOpinions';
 
-export const OpinionsForm = () => {
+import { hasPermission } from './../api/helpers/roles';
+
+export const OpinionsForm = ({currentUser}) => {
+    console.log('OpinionsForm', currentUser);
     return (
         <Fragment>
             <Breadcrumb>
@@ -27,7 +29,10 @@ export const OpinionsForm = () => {
 
             <ListOpinions />
 
-            <ModalOpinion mode="NEW" />
+            <Space>
+                { hasPermission({currentUser}, 'opinion.create') ? <ModalOpinion mode="NEW" /> : null }
+                { hasPermission({currentUser}, 'opinion.manageTemplate') ? <ModalOpinion mode="NEW" createTemplate={true} /> : null }
+            </Space>
         </Fragment>
     );
 }

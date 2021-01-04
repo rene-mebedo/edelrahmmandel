@@ -35,7 +35,7 @@ geplanter `Going-Live: KW 3`
 - [ ] Teilen des Gutachtens mit anderen Benutzers
 - [x] Stammdatenverwaltung (Bearbeitung von Teilnehmern, Gutachter 1, 2 usw.)
 - [x] Neuanlage Gutachten
-  - [ ] Erstellen einer Vorlage
+  - [x] Erstellen einer Vorlage
   - [x] Erstellen eines Gutachtens auf Basis eines anderen Gutachtens X
 - [ ] Bearbeitung eines Detailpunkts
   - [ ] Pflege des Maßnahmentextes zu einem Detail vom Typ "Frage"

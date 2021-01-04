@@ -20,7 +20,6 @@ import { UserSearchInput } from '../components/UserSearchInput';
 import { useOpinion } from '../../client/trackers';
 import { ModalBackground } from '../components/ModalBackground';
 import moment from 'moment';
-import { create } from 'domain';
 import { OpinionSearchInput } from '../components/OpinionSearchInput';
 
 const { useForm } = Form;
@@ -77,14 +76,15 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
         if (mode === 'EDIT') {
             setTimeout(() => {
                 const dateFromTill = [ moment(opinion.dateFrom), moment(opinion.dateTill) ];
-                //console.log('Opinion', opinion);
                 form.setFieldsValue({ ...opinion, dateFromTill });
             }, 10);
         }
     }
 
     const btnType = buttonType || (mode === 'EDIT' ? 'primary' : 'dashed');
-    const btnCaption = buttonCaption || (mode === 'EDIT' ? 'Bearbeiten' : 'Neues Gutachten erstellen');
+    let btnCaption = buttonCaption || (mode === 'EDIT' ? 'Bearbeiten' : 'Neues Gutachten erstellen');
+
+    if (createTemplate) btnCaption = 'Neue Vorlage';
 
     return (
         <Fragment>
