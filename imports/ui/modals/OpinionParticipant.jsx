@@ -20,7 +20,7 @@ const textualPreface = {
     NEW: 'Zum Erstellen eines neuen Teilnehmers füllen Sie bitte die nachfolgenden Feler aus und bestätigen mit OK.'
 }
 
-export const ModalOpinionParticipant = ( { mode/*NEW|EDIT*/, refOpinion, participant }) => {
+export const ModalOpinionParticipant = ( { mode/*NEW|EDIT*/, refOpinion, participant, canEdit=false }) => {
     const [ showModal, setShowModal ] = useState(false);
     const [ form ] = useForm();
 
@@ -177,7 +177,7 @@ export const ModalOpinionParticipant = ( { mode/*NEW|EDIT*/, refOpinion, partici
         return (
             <Fragment>
                 <List.Item
-                    actions={[
+                    actions={!canEdit ? null : [
                         <DeleteOutlined key="1" onClick={ removeParticipant } />,
                         <EditOutlined key="2" onClick={ editParticipant } />
                     ]}
@@ -188,24 +188,26 @@ export const ModalOpinionParticipant = ( { mode/*NEW|EDIT*/, refOpinion, partici
                     />
                 </List.Item>
                 
-                { renderModal() }
+                { canEdit ? renderModal() : null }
             </Fragment>
         )
     } else {
         // mode === 'NEW'
-        return (
-            <Fragment>
-                <Button 
-                    block
-                    type="dashed"
-                    icon={<PlusOutlined />} 
-                    onClick={newParticipant}
-                >
-                    Teilnehmer hinzufügen
-                </Button>
-                
-                { renderModal() }
-            </Fragment>
+        return ( 
+            !canEdit 
+                ? null
+                : <Fragment>
+                    <Button 
+                        block
+                        type="dashed"
+                        icon={<PlusOutlined />} 
+                        onClick={newParticipant}
+                    >
+                        Teilnehmer hinzufügen
+                    </Button>
+                    
+                    { renderModal() }
+                </Fragment>
         );
     }
 }

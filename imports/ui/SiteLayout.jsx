@@ -134,7 +134,7 @@ export const SiteLayout = props => {
                     theme="light" width="300" collapsible collapsedWidth="0" reverseArrow
                 >
                     
-                    <ListActivities refOpinion={props.refOpinion} refDetail={props.refDetail} />
+                    <ListActivities refOpinion={props.refOpinion} refDetail={props.refDetail} currentUser={props.currentUser} />
                 </Sider>
             }
 

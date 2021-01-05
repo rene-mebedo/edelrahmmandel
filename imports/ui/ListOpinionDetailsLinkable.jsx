@@ -15,6 +15,10 @@ import { ListImages } from './ListImages';
 import { ActionCodeDropdown } from './components/ActionCodeDropdown';
 import { ActionCodeTag } from './components/ActionCodeTag';
 
+import { ModalOpinionDetail } from './../ui/modals/OpinionDetail';
+
+import { hasPermission } from './../api/helpers/roles';
+
 const { Link } = Typography;
 
 
@@ -29,7 +33,8 @@ const IconText = ({ icon, text }) => (
 import HTMLEllipsis from 'react-lines-ellipsis/lib/html'
 import { 
     useOpinionSubscription,
-    useOpinionDetails
+    useOpinionDetails,
+    useOpinion
 } from '../client/trackers';
 
 
@@ -72,10 +77,11 @@ const OpinionDetailItemByType = ({ item }) => {
 }
 
 
-export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
+export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdit=false, canDelete=false, currentUser }) => {
     const [ showModalEdit, setShowModalEdit ] = useState(false);
 
-    const opinionIsLoading = useOpinionSubscription(refOpinion);
+    //const opinionIsLoading = useOpinionSubscription(refOpinion);
+    const [ opinion, isLoadingOpinion ] = useOpinion(refOpinion);
     const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refParentDetail);
 
     const removeDetail = id => {
@@ -140,6 +146,99 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
         );
     }
 
+    const getListItemActions = item => {
+        const actions = [
+            <div key="like">
+                <Tooltip className="mbac-simple-social-list" title={listSocial(item.likes)}>
+                    <Space>
+                        { doneBefore(item.likes)
+                            ?<LikeTwoTone onClick={ e => {doSocial('like', item._id)} } />
+                            :<LikeOutlined onClick={ e => {doSocial('like', item._id)} } />
+                        }
+                        <span>{item.likes.length}</span>
+                    </Space>
+                </Tooltip>
+            </div>,
+            <div key="dislike">
+                <Tooltip className="mbac-simple-social-list" title={listSocial(item.dislikes)}>
+                    <Space>
+                        { doneBefore(item.dislikes)
+                            ?<DislikeTwoTone onClick={ e => {doSocial('dislike', item._id)} } />
+                            :<DislikeOutlined onClick={ e => {doSocial('dislike', item._id)} } />
+                        }
+                        <span>{item.dislikes.length}</span>
+                    </Space>
+                </Tooltip>
+            </div>,
+
+            <IconText icon={MessageOutlined} text={item.commentsCount + item.activitiesCount} key="list-vertical-message" />,
+        ];
+
+        if (canEdit) {
+            actions.push(
+                <div key="edit">
+                    <ModalOpinionDetail mode="EDIT" buttonStyle="ICONONLY" refDetail={item._id} />
+                </div>
+            );
+        }
+
+        if (canDelete) {
+            actions.push(
+                <div key="deleted">
+                    { !item.deleted
+                        ?<DeleteOutlined key="1" onClick={ e => {e.stopPropagation(); toggleDeleted(item._id)}} />
+                        :<DeleteTwoTone key="1" onClick={ e => {e.stopPropagation(); toggleDeleted(item._id)}} />
+                    }
+                </div>
+            );
+        }
+
+        return actions;
+    }
+
+    const renderItem = item => {
+        return (
+            <List.Item
+                className={item.deleted ? "item-deleted" : null }
+                key={item._id}
+                actions={getListItemActions(item)}
+                extra={
+                    item.type == 'QUESTION' /*|| item.type == 'ANSWER'*/ ? 
+                        <ActionCodeDropdown
+                            refDetail={item._id}
+                            value={item.actionCode}
+                        />
+                    : null
+                }
+            >
+                <List.Item.Meta
+                    //avatar={<Avatar src={item.avatar} />}
+                    title={
+                        <Tooltip title={item.title}>
+                            <Link href={`/opinions/${item.refOpinion}/${item._id}`}>
+                                <Space>
+                                    <Tag color="blue">{item.orderString}</Tag>
+                                    <span>{item.title}</span>
+                                    { item.type !== 'ANSWER' ? null :
+                                        <ActionCodeTag actionCode={item.actionCode} />
+                                    }
+                                </Space>
+                            </Link>                                
+                        </Tooltip>
+                    }
+                    description={ <OpinionDetailItemByType item={item} /> }
+                />
+                {
+                    //<OpinionDetailItemByType item={item} />
+                    //Irgendeintext als zusätzlicher Content und noch mehr....
+                    /*item.type == 'PICTURE'
+                        ? <ListImages imageOrImages={item.files} />
+                        : null*/
+                }
+            </List.Item>
+        );
+    }
+
     return (
         <Fragment>
             <List
@@ -147,78 +246,7 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail }) => {
                 itemLayout="vertical"
                 loading={isLoading}
                 dataSource={opinionDetails}
-                renderItem={item => (
-                    <List.Item
-                        className={item.deleted ? "item-deleted" : null }
-                        key={item._id}
-                        actions={[
-                            <div key="like">
-                                <Tooltip className="mbac-simple-social-list" title={listSocial(item.likes)}>
-                                    <Space>
-                                        { doneBefore(item.likes)
-                                            ?<LikeTwoTone onClick={ e => {doSocial('like', item._id)} } />
-                                            :<LikeOutlined onClick={ e => {doSocial('like', item._id)} } />
-                                        }
-                                        <span>{item.likes.length}</span>
-                                    </Space>
-                                </Tooltip>
-                            </div>,
-                            <div key="dislike">
-                                <Tooltip className="mbac-simple-social-list" title={listSocial(item.dislikes)}>
-                                    <Space>
-                                        { doneBefore(item.dislikes)
-                                            ?<DislikeTwoTone onClick={ e => {doSocial('dislike', item._id)} } />
-                                            :<DislikeOutlined onClick={ e => {doSocial('dislike', item._id)} } />
-                                        }
-                                        <span>{item.dislikes.length}</span>
-                                    </Space>
-                                </Tooltip>
-                            </div>,
-
-                            <IconText icon={MessageOutlined} text={item.commentsCount + item.activitiesCount} key="list-vertical-message" />,
-
-                            <div key="deleted">
-                                { !item.deleted
-                                    ?<DeleteOutlined key="1" onClick={ e => {e.stopPropagation(); toggleDeleted(item._id)}} />
-                                    :<DeleteTwoTone key="1" onClick={ e => {e.stopPropagation(); toggleDeleted(item._id)}} />
-                                }
-                            </div>
-                        ]}
-                        extra={
-                            item.type == 'QUESTION' /*|| item.type == 'ANSWER'*/ ? 
-                                <ActionCodeDropdown
-                                    refDetail={item._id}
-                                    value={item.actionCode}
-                                />
-                            : null
-                        }
-                    >
-                        <List.Item.Meta
-                            //avatar={<Avatar src={item.avatar} />}
-                            title={
-                                <Tooltip title={item.title}>
-                                    <Link href={`/opinions/${item.refOpinion}/${item._id}`}>
-                                        <Space>
-                                            <Tag color="blue">{item.orderString}</Tag>
-                                            <span>{item.title}</span>
-                                            { item.type !== 'ANSWER' ? null :
-                                                <ActionCodeTag actionCode={item.actionCode} />
-                                            }
-                                        </Space>
-                                    </Link>                                
-                                </Tooltip>
-                            }
-                            description={ <OpinionDetailItemByType item={item} /> }
-                        />
-                        {
-                            //<OpinionDetailItemByType item={item} />
-                            //Irgendeintext als zusätzlicher Content und noch mehr....
-                            /*item.type == 'PICTURE'
-                                ? <ListImages imageOrImages={item.files} />
-                                : null*/
-                        }
-                    </List.Item>
-                )}
+                renderItem={renderItem}
             />
 
             <Skeleton loading={isLoading} paragraph={{rows:14}} />

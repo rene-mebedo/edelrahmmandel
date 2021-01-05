@@ -17,16 +17,20 @@ import { DiffDrawer } from './components/DiffDrawer';
 import { ReplyTo } from './components/ReplyTo';
 import { MentionsWithEmojis } from './components/MentionsWithEmojis';
 
-import { useActivities } from '../client/trackers';
+import { useOpinion, useActivities } from '../client/trackers';
+import { hasPermission } from '../api/helpers/roles';
 
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-export const ListActivities = ( { refOpinion, refDetail } ) => {
+export const ListActivities = ( { refOpinion, refDetail, currentUser } ) => {
+    const [ opinion, opinionIsLoading ] = useOpinion(refOpinion);
     const [ activities, activitiesLoading ] = useActivities(refOpinion, refDetail);
     const [form] = Form.useForm();
     const activitiesEndRef = useRef(null);
+
     const [ currentTime, setTime ] = useState(new Date());
     const [ working, setWorking ] = useState(false);
+    const [ canPostMessage, setCanPostMessage ] = useState(false);
 
     useEffect( () => {
         // check for hash in route
@@ -48,13 +52,31 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
             clearInterval(timer);
         }
     }, [activities]);
-  
+
+
+    if (currentUser && !opinionIsLoading && opinion) {
+        let post = false,
+            perm = { currentUser };
+
+        const sharedWithUser = opinion.sharedWith.find( shared => shared.user.userId === currentUser._id );
+        
+        if (sharedWithUser && sharedWithUser.role) {
+            perm.sharedRole = sharedWithUser.role;
+        }
+        
+        post = hasPermission(perm, 'opinion.canPostMessage');
+        
+        if (post != canPostMessage) setCanPostMessage(post);
+    }
+
     const postMessage = () => {
         form.validateFields().then( values => {
             setWorking(true);
 
             setTimeout( _ => {
-                Meteor.call('activities.postmessage', refDetail, values.message, (err, res) => {
+                Meteor.call('activities.postmessage', refOpinion, refDetail, values.message, (err, res) => {
+                    setWorking(false);
+                    
                     if (err) {
                         return Modal.error({
                             title: 'Fehler',
@@ -62,7 +84,6 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
                         });
                     }
                     form.resetFields();
-                    setWorking(false);
                 });
             }, 100);
         }).catch( info => {
@@ -109,9 +130,9 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
                 renderItem={item => (
                     <li id={item._id}>
                         <Comment
-                            actions={[
+                            actions={canPostMessage ? [
                                 <ReplyTo refOpinion={refOpinion} refActivity={item._id} />
-                            ]}
+                            ] : []}
                             author={ item.createdBy.firstName + ' ' + item.createdBy.lastName }
                             avatar={ <Avatar>{item.createdBy.firstName.charAt(0) + item.createdBy.lastName.charAt(0)}</Avatar> }
                             content={
@@ -134,31 +155,34 @@ export const ListActivities = ( { refOpinion, refDetail } ) => {
                 )}
             />
 
-            <Form
-                form={form}
-                layout="vertical"
-            >
-                <Form.Item
-                    label="Nachricht"
-                    name="message"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Bitte geben Sie eine Nachricht ein.',
-                        },
-                    ]}                
+            { !canPostMessage
+                ? null
+                : <Form
+                    form={form}
+                    layout="vertical"
                 >
-                    <MentionsWithEmojis
-                        method="opinion.getSharedWith"
-                        methodParams={refOpinion}
-                    />
-                </Form.Item>
-                <Form.Item>
-                    <Button htmlType="submit" loading={working} disabled={working} onClick={postMessage} type="primary">
-                        Absenden
-                    </Button>
-                </Form.Item>
-            </Form>
+                    <Form.Item
+                        label="Nachricht"
+                        name="message"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie eine Nachricht ein.',
+                            },
+                        ]}                
+                    >
+                        <MentionsWithEmojis
+                            method="opinion.getSharedWith"
+                            methodParams={refOpinion}
+                        />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button htmlType="submit" loading={working} disabled={working} onClick={postMessage} type="primary">
+                            Absenden
+                        </Button>
+                    </Form.Item>
+                </Form>
+            }
 
             <div ref={activitiesEndRef} />
         </div>

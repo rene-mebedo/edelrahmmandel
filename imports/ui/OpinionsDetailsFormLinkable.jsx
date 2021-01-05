@@ -52,6 +52,27 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
     const [opinion, opinionIsLoading] = useOpinion(refOpinion);
     const [detail, detailIsLoading] = useOpinionDetail(refOpinion, refDetail);
     
+    const [ canEdit, setCanEdit ] = useState(false);
+    const [ canDelete, setCanDelete ] = useState(false);
+    
+    if (currentUser && !opinionIsLoading && opinion) {
+        let edit = false,
+            del = false,
+            perm = { currentUser };
+
+        const sharedWithUser = opinion.sharedWith.find( shared => shared.user.userId === currentUser._id );
+        
+        if (sharedWithUser && sharedWithUser.role) {
+            perm.sharedRole = sharedWithUser.role;
+        }
+        
+        edit = hasPermission(perm, 'opinion.edit');
+        del = hasPermission(perm, 'opinion.remove');
+        
+        if (edit != canEdit) setCanEdit(edit);
+        if (del != canDelete) setCanDelete(del);
+    }
+
     const removeDetail = id => {
         Modal.confirm({
             title: 'Löschen',
@@ -85,7 +106,7 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
             </Space>
         ];
     } else if (detail) {
-        if (hasPermission({currentUser}, 'opinion.remove')) {
+        if (canDelete) {
             pageHeaderButtons.push(
                 <Button key="2"
                     onClick={ e => { removeDetail(detail._id) } }
@@ -95,7 +116,7 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                 </Button>
             );
         }
-        if (hasPermission({currentUser}, 'opinion.edit')) {
+        if (canEdit) {
             pageHeaderButtons.push(
                 <ModalFileUpload key="1"
                     mode="EDIT"
@@ -115,7 +136,7 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
     } else {
         // no detail? and no refDetail, then we are at the top of the opinion
         if (refDetail === null) {
-            if (hasPermission({currentUser}, 'opinion.edit')) {
+            if (canEdit) {
                 pageHeaderButtons.push(
                     <ModalOpinion key="1"
                         mode="EDIT"
@@ -146,7 +167,7 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
 
             <Content>
                 { refDetail === null
-                    ? <OpinionContent refOpinion={refOpinion} /> // no content for a detail we need to display the Opinion-data itself
+                    ? <OpinionContent refOpinion={refOpinion} currentUser={currentUser} canEdit={canEdit} canDelete={canDelete} /> // no content for a detail we need to display the Opinion-data itself
                     : <OpinionDetailContent refOpinion={refOpinion} refDetail={refDetail} />
                 }
 
@@ -155,6 +176,9 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                 <ListOpinionDetailsLinkable
                     refOpinion={refOpinion} 
                     refParentDetail={refDetail}
+                    currentUser={currentUser}
+                    canEdit={canEdit}
+                    canDelete={canDelete}
                 />
             </Content>
         </Fragment>

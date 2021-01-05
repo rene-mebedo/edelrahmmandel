@@ -61,3 +61,23 @@ if (!Accounts.findUserByUsername('tester')) {
         }
     });
 }
+
+if (!Accounts.findUserByUsername('readonly')) {
+    
+    Accounts.createUser({
+        username: 'readonly',
+        password: 'readonly',
+    });
+
+    newUser = Accounts.findUserByUsername('readonly');
+     
+    Meteor.users.update( newUser._id, {
+        $set: {
+            userData: {
+                firstName: 'Hans',
+                lastName: 'Nurlesen',
+                roles: ['EVERYBODY']
+            }
+        }
+    });
+}

@@ -26,7 +26,7 @@ import TextArea from 'antd/lib/input/TextArea';
 
 import { useLayouttypes } from './../../client/trackers';
 
-export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
+export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, buttonStyle='BUTTON', refOpinion, refParentDetail, refDetail }) => {
     const [ layouttypes, isLoadingLayouttypes ] = useLayouttypes();
 
     const [ showModal, setShowModal ] = useState(false);
@@ -131,7 +131,9 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
     const ActionButton = () => {
         if (mode === "EDIT") {
             return (
-                <Button type="primary" onClick={ showModalVisible }><EditOutlined  />Bearbeiten</Button>
+                buttonStyle === 'ICONONLY'
+                    ? <EditOutlined onClick={ showModalVisible } />
+                    : <Button type="primary" onClick={ showModalVisible }><EditOutlined />Bearbeiten</Button>
             );
         } else {
             return (
@@ -162,7 +164,7 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
 
     return (
         <Fragment>
-            <ActionButton />
+            <ActionButton />            
 
             { !showModal ? null :
                 <ModalBackground>

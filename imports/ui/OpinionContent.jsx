@@ -63,7 +63,7 @@ const Expert = ({user}) => {
     );
 }
 
-export const OpinionContent = ({refOpinion}) => {
+export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelete=false}) => {
     const [opinion, isLoading] = useOpinion(refOpinion);
 
     if (isLoading) {
@@ -97,7 +97,13 @@ export const OpinionContent = ({refOpinion}) => {
                 <Descriptions.Item label="Datum bis">{moment(opinion.dateTill).format('DD. MMMM YYYY')}</Descriptions.Item>
 
                 <Descriptions.Item label="Teilnehmer" span={2}>
-                    <OpinionParticipants refOpinion={refOpinion} participants={opinion.participants} />
+                    <OpinionParticipants 
+                        refOpinion={refOpinion} 
+                        participants={opinion.participants} 
+                        currentUser={currentUser} 
+                        canEdit={canEdit} 
+                        canDelete={canDelete} 
+                    />
                 </Descriptions.Item>
 
                 

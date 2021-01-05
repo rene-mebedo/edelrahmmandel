@@ -16,7 +16,7 @@ import {
     MessageOutlined
 } from '@ant-design/icons';
 
-export const OpinionParticipants = ({refOpinion, participants}) => {
+export const OpinionParticipants = ({refOpinion, participants, currentUser, canEdit=false, canDelete=false}) => {
     return (
         <List
             //bordered
@@ -33,11 +33,11 @@ export const OpinionParticipants = ({refOpinion, participants}) => {
                 </Empty>
             }}
             renderItem={
-                p => <ModalOpinionParticipant refOpinion={refOpinion} mode="EDIT" participant={p} />
+                p => <ModalOpinionParticipant refOpinion={refOpinion} mode="EDIT" participant={p} canEdit={canEdit} />
             }
-           
+            
             footer={
-                <ModalOpinionParticipant refOpinion={refOpinion} mode="NEW" />
+                !canEdit ? null : <ModalOpinionParticipant refOpinion={refOpinion} mode="NEW" />
             }
         />
     );

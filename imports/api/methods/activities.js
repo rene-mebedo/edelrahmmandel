@@ -116,7 +116,7 @@ Meteor.methods({
      * 
      * @param {String} msg Message that the user posts
      */
-    'activities.postmessage'(refDetail, msg) {
+    'activities.postmessage'(refOpinion, refDetail, msg) {
         this.unblock();
 
         if (!this.userId) {
@@ -129,7 +129,7 @@ Meteor.methods({
 
         // check if opinion was sharedWith the current User
         const sharedOpinion = Opinions.findOne({
-            _id: detail.refOpinion,
+            _id: (detail && detail.refOpinion) || refOpinion,
             "sharedWith.user.userId": this.userId
         });
 
@@ -145,13 +145,13 @@ Meteor.methods({
         
         const message = messageWithMentions({ currentUser, msg, refs: {
             refOpinion: sharedOpinion._id,
-            refOpinionDetail: detail._id,
+            refOpinionDetail: (detail && detail._id) || null,
             refActivity: null
         }});
         
         let activity = injectUserData({ currentUser }, {
             refOpinion: sharedOpinion._id,
-            refDetail: detail._id,
+            refDetail: (detail && detail._id) || null,
             type: 'USER-POST',
             message
         }, { created: true }); 
@@ -164,9 +164,11 @@ Meteor.methods({
         
         Activities.insert(activity);
         
-        OpinionDetails.update(activity.refDetail, {
-            $inc: { commentsCount: 1 }
-        });
+        if (activity.refDetail) {
+            OpinionDetails.update(activity.refDetail, {
+                $inc: { commentsCount: 1 }
+            });
+        }
     },
 
     /**
