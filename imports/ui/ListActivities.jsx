@@ -22,7 +22,7 @@ import { hasPermission } from '../api/helpers/roles';
 
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-export const ListActivities = ( { refOpinion, refDetail, currentUser } ) => {
+export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } ) => {
     const [ opinion, opinionIsLoading ] = useOpinion(refOpinion);
     const [ activities, activitiesLoading ] = useActivities(refOpinion, refDetail);
     const [form] = Form.useForm();
@@ -121,9 +121,20 @@ export const ListActivities = ( { refOpinion, refDetail, currentUser } ) => {
 
     return (
         <div className="mbac-activities-sider">
+            <div style={{height:55}}>
+                <div style={{float:'left'}}>
+                    <strong>Aktivitäten</strong>
+                </div>
+                <div
+                    style={{float:'right'}}
+                    onClick={ e => onClose()}
+                >
+                    X
+                </div>
+            </div>
+
             <List
                 className="comment-list"
-                header={<strong>Aktivitäten</strong>}
                 itemLayout="horizontal"
                 dataSource={activities}
                 loading={activitiesLoading}

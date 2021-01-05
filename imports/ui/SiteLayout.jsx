@@ -30,17 +30,25 @@ const {
 } = Layout;
 
 export const SiteLayout = props => {
-    const [collapsed, setCollapsed] = useState(false);
+    const [menuCollapsed, setMenuCollapsed] = useState(window.innerWidth < 600);
+    const [activitiesCollapsed, setActivitiesCollapsed] = useState(window.innerWidth < 600);
     const [showUserActivies, setShowUserActivies] = useState(false);
     //const [lastActiveMenuKey, setLastActiveMenuKey] = useState(props.activeMenuKey);
 
     const [activitiesCount, acLoading] = useUserActivityCount();
 
-    toggle = () => {
-        setCollapsed(!collapsed);
+    const toggleMenuSider = () => {
+        setMenuCollapsed(!menuCollapsed);
     };
     
+    const toggleActivitiesSider = () => {
+        setActivitiesCollapsed(!activitiesCollapsed);
+    }
+
     onMenuClick = ({ item, key, keyPath, domEvent }) => {
+        if (window.innerWidth < 600)
+            setMenuCollapsed(!menuCollapsed);
+
         if (key == 'USERACTIVITIES') {
             //setLastActiveMenuKey(props.activeMenuKey);
             return setShowUserActivies(true);
@@ -79,7 +87,7 @@ export const SiteLayout = props => {
     return (
 
         <Layout>
-            <Sider theme="dark" trigger={null} collapsible collapsed={collapsed}
+            <Sider theme="dark" trigger={null} collapsible collapsed={menuCollapsed} collapsedWidth="0"
                 style={{
                     overflow: 'auto',
                     height: '100vh',
@@ -88,10 +96,7 @@ export const SiteLayout = props => {
                   }}
             >
                 <div className="mbac-logo" >
-                    { !collapsed 
-                        ? <img className="large" src="/MEBEDO_LOGO_PRINT_RGB-300x88.jpg" />
-                        : <img className="small" src="/favicon.ico" />
-                    }
+                    <img className="large" src="/MEBEDO_LOGO_PRINT_RGB-300x88.jpg" />
                 </div>
 
                 <Menu 
@@ -110,12 +115,23 @@ export const SiteLayout = props => {
                     </Menu.Item>
                 </Menu>
             </Sider>
-            <Layout className="site-layout" style={{ marginLeft: collapsed ? 80:200, marginRight: 300 }}>
+
+            <Layout className="site-layout" style={{ marginLeft: menuCollapsed ? 0:200, marginRight: activitiesCollapsed ? 0:300 }}>
                 <Header className="site-layout-background" style={{ padding: 0 }}>
-                    {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                        className: 'trigger',
-                        onClick: this.toggle,
-                    })}
+                    {
+                        React.createElement(menuCollapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+                            className: 'trigger',
+                            onClick: toggleMenuSider
+                        })
+                    }
+                    
+                    {
+                        React.createElement(activitiesCollapsed ? MenuFoldOutlined : MenuUnfoldOutlined , {
+                            className: 'trigger',
+                            onClick: toggleActivitiesSider,
+                            style: {float:'right'}
+                        })
+                    }
                 </Header>
                 <Content className="site-layout-content">
                     { props.children }
@@ -123,18 +139,25 @@ export const SiteLayout = props => {
                 
             </Layout>
             
-            { !props.refOpinion ? null :
-                <Sider 
+            { !props.refOpinion 
+                ? null 
+                : <Sider 
                     style={{
-                        overflow: 'auto',
+                        overflow: 'hidden auto',
                         height: '100vh',
                         position: 'fixed',
                         right: 0,
                     }}
-                    theme="light" width="300" collapsible collapsedWidth="0" reverseArrow
+                    theme="light" width="300" collapsible collapsed={activitiesCollapsed} collapsedWidth="0"
                 >
                     
-                    <ListActivities refOpinion={props.refOpinion} refDetail={props.refDetail} currentUser={props.currentUser} />
+                    <ListActivities 
+                        onClose={ toggleActivitiesSider //e => setActivitiesCollapsed(false)
+                        }
+                        refOpinion={props.refOpinion} 
+                        refDetail={props.refDetail} 
+                        currentUser={props.currentUser} 
+                    />
                 </Sider>
             }
 

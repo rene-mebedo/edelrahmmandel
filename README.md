@@ -44,12 +44,13 @@ geplanter `Going-Live: KW 3`
 - [ ] Bilder
   - [ ] Ablageort prüfen
   - [ ] Komprimierung
-- [ ] Menu vollständig einklappbar
-- [ ] Aktivitätsleiste vollständig einklappbar
+- [x] Menu vollständig einklappbar
+- [x] Aktivitätsleiste vollständig einklappbar
 - [ ] Übernahme der Maßnahmen inkl. Maßnahmentexte in Punkt 8 - Abschlussbetrachtung
 - [ ] Verwaltung von Variablen, die dynamisch im Gutachten ersetzt werden
   - [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
 - [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
+- [ ] UI-Optimierungen für Smartphones ( small devices )
 
 
 ### IT Operations
@@ -62,7 +63,7 @@ geplanter `Going-Live: KW 3`
 - [ ] Hinzufügen der neuen Variablen in der Gutachtenvorlage
 
 
-### Consulting Jürgen K./Marc Schlüter (über HP)
+### Consulting JK/MSC über HP
 
 - [ ] Überarbeitung und textuelle Fertigstellung der Gutachtenvorlage
 - [ ] Ggf. weitere Vorlagen erstellen z.B. "Kurzgutachten" / "Assessment"
