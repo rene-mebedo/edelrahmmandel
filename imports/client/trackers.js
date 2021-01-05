@@ -7,7 +7,7 @@ import { Roles } from '../api/collections/roles';
 import { Activities } from '../api/collections/activities';
 import { UserActivities } from '../api/collections/userActivities';
 import { Images } from '../api/collections/images';
-
+import { Layouttypes } from '../api/collections/layouttypes';
 
 
 export const useOpinionSubscription = id => useTracker( () => {
@@ -58,6 +58,28 @@ export const useRoles = () => useTracker( () => {
 
     return [roles, false];
 });
+
+/**
+ * Reactive Layouttypes
+ * 
+ */
+export const useLayouttypes = () => useTracker( () => {
+    const noDataAvailable = [ [] /*Layouttypes*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const subscription = Meteor.subscribe('layouttypes');
+
+    if (!subscription.ready()) { 
+        return noDataAvailable;
+    }
+
+    const layouttypes = Layouttypes.find({}).fetch();
+
+    return [layouttypes, false];
+});
+
 
 /**
  * Load the Opinion by its ID reactively

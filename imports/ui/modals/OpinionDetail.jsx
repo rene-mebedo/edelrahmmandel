@@ -18,36 +18,24 @@ import { OpinionDetails } from '/imports/api/collections/opinionDetails';
 import { Summernote } from '../components/Summernote';
 
 const { Option } = Select;
+const { useForm } = Form;
 
 import { ModalBackground, preventClickPropagation } from '../components/ModalBackground';
 import { ActionCodeDropdown } from '../components/ActionCodeDropdown';
 import TextArea from 'antd/lib/input/TextArea';
 
-export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
-    const { layouttypes, isLoadingLayouttypes } = useTracker(() => {
-        const noDataAvailable = { layouttypes: [] };
+import { useLayouttypes } from './../../client/trackers';
 
-        if (!Meteor.user()) {
-          return noDataAvailable;
-        }
-        const handler = Meteor.subscribe('layouttypes');
-    
-        if (!handler.ready()) {
-          return { ...noDataAvailable, isLoadingLayouttypes: true };
-        }
-    
-        const layouttypes = Layouttypes.find({}).fetch();
-        return { layouttypes, isLoadingLayouttypes: false };
-    });
+export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
+    const [ layouttypes, isLoadingLayouttypes ] = useLayouttypes();
 
     const [ showModal, setShowModal ] = useState(false);
+    const [ showActionFields, setShowActionFields ] = useState(false);
 
-    const [form] = Form.useForm();
+    const [ form ] = useForm();
 
     const handleModalOk = e => {
         form.validateFields().then( values => {
-            console.log(values);
-
             if (mode === 'NEW') {
                 values.refOpinion = refOpinion;
                 values.refParentDetail = refParentDetail;       
@@ -102,8 +90,11 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                 });
             }
             
+            // show or hide actionFields by type
+            handleValuesChange ({type: od[0].type});
+
             setTimeout( _ => {
-                console.log(od[0]);
+
                 form.setFieldsValue({
                     orderString: od[0].orderString,
                     title: od[0].title,
@@ -121,7 +112,7 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
     }
 
     const uploadImage = function(images, insertImage) {
-        console.log('onImageUpload', images);
+        
         /* FileList does not support ordinary array methods */
         for (let i = 0; i < images.length; i++) {
             /* Stores as bas64enc string in the text.
@@ -162,6 +153,13 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
         document.execCommand('insertText', false, bufferText);
     }
 
+    const handleValuesChange = changedValues => {
+        // check if type-property is available
+        if (changedValues.type) {
+            setShowActionFields(changedValues.type === 'ANSWER' || changedValues.type === 'QUESTION');
+        }
+    }
+
     return (
         <Fragment>
             <ActionButton />
@@ -184,6 +182,7 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                             layout="vertical"
                             form={form}
                             onFinish={handleModalOk}
+                            onValuesChange={handleValuesChange}
                         >
                             <Form.Item
                                 label="Sortierung"
@@ -221,19 +220,24 @@ export const ModalOpinionDetail = ( { mode/*NEW||EDIT*/, refOpinion, refParentDe
                                 </Select>
                             </Form.Item>
                             
-                            <Form.Item
-                                label="Maßnahme"
-                                name="actionCode"
-                            >
-                                <ActionCodeDropdown autoUpdate={false} />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Maßnahmentext"
-                                name="actionText"
-                            >
-                                <TextArea autoSize placeholder="" />
-                            </Form.Item>
+                            { !showActionFields
+                                ? null
+                                : <Form.Item
+                                    label="Maßnahme"
+                                    name="actionCode"
+                                >
+                                    <ActionCodeDropdown autoUpdate={false} />
+                                </Form.Item>
+                            }
+                            { !showActionFields
+                                ? null
+                                : <Form.Item
+                                    label="Maßnahmentext"
+                                    name="actionText"
+                                >
+                                    <TextArea autoSize placeholder="" />
+                                </Form.Item>
+                            }
 
                             <Form.Item
                                 label="Titel"

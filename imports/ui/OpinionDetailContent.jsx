@@ -32,8 +32,9 @@ export const OpinionDetailContent = ({refOpinion, refDetail}) => {
 
             <Descriptions.Item label="Typ">{layouttypesObject[detail.type || 'UNKNOWN'].title}</Descriptions.Item>
 
-            { !(detail.type === 'ANSWER' || detail.type === 'QUESTION') ? null
-                :<Fragment>
+            { !(detail.type === 'ANSWER' || detail.type === 'QUESTION') 
+                ? null
+                : <Fragment>
                     <Descriptions.Item label="Maßnahme">
                         <ActionCodeDropdown
                             key="3"

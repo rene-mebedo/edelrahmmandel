@@ -37,10 +37,10 @@ geplanter `Going-Live: KW 3`
 - [x] Neuanlage Gutachten
   - [x] Erstellen einer Vorlage
   - [x] Erstellen eines Gutachtens auf Basis eines anderen Gutachtens X
-- [ ] Bearbeitung eines Detailpunkts
+- [x] Bearbeitung eines Detailpunkts
   - [x] Pflege des Maßnahmentextes zu einem Detail vom Typ "Frage"
   - [x] Pflege des "Maßnahmen-Default" für den Typ "Antwort"
-  - [ ] Pflege abhängig vom Typ machen
+  - [x] Pflege abhängig vom Typ machen
 - [ ] Bilder
   - [ ] Ablageort prüfen
   - [ ] Komprimierung
@@ -48,8 +48,8 @@ geplanter `Going-Live: KW 3`
 - [ ] Aktivitätsleiste vollständig einklappbar
 - [ ] Übernahme der Maßnahmen inkl. Maßnahmentexte in Punkt 8 - Abschlussbetrachtung
 - [ ] Verwaltung von Variablen, die dynamisch im Gutachten ersetzt werden
-- [ ] Zeige Detailpunkt im Inhaltsverzeichnis J/N
-- [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
+  - [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
+- [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
 
 
 ### IT Operations
@@ -78,9 +78,7 @@ Alle Punkte, die noch erledigt werden müssen um die Version 1 "rund zu machen"
   - [ ] Sperren einzelner Benutzer
 
 - [ ] Einladen von "fremden" in das System, wenn diese noch nicht als Benutzer geführt sind
-- [ ] Workflow  
-
-- [ ]
+- [ ] Workflow
 
 ## Version 1.2
 
