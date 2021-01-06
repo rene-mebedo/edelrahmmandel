@@ -288,3 +288,50 @@ export const useImages = refImages => useTracker( () => {
         false
     ];
 });
+
+
+
+/**
+ * Load all opinionDetails with Type ANSWER and actionText for the given Opinion that should listed
+ * in the actionlist orderd by actioncode
+ * 
+ * @param {String} refOpinion Specifies the opinion
+ */
+export const useOpinionActionList = refOpinion => useTracker( () => {
+    const noDataAvailable = [ [] /*actionListitems*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const subscription = Meteor.subscribe('opinionDetailsActionListitems', refOpinion);
+
+    if (!subscription.ready()) {
+        return noDataAvailable;
+    }
+
+    let actionListitems = OpinionDetails.find({
+        refOpinion,
+        type: { $in: ['QUESTION', 'ANSWER'] },
+        deleted: false,
+        actionCode: { $ne: 'okay' },
+        actionText: { $ne: null }
+    }, {
+        fields: {
+            _id: 1,
+            refOpinion: 1,
+            actionCode: 1,
+            actionText: 1
+        },
+        sort: {
+            actionPrio: 1,
+            orderString: 1
+        }
+    }).map(item => {
+        item.key = item._id;
+        return item;
+    });
+
+    
+    return [ actionListitems, false ];
+}, [refOpinion]);
+

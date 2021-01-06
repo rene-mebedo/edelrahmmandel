@@ -8,6 +8,8 @@ import { Activities } from '../collections/activities';
 import { hasPermission, injectUserData } from '../helpers/roles';
 import { determineChanges } from '../helpers/activities';
 
+import { actionCodes } from '../constData/actioncodes';
+
 Meteor.methods({
     /**
      * User-Like or Dislike for opinionDetail by given id
@@ -139,6 +141,12 @@ Meteor.methods({
             throw new Meteor.Error('Keine Berechtigung zum Erstellen eines neuen Details zu einem Gutachten.');
         }
         
+        // the actionPrio will only managed behind the scene
+        // and will be used for sorting by actionCode
+        if (detailData.actionCode) {
+            detailData.actionPrio = actionCodes[detailData.actionCode].orderId;
+        }
+
         let detail = injectUserData({ currentUser }, {...detailData}, { created: true });
         detail.activitiesCount = 1;
 
@@ -205,6 +213,12 @@ Meteor.methods({
             data: opinionDetail.data, 
             oldData: old
         });
+
+        // the actionprio will only managed behind the scene
+        // and will be used for sorting by actionCode
+        if (opinionDetail.data.actionCode) {
+            opinionDetail.data.actionPrio = actionCodes[opinionDetail.data.actionCode].orderId;
+        }
 
         // are there changes to commit
         if (changes.length) {

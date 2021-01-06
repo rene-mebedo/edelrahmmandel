@@ -37,8 +37,10 @@ import {
     useOpinion
 } from '../client/trackers';
 
+import { ActionTodoList } from './components/ActionTodoList';
 
-const OpinionDetailItemByType = ({ item }) => {
+
+const OpinionDetailItemByType = ({ item, refOpinion }) => {
     if (item.type == 'PICTURE') {
         return (
             <Row gutter={[16,16]}>
@@ -60,10 +62,14 @@ const OpinionDetailItemByType = ({ item }) => {
     if (item.type == 'INFO') {
         return (
             <div>
-                <strong>I N F O</strong>
+                <strong>Info:</strong>
                 <div dangerouslySetInnerHTML={ {__html: item.text}} />
             </div>
         )
+    }
+
+    if (item.type == 'TODOLIST') {
+        return  <ActionTodoList refOpinion={refOpinion} />
     }
 
     return (
@@ -80,7 +86,6 @@ const OpinionDetailItemByType = ({ item }) => {
 export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdit=false, canDelete=false, currentUser }) => {
     const [ showModalEdit, setShowModalEdit ] = useState(false);
 
-    //const opinionIsLoading = useOpinionSubscription(refOpinion);
     const [ opinion, isLoadingOpinion ] = useOpinion(refOpinion);
     const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refParentDetail);
 
@@ -226,7 +231,7 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdi
                             </Link>                                
                         </Tooltip>
                     }
-                    description={ <OpinionDetailItemByType item={item} /> }
+                    description={ <OpinionDetailItemByType item={item} refOpinion={refOpinion} /> }
                 />
                 {
                     //<OpinionDetailItemByType item={item} />

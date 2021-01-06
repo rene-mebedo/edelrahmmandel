@@ -31,3 +31,21 @@ Meteor.publish('opinionDetails', function publishOpinionDetails({ refOpinion, re
     if (refOpinion)
         return OpinionDetails.find({ refOpinion, refParentDetail });
 });
+
+Meteor.publish('opinionDetailsActionListitems', function publishOpinionDetailsActionListitems(refOpinion) {
+    let permitted = Opinions.findOne({
+        _id: refOpinion,
+        "sharedWith.user.userId": this.userId
+    });
+
+    if (!permitted) return null;
+
+    return OpinionDetails.find({ 
+        refOpinion,
+        type: { $in: ['QUESTION', 'ANSWER'] },
+        deleted: false,
+        actionCode: { $ne: 'okay' },
+        actionText: { $ne: null }
+    });
+});
+

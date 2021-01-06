@@ -29,7 +29,7 @@ const { Sider, Content } = Layout;
 const { Text, Link } = Typography;
 
 
-import { OpinionDetails } from '/imports/api/collections/opinionDetails';
+import { layouttypesObject } from '../api/constData/layouttypes';
 
 import { ModalOpinionDetail } from './modals/OpinionDetail';
 import { ModalFileUpload } from './modals/FileUpload';
@@ -46,6 +46,7 @@ import {
 } from '../client/trackers';
 
 import { ModalOpinion } from './modals/Opinion';
+import { ActionTodoList } from './components/ActionTodoList';
 
 
 export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
@@ -58,6 +59,7 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
     if (currentUser && !opinionIsLoading && opinion) {
         let edit = false,
             del = false,
+            create = false,
             perm = { currentUser };
 
         const sharedWithUser = opinion.sharedWith.find( shared => shared.user.userId === currentUser._id );
@@ -116,7 +118,7 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                 </Button>
             );
         }
-        if (canEdit) {
+        if (canEdit && detail && layouttypesObject[detail.type].hasChilds) {
             pageHeaderButtons.push(
                 <ModalFileUpload key="1"
                     mode="EDIT"
@@ -125,6 +127,8 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                     refDetail={detail._id}
                 />
             );
+        }
+        if (canEdit) {
             pageHeaderButtons.push(
                 <ModalOpinionDetail key="0"
                     mode="EDIT"
@@ -171,15 +175,32 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                     : <OpinionDetailContent refOpinion={refOpinion} refDetail={refDetail} />
                 }
 
-                <Divider orientation="left">Details zu diesem Punkt</Divider>
+                { detail && detail.type === 'TODOLIST'
+                    ? <ActionTodoList refOpinion={refOpinion} />
+                    : detail && layouttypesObject[detail.type].hasChilds
+                        ? <Fragment>
+                            <Divider orientation="left">Details zu diesem Punkt</Divider>
 
-                <ListOpinionDetailsLinkable
-                    refOpinion={refOpinion} 
-                    refParentDetail={refDetail}
-                    currentUser={currentUser}
-                    canEdit={canEdit}
-                    canDelete={canDelete}
-                />
+                            <ListOpinionDetailsLinkable
+                                refOpinion={refOpinion} 
+                                refParentDetail={refDetail}
+                                currentUser={currentUser}
+                                canEdit={canEdit}
+                                canDelete={canDelete}
+                            />
+                        </Fragment>
+                        : null
+                }
+
+                {
+                    canEdit && detail && layouttypesObject[detail.type].hasChilds
+                        ? <ModalOpinionDetail
+                                mode="NEW" 
+                                refOpinion={refOpinion} 
+                                refParentDetail={refDetail}
+                        />
+                        : null
+                }
             </Content>
         </Fragment>
     );
@@ -193,12 +214,12 @@ export const OpinionsDetailsFormLinkable = ({refOpinion, refDetail, currentUser}
             <Content>
                 <DetailForm refOpinion={refOpinion} refDetail={refDetail} currentUser={currentUser}/>
 
-                { !hasPermission({currentUser}, 'opinion.create') ? null :
+                { /*!hasPermission({currentUser}, 'opinion.create') ? null :
                     <ModalOpinionDetail
                         mode="NEW" 
                         refOpinion={refOpinion} 
                         refParentDetail={refDetail}
-                    />
+                    />*/
                 }
             </Content>
         </Layout>

@@ -22,6 +22,7 @@ geplanter `Going-Live: KW 3`
   > ${Druckdatum}, ${Gutachtennummer}, ${Firma}, ${Gutachtername1}, ${Gutachtername2}
   - [ ] Auflistung aller verwandten Variablen z.B. "{{Kunde}}"
   - [ ] Dynamischer Replace von Opinion-Variablen
+- [ ] `pagebreakBefore` implementieren
 - [ ] `pagebreakAfter` implementieren
 
 
@@ -56,7 +57,9 @@ geplanter `Going-Live: KW 3`
   - [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
 - [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
 - [ ] UI-Optimierungen für Tablet und Smartphones ( medium and small devices )
+- [ ] Opiniondetails `pagebreakBefore` implementieren
 - [ ] Opiniondetails `pagebreakAfter` implementieren
+- [ ] Neues Feld `internalOrderId` zur internen Sortierung der Opiniondetails für die Abschlussbetrachtung
 
 
 ### IT Operations
@@ -65,8 +68,9 @@ geplanter `Going-Live: KW 3`
 
 ### Going-Live Vorbereitungen
 - [ ] Update `printTitle` mit Wert aus `Title` über alle `OpinionDetails`
+- [ ] Nach Datenübernahme muss das Feld einmalig `internalOrderId` rekursiv berechnet werden
 - [ ] Replace der Variablen `@Kunde@` und `@ProjektleiterKunde@` mit den neuen Variablen `{{xxx}}`
-- [ ] Hinzufügen der neuen Variablen in der Gutachtenvorlage
+- [ ] Hinzufügen der neuen Variablen in der Gutachtenvorlage (insert)
 
 
 ### Consulting JK/MSC über HP

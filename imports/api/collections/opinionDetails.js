@@ -47,6 +47,11 @@ export const OpinionDetailSchema = new SimpleSchema({
         label: 'Maßnahme',
         optional: true
     },
+    actionPrio: { // dient der Sortierung nach Maßnahmentyp von adhoc bis verbesserungsvorschlag und kein Handlungsbedarf
+        type: SimpleSchema.Integer,
+        label: 'Sortierung nach Handlungsbedarf',
+        optional: true
+    },
     files: {
         type: Array,
         defaultValue: []
