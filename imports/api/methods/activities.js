@@ -192,7 +192,7 @@ Meteor.methods({
 
         const message = messageWithMentions({ currentUser, msg, refs: {
             refOpinion: refOpinion,
-            refOpinionDetail: opinionDetail._id,
+            refOpinionDetail: opinionDetail && opinionDetail._id || null,
             refActivity: refActivity
         }});
 
@@ -226,9 +226,11 @@ Meteor.methods({
             }
         });
         
-        OpinionDetails.update(opinionDetail._id, {
-            $inc: { commentsCount: 1 }
-        });
+        if (opinionDetail) {
+            OpinionDetails.update(opinionDetail._id, {
+                $inc: { commentsCount: 1 }
+            });
+        }
     },
 
 });

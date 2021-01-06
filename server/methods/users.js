@@ -63,5 +63,5 @@ Meteor.methods({
         });
         
         return users;
-    }
+    },
 });

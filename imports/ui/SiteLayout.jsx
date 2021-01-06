@@ -8,7 +8,10 @@ import { ListActivities } from './ListActivities';
 import { 
     Layout, 
     Menu,
-    Badge
+    Badge,
+    Avatar,
+    Space,
+    Dropdown
 } from 'antd';
   
 import {
@@ -17,11 +20,14 @@ import {
     UserOutlined,
     VideoCameraOutlined,
     UploadOutlined,
-    ClockCircleOutlined
+    ClockCircleOutlined,
+    DownOutlined
 } from '@ant-design/icons';
 
 import { useUserActivityCount } from '../client/trackers';
 import { UserActivitiesDrawer } from './components/UserActivitiesDrawer';
+
+import { UserMenu } from './components/UserMenu';
 
 const {
     Header, 
@@ -84,6 +90,8 @@ export const SiteLayout = props => {
         return <UserActivitiesLink />;
     }
 
+    
+
     return (
 
         <Layout>
@@ -116,7 +124,7 @@ export const SiteLayout = props => {
                 </Menu>
             </Sider>
 
-            <Layout className="site-layout" style={{ marginLeft: menuCollapsed ? 0:200, marginRight: activitiesCollapsed ? 0:300 }}>
+            <Layout className="site-layout" style={{ marginLeft: menuCollapsed ? 0:200, marginRight: activitiesCollapsed ? 0:(props.refOpinion ? 300:0) }}>
                 <Header className="site-layout-background" style={{ padding: 0 }}>
                     {
                         React.createElement(menuCollapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
@@ -125,13 +133,16 @@ export const SiteLayout = props => {
                         })
                     }
                     
-                    {
+                    { !props.refOpinion || !activitiesCollapsed ? null :
                         React.createElement(activitiesCollapsed ? MenuFoldOutlined : MenuUnfoldOutlined , {
                             className: 'trigger',
                             onClick: toggleActivitiesSider,
                             style: {float:'right'}
                         })
                     }
+
+                    <UserMenu currentUser={props.currentUser} />
+
                 </Header>
                 <Content className="site-layout-content">
                     { props.children }

@@ -116,10 +116,25 @@ main {
     }
 }
 
+.mbac-usermenu {
+    padding-right: 16px;
+    float:right;
+
+    .mbac-username {
+        display: none
+    }
+}
+
 @media screen and (min-width: 768px) {
     main {
         &.site-layout-content {
             padding: 16px;
+        }
+    }
+
+    .mbac-usermenu {
+        .mbac-username {
+            display: block
         }
     }
 }

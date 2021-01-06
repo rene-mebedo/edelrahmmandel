@@ -100,6 +100,11 @@ export const OpinionDetailSchema = new SimpleSchema({
         type: Boolean,
         optional: true,
         defaultValue: false
+    },
+    pagebreakAfter: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
     }
 });
 

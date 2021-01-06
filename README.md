@@ -14,12 +14,15 @@ geplanter `Going-Live: KW 3`
 - [x] PDF Erstellung / Ablage des generierten PDFs
 - [ ] HTML/PDF-Formatierung / Rendering gem. Gutachtenvorlagen JK
 - [x] Result des package sollte der generierte HTML-Code sein
-- [ ] Detail `Titel im Druck` immer im Ausdruck verwandt (auch Inhaltsverz.) Ist das Feld leer, so wird kein Titel gedruckt.
+- [x] Detail `Titel im Druck` immer im Ausdruck verwandt (auch Inhaltsverz.) Ist das Feld leer, so wird kein Titel gedruckt.
 - [x] npm Publish PDF-Erstellung
-- [ ] Zeige Detailpunkt im Inhaltsverzeichnis J/N
-- [ ] Auflistung aller verwandten Variablen z.B. "{{Kunde}}"
-- [ ] Dynamischer Replace von Opinion-Variablen
-- [ ] Interne Variablen ausprogrammieren z.B. `${Druckdatum}`
+- [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
+- [ ] Variablen handling
+  - [ ] Interne Variablen ausprogrammieren z.B. `${Druckdatum}`
+  > ${Druckdatum}, ${Gutachtennummer}, ${Firma}, ${Gutachtername1}, ${Gutachtername2}
+  - [ ] Auflistung aller verwandten Variablen z.B. "{{Kunde}}"
+  - [ ] Dynamischer Replace von Opinion-Variablen
+- [ ] `pagebreakAfter` implementieren
 
 
 **Erledigte Punkte:**
@@ -27,11 +30,13 @@ geplanter `Going-Live: KW 3`
 > Die Signaturen werden nicht generiert sondern über einen eigenen Detailpunkt am Ende des Gutachtens abgebildet und jeder Gutachter muss seinen Stempel und Unterschrift ind. als Bild einfügen.
 
 
+
 ### Development RStH
 - [x] Generiere opinionNo beim Neuzugang
 - [x] Neues Feld im `OpinionDetail` > `showInToc` in Oberfläche integrieren
 - [x] Opinion und OpininoDetail-Felder abgleichen und implementieren mit Edelrahm RS-MT
 - [ ] Einbindung PDF-Erstellung in Edelrahm
+- [x] Benutzermanagement (Logout, Passwort ändern)
 - [ ] Teilen des Gutachtens mit anderen Benutzers
 - [x] Stammdatenverwaltung (Bearbeitung von Teilnehmern, Gutachter 1, 2 usw.)
 - [x] Neuanlage Gutachten
@@ -50,7 +55,8 @@ geplanter `Going-Live: KW 3`
 - [ ] Verwaltung von Variablen, die dynamisch im Gutachten ersetzt werden
   - [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
 - [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
-- [ ] UI-Optimierungen für Smartphones ( small devices )
+- [ ] UI-Optimierungen für Tablet und Smartphones ( medium and small devices )
+- [ ] Opiniondetails `pagebreakAfter` implementieren
 
 
 ### IT Operations
