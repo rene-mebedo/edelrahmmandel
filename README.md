@@ -18,12 +18,12 @@ geplanter `Going-Live: KW 3`
 - [x] npm Publish PDF-Erstellung
 - [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
 - [ ] Variablen handling
-  - [ ] Interne Variablen ausprogrammieren z.B. `${Druckdatum}`
+  - [x] Interne Variablen ausprogrammieren z.B. `${Druckdatum}`
   > ${Druckdatum}, ${Gutachtennummer}, ${Firma}, ${Gutachtername1}, ${Gutachtername2}
   - [ ] Auflistung aller verwandten Variablen z.B. "{{Kunde}}"
   - [ ] Dynamischer Replace von Opinion-Variablen
-- [ ] `pagebreakBefore` implementieren
-- [ ] `pagebreakAfter` implementieren
+- [x] `pagebreakBefore` implementieren
+- [x] `pagebreakAfter` implementieren
 
 
 **Erledigte Punkte:**
@@ -52,14 +52,15 @@ geplanter `Going-Live: KW 3`
   - [ ] Komprimierung
 - [x] Menu vollständig einklappbar
 - [x] Aktivitätsleiste vollständig einklappbar
-- [ ] Übernahme der Maßnahmen inkl. Maßnahmentexte in Punkt 8 - Abschlussbetrachtung
+- [x] Übernahme der Maßnahmen inkl. Maßnahmentexte in Punkt 8 - Abschlussbetrachtung
 - [ ] Verwaltung von Variablen, die dynamisch im Gutachten ersetzt werden
   - [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
 - [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
 - [ ] UI-Optimierungen für Tablet und Smartphones ( medium and small devices )
 - [ ] Opiniondetails `pagebreakBefore` implementieren
 - [ ] Opiniondetails `pagebreakAfter` implementieren
-- [ ] Neues Feld `internalOrderId` zur internen Sortierung der Opiniondetails für die Abschlussbetrachtung
+- [ ] Opiniondetails Check-Answer
+- [ ] Selectbox layouttypes sortiert nach Name
 
 
 ### IT Operations
@@ -72,10 +73,10 @@ geplanter `Going-Live: KW 3`
 - [ ] Replace der Variablen `@Kunde@` und `@ProjektleiterKunde@` mit den neuen Variablen `{{xxx}}`
 - [ ] Hinzufügen der neuen Variablen in der Gutachtenvorlage (insert)
 
-
 ### Consulting JK/MSC über HP
 
 - [ ] Überarbeitung und textuelle Fertigstellung der Gutachtenvorlage
+- [ ] OpinionDetails vom Typ Definitionen vgl. 4.5.1 und 4.5.3 von JK-Gutachten sollten als Text zur Frage aufgenommen werden
 - [ ] Ggf. weitere Vorlagen erstellen z.B. "Kurzgutachten" / "Assessment"
 
 
@@ -99,14 +100,14 @@ Weitere Punkte, die ggf. das Leben erleichtern
   - [ ] Detaillierte Besprechung mit JK
   - [ ] Kopierfunktion bestehendes Gutachten mit "Rücksetzung" der gegebenen Antworten
   - [ ] Einfügefunktion um bereits formulierte Texte (Fragen, Antworten) aus bereits erstellten Gutachten zu übernehmen
-- [ ] Sortierung der Detailpunkte via Drag & Drop
+- [x] Sortierung der Detailpunkte via Drag & Drop
 - [ ] Suchfunktion für Inhalte und Titel/Detailpunkte
 
 
 ## geplante Punkte für Version 2
 
 Weitere geplante Punkte ohne Priorisierung
-- [ ] Authentifizierung Auth0
+- [ ] Authentifizierung OAuth / OAuth 2.0
 - [ ] Aufgabenmanagement
 - [ ] Erstellen von Aufgaben ausgehend vom Gutachten (Abschlussbetrachtung)
 - [ ] Benutzer könnem indv. Aufgaben erstellen

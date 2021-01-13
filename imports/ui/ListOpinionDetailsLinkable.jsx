@@ -8,7 +8,10 @@ import {
     DeleteOutlined, DeleteTwoTone,
     LikeOutlined, LikeTwoTone,
     DislikeOutlined, DislikeTwoTone,
-    MessageOutlined
+    MessageOutlined,
+    MenuOutlined,
+    ScissorOutlined,
+    CheckOutlined
 } from '@ant-design/icons';
 
 import { ListImages } from './ListImages';
@@ -18,6 +21,8 @@ import { ActionCodeTag } from './components/ActionCodeTag';
 import { ModalOpinionDetail } from './../ui/modals/OpinionDetail';
 
 import { hasPermission } from './../api/helpers/roles';
+import { layouttypesObject } from './../api/constData/layouttypes';
+import { actionCodes } from './../api/constData/actioncodes';
 
 const { Link } = Typography;
 
@@ -39,6 +44,17 @@ import {
 
 import { ActionTodoList } from './components/ActionTodoList';
 
+/** drag and drop sortable */
+import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
+import arrayMove from 'array-move';
+
+const DragHandle = sortableHandle(() => (
+    <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
+));
+
+const SortableListItem = sortableElement(props => <li {...props} />);
+const SortableContainer = sortableContainer(props => <ul {...props} />);
+
 
 const OpinionDetailItemByType = ({ item, refOpinion }) => {
     if (item.type == 'PICTURE') {
@@ -59,17 +75,35 @@ const OpinionDetailItemByType = ({ item, refOpinion }) => {
         );
     }
     
-    if (item.type == 'INFO') {
-        return (
-            <div>
-                <strong>Info:</strong>
-                <div dangerouslySetInnerHTML={ {__html: item.text}} />
-            </div>
-        )
-    }
-
     if (item.type == 'TODOLIST') {
         return  <ActionTodoList refOpinion={refOpinion} />
+    }
+
+    if (
+        item.type == 'HEADING' ||
+        item.type == 'QUESTION' ||
+        item.type == 'ANSWER' ||
+        item.type == 'BESTIMMUNGEN' ||
+        item.type == 'HINT' ||
+        item.type == 'INFO' ||
+        item.type == 'IMPORTANT'
+    ) {
+        /*const { template } = layouttypesObject[item.type];
+
+        const renderedTemplate = template
+            .replace( /\{\{printTitle\}\}/g, item.printTitle || '')
+            .replace( /\{\{text\}\}/g, item.text || '' )
+            .replace( /\{\{actionCode\}\}/g, item.actionCode || '' )
+            .replace( /\{\{actionCodeText\}\}/g, (item.actionCode && actionCodes[item.actionCode].text) || '' )
+            .replace( /\{\{actionCodeLongtext\}\}/g, (item.actionCode && actionCodes[item.actionCode].longtext) || '' )
+            .replace( /\{\{actionText\}\}/g, item.actionText || '' )
+            
+
+        return <div className="mbac-opinion-detail" dangerouslySetInnerHTML={ {__html: renderedTemplate}} />*/
+
+        return <div dangerouslySetInnerHTML={ {__html: 
+            (item.htmlContent && item.htmlContent.replace(/\{\{childContent\}\}/g, item.htmlChildContent || '')) || ''
+        }} />
     }
 
     return (
@@ -84,12 +118,16 @@ const OpinionDetailItemByType = ({ item, refOpinion }) => {
 
 
 export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdit=false, canDelete=false, currentUser }) => {
-    const [ showModalEdit, setShowModalEdit ] = useState(false);
+    //const [ showModalEdit, setShowModalEdit ] = useState(false);
+    //const [ opinion, isLoadingOpinion ] = useOpinion(refOpinion);
+    const [ rePositionedOpinionDetails, setRepositionedOpinionDetails ] = useState(null);
 
-    const [ opinion, isLoadingOpinion ] = useOpinion(refOpinion);
-    const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refParentDetail);
+    const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refParentDetail, opiniondetails => {
+        // kill temp sorted items, because the new items just arrived from the server :-)
+        setRepositionedOpinionDetails(null);
+    });
 
-    const removeDetail = id => {
+    const finallyRemoveDetail = id => {
         Modal.confirm({
             title: 'Löschen',
             icon: <ExclamationCircleOutlined />,
@@ -99,7 +137,7 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdi
             onOk: closeConfirm => {
                 closeConfirm();
 
-                Meteor.call('opinionDetail.remove', id, (err, res) => {
+                Meteor.call('opinionDetail.finallyRemove', id, (err, res) => {
                     if (err) {
                         return Modal.error({
                             title: 'Fehler',
@@ -146,9 +184,20 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdi
                     {
                         list.map( ({userId, firstName, lastName}) => <li className="ant-list-item" key={userId}>{firstName + (firstName ? ' ':'') + lastName}</li>)
                     }
-                </ul>   
+                </ul>
             </div> 
         );
+    }
+
+    checkAnswer = id => {
+        Meteor.call('opinionDetail.checkAnswer', id, (err, res) => {
+            if (err) {
+                return Modal.error({
+                    title: 'Fehler',
+                    content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
+                });
+            }
+        });
     }
 
     const getListItemActions = item => {
@@ -185,9 +234,18 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdi
                     <ModalOpinionDetail mode="EDIT" buttonStyle="ICONONLY" refDetail={item._id} />
                 </div>
             );
-        }
 
-        if (canDelete) {
+            // check-opition is only available
+            // if the type is an answer
+            if (item.type ==='ANSWER') {
+                actions.push(
+                    <div key="checked">
+                        <CheckOutlined onClick={e => checkAnswer(item._id)} />
+                    </div>
+                );
+            }
+
+            // update the delete flag only needs edit-permission
             actions.push(
                 <div key="deleted">
                     { !item.deleted
@@ -198,61 +256,112 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdi
             );
         }
 
+        if (canDelete) {
+            actions.push(
+                <div key="finallyRemoved">
+                    <ScissorOutlined onClick={e => finallyRemoveDetail(item._id)} />
+                </div>
+            );
+        }
+
         return actions;
     }
 
-    const renderItem = item => {
+    onSortEnd = ({ oldIndex, newIndex }) => {
+        if (oldIndex !== newIndex) {
+            const refDetail = opinionDetails[oldIndex]._id;
+            opinionDetails[oldIndex].position = '***';
+            const newItems = arrayMove(opinionDetails, oldIndex, newIndex)
+            setRepositionedOpinionDetails(newItems);
+
+            Meteor.call('opinionDetails.rePosition', refDetail, newIndex+1, (err, res) => {
+                setRepositionedOpinionDetails(null);
+
+                setTimeout(_=> {
+                    if (rePositionedOpinionDetails !== null) {
+                        console.log('Set NULL')
+                        setRepositionedOpinionDetails(null);
+                    }
+                }, 1000)
+            })
+            
+        }
+    };
+    
+    const renderItemAction = (action, index) => {
         return (
-            <List.Item
-                className={item.deleted ? "item-deleted" : null }
+            <li key={index}>
+                { action }
+                <em className="ant-list-item-action-split"></em>
+            </li>
+        )
+    }
+
+    const renderItem = (item, index) => {
+        return (
+            <SortableListItem 
+                index={index}
+                className={`ant-list-item ant-list-item-no-flex ${item.deleted ? "item-deleted" : ""}` }
                 key={item._id}
-                actions={getListItemActions(item)}
-                extra={
-                    item.type == 'QUESTION' /*|| item.type == 'ANSWER'*/ ? 
+            >
+                <div className="ant-list-item-main">
+                    <div className="ant-list-item-meta">
+                        <div className="ant-list-item-meta-content">
+                            <h4 className="ant-list-item-meta-title">
+                                <Tooltip title={item.title}>
+                                    <Space>
+                                        <DragHandle />
+                                        <Link href={`/opinions/${item.refOpinion}/${item._id}`}>
+                                            <Space>
+                                                {   <Space>
+                                                        <Tag color="blue">{/*item.parentPosition ? item.parentPosition : ''*/}{item.position}</Tag>
+                                                        <Tag color="green">{layouttypesObject[item.type].title}</Tag>
+                                                    </Space>
+                                                }
+                                                <span>{item.title}</span>
+                                                { item.type !== 'ANSWER' ? null :
+                                                    <ActionCodeTag actionCode={item.actionCode} />
+                                                }
+                                            </Space>
+                                        </Link>
+                                    </Space>
+                                </Tooltip>
+                            </h4>
+                            <div className="ant-list-item-meta-description">
+                                <OpinionDetailItemByType item={item} refOpinion={refOpinion} />
+                            </div>
+                        </div>
+                    </div>
+                    <ul className="ant-list-item-action">
+                        {getListItemActions(item).map( renderItemAction )}
+                    </ul>
+                </div>
+                { item.type !== 'QUESTION' ? null :
+                    <div className="ant-list-item-extra" style={{float:'right'}}>
                         <ActionCodeDropdown
                             refDetail={item._id}
                             value={item.actionCode}
                         />
-                    : null
+                    </div>
                 }
-            >
-                <List.Item.Meta
-                    //avatar={<Avatar src={item.avatar} />}
-                    title={
-                        <Tooltip title={item.title}>
-                            <Link href={`/opinions/${item.refOpinion}/${item._id}`}>
-                                <Space>
-                                    <Tag color="blue">{item.orderString}</Tag>
-                                    <span>{item.title}</span>
-                                    { item.type !== 'ANSWER' ? null :
-                                        <ActionCodeTag actionCode={item.actionCode} />
-                                    }
-                                </Space>
-                            </Link>                                
-                        </Tooltip>
-                    }
-                    description={ <OpinionDetailItemByType item={item} refOpinion={refOpinion} /> }
-                />
-                {
-                    //<OpinionDetailItemByType item={item} />
-                    //Irgendeintext als zusätzlicher Content und noch mehr....
-                    /*item.type == 'PICTURE'
-                        ? <ListImages imageOrImages={item.files} />
-                        : null*/
-                }
-            </List.Item>
+            </SortableListItem>
         );
     }
 
     return (
         <Fragment>
-            <List
-                className="opinion-details-list"
-                itemLayout="vertical"
-                loading={isLoading}
-                dataSource={opinionDetails}
-                renderItem={renderItem}
-            />
+            <div className="ant-list ant-list-vertical ant-list-split opinion-details-list">
+                <SortableContainer
+                    useDragHandle
+                    //helperClass="row-dragging"
+                    onSortEnd={onSortEnd}
+                    onSortStart={ e => console.log('Sort Start')}
+                    className="ant-list-items"
+                >
+                    {(rePositionedOpinionDetails || opinionDetails).map(renderItem)}
+                </SortableContainer>
+            </div>
+
 
             <Skeleton loading={isLoading} paragraph={{rows:14}} />
         </Fragment>

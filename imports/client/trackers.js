@@ -153,8 +153,9 @@ export const useOpinionDetail = (refOpinion, refDetail) => useTracker( () => {
  * 
  * @param {String} refOpinion   id of the Opinion
  * @param {String} refDetail    id of the OpinionDetail
+ * @param {Function} callback    Function that will be invoked at rerun
  */
-export const useOpinionDetails = (refOpinion, refParentDetail) => useTracker( () => {
+export const useOpinionDetails = (refOpinion, refParentDetail, callback) => useTracker( () => {
     const noDataAvailable = [ [] /*opinionDetails*/ , true /*loading*/];
 
     if (!Meteor.user()) {
@@ -168,10 +169,12 @@ export const useOpinionDetails = (refOpinion, refParentDetail) => useTracker( ()
 
     let opinionDetails;
     if (refParentDetail) {
-        opinionDetails = OpinionDetails.find({ refParentDetail }, { sort: {orderString: 1}}).fetch();
+        opinionDetails = OpinionDetails.find({ refParentDetail }, { sort: {position: 1}}).fetch();
     } else {
-        opinionDetails = OpinionDetails.find({ refOpinion, refParentDetail: null }, { sort: {orderString: 1}}).fetch();
+        opinionDetails = OpinionDetails.find({ refOpinion, refParentDetail: null }, { sort: {position: 1}}).fetch();
     }
+
+    if (callback) callback(opinionDetails);
 
     return [opinionDetails, false];
 }, [refOpinion, refParentDetail]);
@@ -311,8 +314,9 @@ export const useOpinionActionList = refOpinion => useTracker( () => {
 
     let actionListitems = OpinionDetails.find({
         refOpinion,
-        type: { $in: ['QUESTION', 'ANSWER'] },
+        type: 'QUESTION', //{ $in: [ 'QUESTION', 'ANSWER'] },
         deleted: false,
+        finallyRemoved: false,
         actionCode: { $ne: 'okay' },
         actionText: { $ne: null }
     }, {
@@ -324,7 +328,9 @@ export const useOpinionActionList = refOpinion => useTracker( () => {
         },
         sort: {
             actionPrio: 1,
-            orderString: 1
+            //orderString: 1,
+            parentPosition: 1,
+            position: 1
         }
     }).map(item => {
         item.key = item._id;

@@ -19,6 +19,8 @@ export const OpinionDetailContent = ({refOpinion, refDetail}) => {
         );
     }
 
+    if (!detail) return null;
+
     return (
         <Descriptions 
             layout="vertical"

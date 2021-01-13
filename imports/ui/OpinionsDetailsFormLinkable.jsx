@@ -59,7 +59,6 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
     if (currentUser && !opinionIsLoading && opinion) {
         let edit = false,
             del = false,
-            create = false,
             perm = { currentUser };
 
         const sharedWithUser = opinion.sharedWith.find( shared => shared.user.userId === currentUser._id );
@@ -177,9 +176,9 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
 
                 { detail && detail.type === 'TODOLIST'
                     ? <ActionTodoList refOpinion={refOpinion} />
-                    : detail && layouttypesObject[detail.type].hasChilds
+                    : (detail && layouttypesObject[detail.type].hasChilds) || refDetail === null
                         ? <Fragment>
-                            <Divider orientation="left">Details zu diesem Punkt</Divider>
+                            <Divider orientation="left">Details</Divider>
 
                             <ListOpinionDetailsLinkable
                                 refOpinion={refOpinion} 
@@ -193,7 +192,7 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                 }
 
                 {
-                    canEdit && detail && layouttypesObject[detail.type].hasChilds
+                    canEdit && ((detail && layouttypesObject[detail.type].hasChilds) || refDetail === null)
                         ? <ModalOpinionDetail
                                 mode="NEW" 
                                 refOpinion={refOpinion} 

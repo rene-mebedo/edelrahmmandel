@@ -15,6 +15,10 @@ export const LayouttypeSchema = new SimpleSchema({
     hasChilds: {
         type: Boolean,
         defaultValue: false
+    },
+    template: {
+        type: String,
+        optional: true
     }
 });
 

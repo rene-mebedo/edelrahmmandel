@@ -68,6 +68,17 @@ export const OpinionsSchema = new SimpleSchema({
     },
     opinionNo: {
         type: String
+    },
+    userVariables: {
+        type: Array,
+        optional: true,
+        label: 'Benutzervariablen'
+    },
+    'userVariables.$': {
+        type: new SimpleSchema({
+            name: { type: String, label: 'Variablenname' },
+            value: { type: String, label: 'Variablenwert', optional: true }
+        })
     }
 });
 

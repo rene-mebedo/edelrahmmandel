@@ -21,6 +21,17 @@ export const isBoolean = val => {
 
 
 /**
+ * Tests if given Value is a Numeric value or not
+ * 
+ * @param {Any} val Value to test
+ * @returns {Boolean} True if given Value is Numeric otherwise false
+ */
+export const isNumeric = val => {
+    return (typeof val === 'number');
+}
+
+
+/**
  * Will debounce the give function
  * 
  * @param {Function} func callback that will be called after debounce is over

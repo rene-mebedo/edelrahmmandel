@@ -14,7 +14,7 @@ Meteor.publish('opinionDetail', function publishOpinionDetail({ refOpinion, refD
 
     if (!permitted) return null;
 
-    return OpinionDetails.find({ _id: refDetail });
+    return OpinionDetails.find({ _id: refDetail, finallyRemoved: false });
 });
 
 
@@ -27,9 +27,9 @@ Meteor.publish('opinionDetails', function publishOpinionDetails({ refOpinion, re
     if (!permitted) return null;
 
     if (refParentDetail)
-        return OpinionDetails.find({ refParentDetail });
+        return OpinionDetails.find({ refParentDetail, finallyRemoved: false });
     if (refOpinion)
-        return OpinionDetails.find({ refOpinion, refParentDetail });
+        return OpinionDetails.find({ refOpinion, refParentDetail, finallyRemoved: false });
 });
 
 Meteor.publish('opinionDetailsActionListitems', function publishOpinionDetailsActionListitems(refOpinion) {
@@ -42,8 +42,9 @@ Meteor.publish('opinionDetailsActionListitems', function publishOpinionDetailsAc
 
     return OpinionDetails.find({ 
         refOpinion,
-        type: { $in: ['QUESTION', 'ANSWER'] },
+        type: 'QUESTION', //{ $in: ['QUESTION', 'ANSWER'] },
         deleted: false,
+        finallyRemoved: false,
         actionCode: { $ne: 'okay' },
         actionText: { $ne: null }
     });

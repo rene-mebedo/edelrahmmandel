@@ -14,6 +14,19 @@ export const OpinionDetailSchema = new SimpleSchema({
         label: 'Parent-Referenz',
         optional: true
     },
+    position: {
+        type: SimpleSchema.Integer,
+        label: 'Position',
+    },
+    parentPosition: {
+        type: String,
+        label: 'Position Vorgänger',
+        optional: true
+    },
+    depth: {
+        type: SimpleSchema.Integer,
+        label: 'Verschachtelungsebene',
+    },
     type: {
         type: String,
         label: 'Layout/Type'
@@ -60,17 +73,12 @@ export const OpinionDetailSchema = new SimpleSchema({
         type: Object,
         blackbox: true
     },
-    /*info: {
-        type: String,
-        label: 'Hinweis',
-        optional: true
-    },*/
-    /*specification: {
-        type: String,
-        label: 'Vorschrift',
-        optional: true
-    },*/
-    deleted: {
+    deleted: { // marked the deetail that ist could be deleted
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+    finallyRemoved: { // detail is finally removed and will be no longer served
         type: Boolean,
         optional: true,
         defaultValue: false
@@ -106,10 +114,23 @@ export const OpinionDetailSchema = new SimpleSchema({
         optional: true,
         defaultValue: false
     },
+    pagebreakBefore: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
     pagebreakAfter: {
         type: Boolean,
         optional: true,
         defaultValue: false
+    },
+    htmlContent: {
+        type: String,
+        optional: true
+    },
+    htmlChildContent: {
+        type: String,
+        optional: true
     }
 });
 

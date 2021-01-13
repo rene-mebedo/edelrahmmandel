@@ -22,6 +22,11 @@ export const ActivitySchema = new SimpleSchema({
         label: 'Gutachten-Referenz auf Detailpunkt',
         optional: true
     },
+    refDetailFinallyRemoved: {
+        type: String,
+        label: 'Gutachten-Referenz auf ein Detail, dass endgültig gelöscht wurde',
+        optional: true
+    },
     type: {
         type: String // USER-POST, SYSTEM-LOG
     },

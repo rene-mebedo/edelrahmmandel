@@ -9,6 +9,9 @@ import { hasPermission, injectUserData } from '../helpers/roles';
 import { determineChanges } from '../helpers/activities';
 
 import { actionCodes } from '../constData/actioncodes';
+//import { data } from 'jquery';
+
+import { renderTemplate } from '../constData/layouttypes';
 
 Meteor.methods({
     /**
@@ -119,6 +122,100 @@ Meteor.methods({
     },
     
     /**
+     * Takes the given OpinionDetail (Answer) and set the actionCode and -text
+     * to it's parent. At the same time all other answers at the same level will
+     * be marked as deleted. This will save tons of click's and time for the user!
+     * 
+     * @param {String} refDetail Specifies the OpinionDetail
+     */
+    'opinionDetail.checkAnswer'(refDetail) {
+        check(refDetail, String);
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+        
+        let currentUser = Meteor.users.findOne(this.userId);
+        const opinionDetail = OpinionDetails.findOne(refDetail);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: opinionDetail.refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt und Sie können daher die Antwort nicht als "richtig" einsetzen.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (! hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten und Sie können daher die Antwort nicht als "richtig" einsetzen.');
+        }
+
+        // check if we have an Answer
+        if (opinionDetail.type !== 'ANSWER') {
+            throw new Meteor.Error('Sie können die Aktion "Check" nur mit Details vom Typ "Antwort" durchführen.');
+        }
+
+        // save the old parent opinionDetail for the log
+        oldParentDetail = OpinionDetails.findOne(opinionDetail.refParentDetail);
+
+        if (!oldParentDetail) {
+            throw new Meteor.Error('Der Vorgang CheckAnswer wird abgebrochen. Es konnte das Parent-Element zu diesem Detail nicht gefunde werden. Bitte wenden Sie sich  an Ihren Systemadministrator.');
+        }
+
+        // update the parent
+        OpinionDetails.update( { _id: opinionDetail.refParentDetail }, {
+            $set: {
+                actionCode: opinionDetail.actionCode,
+                actionText: opinionDetail.actionText,
+                actionPrio: opinionDetail.actionPrio
+            }
+        });
+
+        // update all siblings from type answer
+        OpinionDetails.update( { 
+            _id: { $ne: opinionDetail._id },
+            refParentDetail: opinionDetail.refParentDetail,
+            type: 'ANSWER'
+        }, {
+            $set: {
+                deleted: true
+            }
+        }, { multi:true });
+
+        let activity = injectUserData({ currentUser }, {
+            refOpinion: opinionDetail.refOpinion,
+            // dieser Eintrag wird beim Parent angesiedelt
+            // da der eigentlich betroffene Detailpunkt nicht verändert wurde
+            refDetail: opinionDetail.refParentDetail,
+            type: 'SYSTEM-LOG',
+            action: 'UPDATE',
+            message: `hat die Antwort mit dem Titel <strong>${opinionDetail.title}</strong> als zutreffend ausgewählt.`,
+            changes: [{
+                message: "Der Handlungsbedarf (Code) wurde geändert.",
+                propName: "actionCode",
+                oldValue: oldParentDetail.actionCode,
+                newValue: opinionDetail.actionCode
+            }, {
+                message: "Der Handlungsbedarf (Text) wurde geändert.",
+                propName: "actionText",
+                oldValue: oldParentDetail.actionText,
+                newValue: opinionDetail.actionText
+            }, {
+                message: "Der Handlungsbedarf (Prio) wurde geändert.",
+                propName: "actionPrio",
+                oldValue: oldParentDetail.actionPrio,
+                newValue: opinionDetail.actionPrio
+            }]
+        }, { created: true });
+
+        Activities.insert(activity);
+    },
+
+    /**
      * Create a new Detail for a opinion
      * 
      * @param {Object} detailData Object with all props of the new Detail
@@ -128,6 +225,8 @@ Meteor.methods({
             throw new Meteor.Error('Not authorized.');
         }
         
+        detailData.finallyRemoved = false;
+
         // check optional data for likes, dislikes, etc.
         if (!detailData.files) detailData.files = [];
         if (!detailData.likes) detailData.likes = [];
@@ -147,8 +246,27 @@ Meteor.methods({
             detailData.actionPrio = actionCodes[detailData.actionCode].orderId;
         }
 
+        const parentDetail = detailData.refParentDetail && OpinionDetails.findOne({ _id: detailData.refParentDetail });
+        // determine depth
+        if (!parentDetail) {
+            // if we got no Parent, we are at top level
+            detailData.depth = 1;
+        } else {
+            detailData.depth = parentDetail.depth++;
+        }
+
+        // get max position +1 to insert the detail at the end
+        const lastDetailAtSameLevel = OpinionDetails.findOne({ refParentDetail: detailData.refParentDetail }, { sort: { position: -1 }});
+        detailData.position = ((lastDetailAtSameLevel && lastDetailAtSameLevel.position) || 0) + 1;
+
         let detail = injectUserData({ currentUser }, {...detailData}, { created: true });
         detail.activitiesCount = 1;
+
+        
+        if (Meteor.isServer) {
+            // render the content that will be shown to the user
+            detail.htmlContent = renderTemplate(detail);
+        }
 
         try {
             OpinionDetailSchema.validate(detail);
@@ -175,6 +293,19 @@ Meteor.methods({
      * @param {Object} opinionDetail 
      */
     'opinionDetail.update'(opinionDetail) {
+        check(opinionDetail, Object);
+        check(opinionDetail.id, String);
+        check(opinionDetail.data, Object);
+
+        // soll das Dokument wiederhergestellt werden
+        if (Meteor.isClient && opinionDetail.data.finallyRemoved === false) {
+            // das Document kann auf dem client nicht mehr gefunden werden
+            // oder geupdated werden, da alle Documents mit finallyRemoved:true
+            // nicht mehr gepublished werden
+            // deshalb get out of here --> lass den server das machen :-)
+            return;
+        }
+
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
@@ -204,17 +335,20 @@ Meteor.methods({
                 type: { what: 'der Typ', msg: 'Der Typ wurde geändert.' },
                 title: { what: 'den Titel', msg: 'Der Titel wurde geändert.' },
                 text: { what: 'den Text', msg: 'Der Text wurde geändert.' },
-                printTitle: { what: 'den Drucktitel', msg: 'Der Drucktite wurde geändert.' },
+                printTitle: { what: 'den Drucktitel', msg: 'Der Drucktitel wurde geändert.' },
                 actionCode: { what: 'den Handlungsbedarf', msg: 'Der Handlungsbedarf wurde geändert.' },
                 actionText: { what: 'den Text des Handlungsbedarf', msg: 'Der Text des Handlungsbedarfs wurde geändert.' },
                 deleted: { what: 'die Löschmarkierung', msg: 'Die Löschmarkierung wurde geändert.' },
-                showInToC: { what: 'die Kennung "Innhaltsverzeichnis"', msg: 'Die Kennung "Inhaltsverzeichnis" wurde geändert.' }
+                finallyRemoved: { what: 'die endgültige Löschung', msg: 'Das Detail wurde wiederhergestellt.' },
+                showInToC: { what: 'die Kennung "Innhaltsverzeichnis"', msg: 'Die Kennung "Inhaltsverzeichnis" wurde geändert.' },
+                pagebreakBefore: { what: 'die Einstellung "Seitenumbruch vorab"', msg: 'Die Einstellung "Seitenumbruch vorab" wurde geändert.' },
+                pagebreakAfter: { what: 'die Einstellung "Seitenumbruch nachher"', msg: 'Die Einstellung "Seitenumbruch nachher" wurde geändert.' },
             },
             data: opinionDetail.data, 
             oldData: old
         });
 
-        // the actionprio will only managed behind the scene
+        // the actionPrio will only managed behind the scene
         // and will be used for sorting by actionCode
         if (opinionDetail.data.actionCode) {
             opinionDetail.data.actionPrio = actionCodes[opinionDetail.data.actionCode].orderId;
@@ -222,10 +356,17 @@ Meteor.methods({
 
         // are there changes to commit
         if (changes.length) {
-            OpinionDetails.update(opinionDetail.id, { 
+            if (Meteor.isServer) {
+                // render the content that will be shown to the user
+                const itemToRender = { ...old, ...opinionDetail.data };
+                opinionDetail.data.htmlContent = renderTemplate(itemToRender);
+            }
+
+            const result = OpinionDetails.update(opinionDetail.id, { 
                 $set: opinionDetail.data,
                 $inc: { activitiesCount: 1 }
             });
+            
             
             let activity = injectUserData({ currentUser }, {
                 refOpinion: old.refOpinion,
@@ -238,6 +379,24 @@ Meteor.methods({
             
             Activities.insert(activity);
             
+            // at last update the parentDetail with the new Content
+            const htmlChildContent = OpinionDetails.find({
+                refParentDetail: old.refParentDetail,
+                deleted: false,
+                finallyRemoved: false
+            }, { fields: { htmlContent: 1 }, sort: { position: 1 } }).fetch();
+
+            OpinionDetails.update(old.refParentDetail, { 
+                $set: {
+                    htmlChildContent: 
+                        '<ul class="mbac-child-content-list">' + 
+                            htmlChildContent.map( ({htmlContent}) => {
+                                return `<li>` + htmlContent + '</li>';
+                            }).join('') +
+                        '</ul>'
+                }
+            });
+
             return changes;
         }
     },
@@ -269,23 +428,14 @@ Meteor.methods({
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
-        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
-            throw new Meteor.Error('Keine Berechtigung zum Löschen dieses Details zum Gutachten.');
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten. Sie können es nciht zum Löschen markieren.');
         }
 
         OpinionDetails.update(id, {
             $set:{ deleted: true }
         });
-        /*OpinionDetails.remove(id);
-        
-        let activity = await injectUserData({ currentUser }, {
-            refOpinion: old.refOpinion,
-            refDetail: id._str || id,
-            type: 'SYSTEM-LOG',
-            action: 'REMOVE',
-            message: "Das Detail mit dem Titel '" + old.title + "' wurde gelöscht.",
-        }, { created: true });*/
-
+       
         let activity = injectUserData({ currentUser }, {
             refOpinion: old.refOpinion,
             refDetail: id._str || id,
@@ -303,6 +453,155 @@ Meteor.methods({
         Activities.insert(activity);
     },
 
+    /**
+     * Finally mark delete the given opinions detail from the colection
+     * 
+     * @param {String} id Id of the detail to mark as finallyRemove
+     */
+    'opinionDetail.finallyRemove'(id) {
+        check(id, String);
+
+        this.unblock();
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+        
+        let currentUser = Meteor.users.findOne(this.userId);
+        const old = OpinionDetails.findOne(id);
+
+        if (!old) {
+            throw new Meteor.Error('Das angegebene Detail mit der id ' + id + ' wurde nicht gefunden.');
+        }
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: old.refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
+            throw new Meteor.Error('Keine Berechtigung zum endgültigen Löschen dieses Details zum Gutachten.');
+        }
+
+        OpinionDetails.update(id, {
+            $set:{ finallyRemoved: true }
+        });
+
+        let activity = injectUserData({ currentUser }, {
+            refOpinion: old.refOpinion,
+            // dieser Eintrag wird beim Parent angesiedelt
+            // da der eigentlich betroffene Detailpunkt gelöscht ist
+            refDetail: old.refParentDetail,
+            refDetailFinallyRemoved: id._str || id,
+            type: 'SYSTEM-LOG',
+            action: 'FINALLYREMOVE',
+            message: `hat das Detail mit dem Titel <strong>${old.title}</strong> gelöscht.`,
+            changes: [{
+                message: "Das Detail wurde gelöscht.",
+                propName: "finallyRemoved",
+                oldValue: false,
+                newValue: true
+            }]
+        }, { created: true });
+
+        Activities.insert(activity);
+    },
+
+    /**
+     * Reposition the given Detail and move alle other details
+     * at their new position. At least it will update all referencing
+     * Details parentPosition
+     * 
+     * @param {String} refDetail Specifies the Detail by Id
+     * @param {Integer} newPosition New Position to place the Detail
+     */
+    'opinionDetails.rePosition'(refDetail, newPosition){
+        this.unblock();
+
+        check(refDetail, String);
+        check(newPosition, Number);
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+        
+        const old = OpinionDetails.findOne(refDetail);
+
+        if (!old) {
+            throw new Meteor.Error('Das angegebene Detail wurde nicht gefunden und kann somit nicht verschoben werden.');
+        }
+
+        let currentUser = Meteor.users.findOne(this.userId);
+
+        const shared = Opinions.findOne({
+            _id: old.refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten.');
+        }
+
+        const syncUpdateDetails = Meteor.wrapAsync(OpinionDetails.update, OpinionDetails);
+
+        // Update the detail to it's new Position
+        syncUpdateDetails(refDetail, { $set:{ position: newPosition } });
+
+        // update all other details and increase their position
+        // if oldPosition is greater than newPosition
+        const position = old.position > newPosition ? { $gte: newPosition, $lt: old.position } : { $gt: old.position, $lte: newPosition };
+        const incValue = old.position > newPosition ? 1 : -1;
+        const query = {
+            _id: { $ne: old._id },
+            refOpinion: old.refOpinion,
+            refParentDetail: old.refParentDetail,
+            position
+        }
+
+        // get all Ids that were affected by the new position of the item above and should be repositioned too
+        const updatedIdsOnSameLevel = OpinionDetails.find(query, { fields: { _id: 1 }}).map( ({ _id }) => _id );
+        // and then update them
+        syncUpdateDetails({_id: { $in: updatedIdsOnSameLevel }}, { $inc: { position: incValue } }, { multi: true });
+
+        //return;
+
+        // update all Levels below recursiv
+        const updateChildren = (ref, newParentPosition) => {
+            OpinionDetails.find({
+                refParentDetail: ref
+            }).forEach( ({ _id, position }) => {
+                syncUpdateDetails(_id, {
+                    $set: { parentPosition: newParentPosition }
+                });
+                updateChildren(_id, newParentPosition + position + '.');
+            });
+        }
+        
+        // add refDetail to run all in one place
+        updatedIdsOnSameLevel.push(refDetail);
+
+        OpinionDetails.find({
+            _id: { $in: updatedIdsOnSameLevel }
+        }, {
+            fields: { _id:1, position: 1}
+        }).forEach( ({ _id, position }) => {
+            // Update all children of the repositioned Item
+            updateChildren( _id, (old.parentPosition || '') + position + '.');
+        });
+    }
 });
 
 if (Meteor.isServer) {

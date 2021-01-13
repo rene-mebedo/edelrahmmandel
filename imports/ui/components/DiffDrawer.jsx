@@ -13,7 +13,7 @@ import { InfoCircleOutlined, RestOutlined } from '@ant-design/icons';
 
 import Diff from 'react-stylable-diff';
 
-import { isObject, isBoolean } from '../../api/helpers/basics';
+import { isObject, isBoolean, isNumeric } from '../../api/helpers/basics';
 
 
 export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) => {
@@ -79,6 +79,7 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
 
         let i=0;
         return changes.map(item => {
+            console.log(item);
             let { oldValue, newValue } = item;
             let diffType = 'words';
 
@@ -89,6 +90,14 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
             if (isBoolean(newValue)) {
                 newValue = newValue ? "Ja" : "Nein";
             }
+            
+            if (isNumeric(newValue)) {
+                newValue = ''+newValue; // convert numeric value to text
+            }
+            if (isNumeric(oldValue)) {
+                oldValue = ''+oldValue; // convert numeric value to text
+            }
+
 
             if (isObject(oldValue)) {
                 diffType = 'json';
