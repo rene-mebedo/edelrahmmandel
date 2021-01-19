@@ -37,7 +37,8 @@ import { OpinionBreadcrumb } from './components/OpinionBreadcrumb';
 import { OpinionContent } from './OpinionContent';
 import { OpinionDetailContent } from './OpinionDetailContent';
 
-import { ListOpinionDetailsLinkable } from './ListOpinionDetailsLinkable';
+//import { ListOpinionDetailsLinkable } from './ListOpinionDetailsLinkable';
+import { ListOpinionDetailsLinkable } from './ListOpinionDetails/ListOpinionDetails';
 import { hasPermission } from '../api/helpers/roles';
 
 import { 
@@ -150,6 +151,21 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
         }
     }
 
+    const getPageHeaderTitle = () => {
+        if (refDetail && detail) {
+            if (detail.type == 'HEADING') return detail.printTitle;
+            if (detail.type == 'TEXT') return detail.text;
+            if (detail.type == 'QUESTION') return detail.printTitle;
+            if (detail.type == 'ANSWER') return detail.title;
+            if (detail.type == 'BESTIMMUNGEN') return detail.printTitle;
+            if (detail.type == 'PAGEBREAK') return detail.title;
+            
+            return detail.printTitle;
+        }
+        
+        return opinion.title;
+    }
+
     return (
         <Fragment>
             <Affix className="affix-opiniondetail" offsetTop={0}>
@@ -162,7 +178,7 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                     <PageHeader
                         className="site-page-header"
                         onBack={() => history.back()}
-                        title={detailIsLoading || opinionIsLoading ? <Spin /> : ( (refDetail && detail) ? detail.title : opinion.title) }
+                        title={detailIsLoading || opinionIsLoading ? <Spin /> : getPageHeaderTitle()/* (refDetail && detail) ? detail.title : opinion.title)*/ }
                         extra={pageHeaderButtons}
                     />
                 </div>
@@ -171,14 +187,14 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
             <Content>
                 { refDetail === null
                     ? <OpinionContent refOpinion={refOpinion} currentUser={currentUser} canEdit={canEdit} canDelete={canDelete} /> // no content for a detail we need to display the Opinion-data itself
-                    : <OpinionDetailContent refOpinion={refOpinion} refDetail={refDetail} />
+                    : null //<OpinionDetailContent refOpinion={refOpinion} refDetail={refDetail} permissions={{canEdit, canDelete, currentUser}}/>
                 }
 
                 { detail && detail.type === 'TODOLIST'
                     ? <ActionTodoList refOpinion={refOpinion} />
                     : (detail && layouttypesObject[detail.type].hasChilds) || refDetail === null
                         ? <Fragment>
-                            <Divider orientation="left">Details</Divider>
+                            {/*<Divider orientation="left">Details</Divider>*/}
 
                             <ListOpinionDetailsLinkable
                                 refOpinion={refOpinion} 
@@ -192,13 +208,13 @@ export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
                 }
 
                 {
-                    canEdit && ((detail && layouttypesObject[detail.type].hasChilds) || refDetail === null)
+                    /*canEdit && ((detail && layouttypesObject[detail.type].hasChilds) || refDetail === null)
                         ? <ModalOpinionDetail
                                 mode="NEW" 
                                 refOpinion={refOpinion} 
                                 refParentDetail={refDetail}
                         />
-                        : null
+                        : null*/
                 }
             </Content>
         </Fragment>

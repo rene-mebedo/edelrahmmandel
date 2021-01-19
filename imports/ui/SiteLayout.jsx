@@ -28,6 +28,7 @@ import { useUserActivityCount } from '../client/trackers';
 import { UserActivitiesDrawer } from './components/UserActivitiesDrawer';
 
 import { UserMenu } from './components/UserMenu';
+import { Link } from './components/Link';
 
 const {
     Header, 
@@ -39,7 +40,6 @@ export const SiteLayout = props => {
     const [menuCollapsed, setMenuCollapsed] = useState(window.innerWidth < 600);
     const [activitiesCollapsed, setActivitiesCollapsed] = useState(window.innerWidth < 600);
     const [showUserActivies, setShowUserActivies] = useState(false);
-    //const [lastActiveMenuKey, setLastActiveMenuKey] = useState(props.activeMenuKey);
 
     const [activitiesCount, acLoading] = useUserActivityCount();
 
@@ -56,18 +56,16 @@ export const SiteLayout = props => {
             setMenuCollapsed(!menuCollapsed);
 
         if (key == 'USERACTIVITIES') {
-            //setLastActiveMenuKey(props.activeMenuKey);
             return setShowUserActivies(true);
         }
     }
 
     closeUserActivities = () => {
-        //setLastActiveMenuKey(lastActiveMenuKey);
         setShowUserActivies(false);
     }
 
     renderUserActivitiesMenuItem = () => {
-        const UserActivitiesLink = () => "Aktivitäten"; //<a href="/activities">Aktivitäten</a>;
+        const UserActivitiesLink = () => "Aktivitäten";
 
         let count = <ClockCircleOutlined style={{ color: '#f5222d' }} />;
 
@@ -108,7 +106,7 @@ export const SiteLayout = props => {
                 </div>
 
                 <Menu 
-                    theme="dark" mode="inline" /*selectedKeys={ lastActiveMenuKey ? [lastActiveMenuKey]: [] }*/
+                    theme="dark" mode="inline"
                     selectedKeys={ props.activeMenuKey ? [props.activeMenuKey]: []}
                     onClick={onMenuClick}
                 >
@@ -116,10 +114,10 @@ export const SiteLayout = props => {
                         { renderUserActivitiesMenuItem() }
                     </Menu.Item>
                     <Menu.Item key="OPINIONS" icon={<VideoCameraOutlined />}>
-                        <a href="/opinions">Gutachten</a>
+                        <Link href="/opinions" canCancel>Gutachten</Link>
                     </Menu.Item>
                     <Menu.Item key="TASKS" icon={<UploadOutlined />}>
-                        <a href="/tasks">Aufgaben</a>
+                        <Link href="/tasks" canCancel>Aufgaben</Link>
                     </Menu.Item>
                 </Menu>
             </Sider>
@@ -163,8 +161,7 @@ export const SiteLayout = props => {
                 >
                     
                     <ListActivities 
-                        onClose={ toggleActivitiesSider //e => setActivitiesCollapsed(false)
-                        }
+                        onClose={ toggleActivitiesSider }
                         refOpinion={props.refOpinion} 
                         refDetail={props.refDetail} 
                         currentUser={props.currentUser} 

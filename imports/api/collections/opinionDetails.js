@@ -48,7 +48,8 @@ export const OpinionDetailSchema = new SimpleSchema({
     },
     orderString: {
         type: String,
-        label: 'Sortierung'
+        label: 'Sortierung',
+        optional: true
     },
     actionCode: {
         type: String,
@@ -128,10 +129,10 @@ export const OpinionDetailSchema = new SimpleSchema({
         type: String,
         optional: true
     },
-    htmlChildContent: {
+    /*htmlChildContent: {
         type: String,
         optional: true
-    }
+    }*/
 });
 
 OpinionDetailSchema.extend(CreationSchema);

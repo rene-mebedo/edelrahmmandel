@@ -17,6 +17,7 @@ import localization from 'moment/locale/de';
 
 import { useUserActivities } from '../../client/trackers';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
+import { Link } from './Link';
 
 /**
  * Generate the URL for an anchor by gthe give item/userActivity
@@ -74,7 +75,7 @@ export const UserActivitiesDrawer = ({ visible, onClose }) => {
                 if (onClose) {
                     setTimeout(onClose, 100);
                 }
-            }            
+            }         
         }
     }
 
@@ -94,7 +95,7 @@ export const UserActivitiesDrawer = ({ visible, onClose }) => {
                 loading={isLoading}
                 renderItem={item => (
                     <li className={["mbac-user-activity-item", item.unread ? "unread" : "read"].join(' ')}>
-                        <a href={getUrl(item)} onClick={ handleLinkClick(item) }>
+                        <Link href={getUrl(item)} onClick={ handleLinkClick(item) }>
                             <Comment
                                 extra={[
                                     !item.unread ? <EyeTwoTone /> : <EyeOutlined />
@@ -118,7 +119,7 @@ export const UserActivitiesDrawer = ({ visible, onClose }) => {
                                     </Tooltip>
                                 }
                             />
-                        </a>
+                        </Link>
                     </li>
                 )}
             />

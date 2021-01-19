@@ -59,9 +59,9 @@ geplanter `Going-Live: KW 3`
 - [ ] UI-Optimierungen für Tablet und Smartphones ( medium and small devices )
 - [ ] Opiniondetails `pagebreakBefore` implementieren
 - [ ] Opiniondetails `pagebreakAfter` implementieren
-- [ ] Opiniondetails Check-Answer
+- [x] Opiniondetails Check-Answer
 - [ ] Selectbox layouttypes sortiert nach Name
-
+- [ ] Dropdown Gutachter - Feld zurücksetzen/leeren nicht möglich
 
 ### IT Operations
 - [ ] Hosting

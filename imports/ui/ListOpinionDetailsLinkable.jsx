@@ -86,7 +86,8 @@ const OpinionDetailItemByType = ({ item, refOpinion }) => {
         item.type == 'BESTIMMUNGEN' ||
         item.type == 'HINT' ||
         item.type == 'INFO' ||
-        item.type == 'IMPORTANT'
+        item.type == 'IMPORTANT' ||
+        item.type == 'TEXT'
     ) {
         /*const { template } = layouttypesObject[item.type];
 
@@ -101,9 +102,7 @@ const OpinionDetailItemByType = ({ item, refOpinion }) => {
 
         return <div className="mbac-opinion-detail" dangerouslySetInnerHTML={ {__html: renderedTemplate}} />*/
 
-        return <div dangerouslySetInnerHTML={ {__html: 
-            (item.htmlContent && item.htmlContent.replace(/\{\{childContent\}\}/g, item.htmlChildContent || '')) || ''
-        }} />
+        return <div dangerouslySetInnerHTML={ {__html: item.htmlContent } } />
     }
 
     return (

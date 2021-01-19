@@ -320,10 +320,143 @@ span.mbac-user-mention {
 }
 
 
+.mbac-media-print {
+    display:none;
+}
+
+.mbac-floating-actions {
+    position: absolute;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    margin-top: 24px;
+    margin-left: -2px;
+    padding: 16px;
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2),0 4px 20px 0 rgba(0,0,0,0.19);
+    background-color: #fff;
+    z-index: 1;
+
+    .mbac-additional-actions {
+        margin-bottom: 8px;
+        color: #666;
+        font-size: 20px;
+
+        .anticon {
+            padding: 0 12px;
+            &:hover {
+                color:orange;
+            }
+        }
+
+    }
+    .mbac-primary-actions {
+        float:right;
+    }
+}
+
+
+.mbac-action-plus.mbac-action-add {
+    height: 12px;
+    margin-left: 16px;
+    color: #1890ff;
+    opacity: 0;
+
+    span.anticon {
+        display: inline-block;
+        font-size: 24px;
+        position: absolute;
+        opacity: 0;
+
+        margin-top: -14px;
+        margin-left: -24px;
+
+        &:hover{
+            opacity: 1;
+            cursor: pointer
+        }
+    }
+    
+    &:hover {
+        border-top: 1px dashed #1890ff;
+        opacity: 0.6;
+
+        span.anticon {
+            opacity: 0.8;
+            
+            &:hover{
+                opacity: 1;
+                cursor: pointer
+            }
+        }
+    }
+}
+
+
 
 .mbac-opinion-detail {
+    color: #444;
+    
+    &.mbac-opinion-detail-deleted {
+        .mbac-rendered-content {
+            filter: blur(3px);
+        }
+
+        /*.mbac-child-content {
+            display:none;
+        }*/
+    }
+
+    
+
+    /*
+    .depth-2 { margin-left: 16px; &.mbac-action-add { margin-left: 48px; } }
+    .depth-3 { margin-left: 32px; &.mbac-action-add { margin-left: 48px; } }
+    .depth-4 { margin-left: 48px; &.mbac-action-add { margin-left: 80px; } }
+    .depth-5 { margin-left: 64px; &.mbac-action-add { margin-left: 96px; } }
+    .depth-6 { margin-left: 96px; &.mbac-action-add { margin-left: 128px; } }
+    .depth-7 { margin-left: 128px; &.mbac-action-add { margin-left: 160px; } }
+    .depth-8 { margin-left: 160px; &.mbac-action-add { margin-left: 64px; } }
+    .depth-9 { margin-left: 192px; &.mbac-action-add { margin-left: 64px; } }
+*/
+
+    .depth-2,
+    .depth-3,
+    .depth-4,
+    .depth-5,
+    .depth-6,
+    .depth-7,
+    .depth-8,
+    .depth-9 { margin-left: 16px; &.mbac-action-add { margin-left: 48px; } }
+
+    span.mbac-editable-content {
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2),0 1px 6px 0 rgba(0,0,0,0.19);
+        border: 1px solid rgba(220, 125, 0, 0.363);
+        border-radius: 2px;
+        margin: -3px;
+        padding: 2px;
+
+        display: inline-block;
+        min-width: 50px;
+        max-width: 600px;
+        outline: auto;
+
+    }
+    
+
+    .mbac-wysiwyg {
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2),0 1px 6px 0 rgba(0,0,0,0.19);
+        border: 1px solid rgba(220, 125, 0, 0.363);
+        border-radius: 2px;
+        margin: -3px;
+        padding: 2px;
+        outline: auto;
+    }
+
+    .mbac-position {
+        margin-right: 16px;
+    }
+
     .mbac-child-content {
-        background-color: antiquewhite;
+        //background-color: antiquewhite;
         
         > ul.mbac-child-content-list {
             list-style: none;
@@ -335,16 +468,55 @@ span.mbac-user-mention {
         }
     }
 
+    .mbac-item-type-pagebreak {
+        .mbac-border {
+            border-top: 5px dotted #999;
+            height: 24px;
+            margin-top: 8px;
+        }
+        .mbac-border-title {
+            position: absolute;
+            margin-top: -36px;
+            margin-left: 96px;
+            background-color: #fff;
+            padding-left: 8px;
+            padding-right: 8px;
+            font-weight: 400 !important;
+            font-size: 16px !important;
+        }
+    }
+
     .mbac-item-type-heading {
         padding-bottom: 16px;
 
+        /*.mbac-editable-title {
+            color: #444;
+            padding: 0;
+            border:none;
+            border-bottom: 1px dashed #aaa;
+        }*/
+
         .mbac-title {
+        //.mbac-editable-title {
             font-weight: 600;
             font-size: 18px;
         }
         .mbac-text {
             font-size: 12px;
             color: #aaa;
+        }
+
+        a {
+            margin-left: 16px;
+        }
+    }
+
+    .mbac-item-type-text {
+        padding-bottom: 12px;
+
+        .mbac-text {
+            color: #777;
+            font-size: 14px;
         }
     }
 
@@ -361,11 +533,20 @@ span.mbac-user-mention {
             font-size: 12px;
             color: #aaa;
             padding: 8px;
+            margin-top: -16px;
+            margin-left: 48px;
         }
     }
 
     .mbac-item-type-answer {
         .mbac-title {
+            font-weight: 600;
+            //text-decoration: underline;
+            color: #1890ff;
+            padding-left: 0;
+        }
+
+        .mbac-fix-title {
             font-weight: 400;
             text-decoration: underline;
             padding-bottom: 16px;
@@ -373,6 +554,8 @@ span.mbac-user-mention {
 
         .mbac-text {
             font-size: 14px;
+            margin-left: 0;
+            padding-left: 0;
         }
 
         .mbac-action-title {
@@ -381,7 +564,7 @@ span.mbac-user-mention {
         }
 
         .mbac-handlungsempfehlung {
-            border-top: 1px solid #999;
+            //border-top: 1px solid #999;
 
             &.adhoc {
                 .mbac-action-longtext {
@@ -406,12 +589,16 @@ span.mbac-user-mention {
             &.okay {
                 .mbac-action-longtext {
                     color: #999;
-                    display: none;
+                }
+            }
+            &.okay {
+                .mbac-action-longtext {
+                    color: #444;
                 }
             }
 
             .mbac-action-text {
-                padding-bottom: 16px;
+                padding-bottom: 0;
             }
 
         }
@@ -455,7 +642,12 @@ span.mbac-user-mention {
     }
 
     .mbac-item-type-bestimmungen {
-        width:100%;
+        padding-right: 16px;
+        padding-bottom: 16px;
+
+        table {
+            width:100%;
+        }
 
         thead {
             color: #fff;
@@ -471,47 +663,3 @@ span.mbac-user-mention {
 
 
 }
-
-
-
-/*
-<div class="frage depth-1">
-
-</div>
-
-<div class="frage depth-1">
-    Wie ist dein Name?
-
-    <div class="antwort  depth-2">
-
-        <div class="frage depth-3">
-            <div class="antwort depth-4">
-
-            </div>
-
-            <div class="info depth-4">
-                Irgendeine INfo....
-            </div>
-
-        <div>
-
-        <div class="info depth-3">
-            Irgendeine INfo....
-        </div>
-    </div>
-
-</div>
-
-.frage.depth-2 {
-    border: 1px solid;
-}
-
-.frage.depth-3 {
-    border-bottom: 1px solid;
-}
-
-.frage.depth-3 > .info {
-
-}
-
-*/

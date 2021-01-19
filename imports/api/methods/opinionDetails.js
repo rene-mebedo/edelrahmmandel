@@ -247,21 +247,36 @@ Meteor.methods({
         }
 
         const parentDetail = detailData.refParentDetail && OpinionDetails.findOne({ _id: detailData.refParentDetail });
-        // determine depth
+        // determine depth and parentPosition
         if (!parentDetail) {
             // if we got no Parent, we are at top level
             detailData.depth = 1;
+            detailData.parentPosition = null;
         } else {
-            detailData.depth = parentDetail.depth++;
+            detailData.depth = parentDetail.depth + 1;
+            detailData.parentPosition = (parentDetail.parentPosition || '') + parentDetail.position + '.';
         }
 
-        // get max position +1 to insert the detail at the end
-        const lastDetailAtSameLevel = OpinionDetails.findOne({ refParentDetail: detailData.refParentDetail }, { sort: { position: -1 }});
-        detailData.position = ((lastDetailAtSameLevel && lastDetailAtSameLevel.position) || 0) + 1;
+        // check for given position
+        // if there is a new position just keep it and move 
+        // all siblings + 1 at the end
+        let rePositionSiblings = false;
+        if (!detailData.position){
+            // get max position +1 to insert the detail at the end
+            const lastDetailAtSameLevel = OpinionDetails.findOne({
+                refOpinion: detailData.refOpinion,
+                refParentDetail: detailData.refParentDetail,
+                finallyRemoved: false
+            }, {
+                sort: { position: -1 }
+            });
+            detailData.position = ((lastDetailAtSameLevel && lastDetailAtSameLevel.position) || 0) + 1;
+        } else {
+            rePositionSiblings = true;
+        }
 
         let detail = injectUserData({ currentUser }, {...detailData}, { created: true });
         detail.activitiesCount = 1;
-
         
         if (Meteor.isServer) {
             // render the content that will be shown to the user
@@ -274,6 +289,18 @@ Meteor.methods({
             throw new Meteor.Error(err.message);
         }
         
+        if (rePositionSiblings){
+            // get max position +1 to insert the detail at the end
+            const lastDetailAtSameLevel = OpinionDetails.update({
+                refOpinion: detailData.refOpinion,
+                refParentDetail: detailData.refParentDetail,
+                finallyRemoved: false,
+                position: { $gte: detailData.position }
+            }, {
+                $inc: { position: 1 }
+            }, { multi: true });
+        }
+
         let newId = OpinionDetails.insert(detail);
         
         let activity = injectUserData({ currentUser }, {
@@ -386,7 +413,7 @@ Meteor.methods({
                 finallyRemoved: false
             }, { fields: { htmlContent: 1 }, sort: { position: 1 } }).fetch();
 
-            OpinionDetails.update(old.refParentDetail, { 
+            /*OpinionDetails.update(old.refParentDetail, { 
                 $set: {
                     htmlChildContent: 
                         '<ul class="mbac-child-content-list">' + 
@@ -395,7 +422,7 @@ Meteor.methods({
                             }).join('') +
                         '</ul>'
                 }
-            });
+            });*/
 
             return changes;
         }
