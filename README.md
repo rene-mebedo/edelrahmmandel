@@ -48,7 +48,7 @@ geplanter `Going-Live: KW 3`
   - [x] Pflege des "Maßnahmen-Default" für den Typ "Antwort"
   - [x] Pflege abhängig vom Typ machen
 - [ ] Bilder
-  - [ ] Ablageort prüfen
+  - [x] Ablageort prüfen
   - [ ] Komprimierung
 - [x] Menu vollständig einklappbar
 - [x] Aktivitätsleiste vollständig einklappbar
@@ -57,14 +57,15 @@ geplanter `Going-Live: KW 3`
   - [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
 - [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
 - [ ] UI-Optimierungen für Tablet und Smartphones ( medium and small devices )
-- [ ] Opiniondetails `pagebreakBefore` implementieren
-- [ ] Opiniondetails `pagebreakAfter` implementieren
+- [x] Opiniondetails `pagebreakBefore` implementieren
+- [x] Opiniondetails `pagebreakAfter` implementieren
+> Eigenes Detail `PageBreak` erstellt inkl. Darstellung für Endbenutzer
 - [x] Opiniondetails Check-Answer
 - [ ] Selectbox layouttypes sortiert nach Name
 - [ ] Dropdown Gutachter - Feld zurücksetzen/leeren nicht möglich
 
 ### IT Operations
-- [ ] Hosting
+- [x] Hosting
 - [ ] Backup
 
 ### Going-Live Vorbereitungen
