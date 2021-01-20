@@ -2,10 +2,9 @@ import { FilesCollection } from 'meteor/ostrio:files';
 import { Opinions } from '../collections/opinions';
 import { OpinionDetails } from '../collections/opinionDetails';
 
-
-export const Images = new FilesCollection({
+let ImageConfig = {
     collectionName: 'images',
-    storagePath: '~/meteor/data/uploads',
+    downloadRoute: '/files/images',
     allowClientCode: false, // Disallow remove files from Client
     onBeforeUpload(file) {
         // Allow upload files under 10MB, and only in png/jpg/jpeg formats
@@ -26,7 +25,7 @@ export const Images = new FilesCollection({
         return true;
     },
     protected(fileObj) {
-        console.log('protected:',fileObj);
+        console.log('\n\n\n\nprotected:',fileObj);
         return true;
 
         // read the opinionDetail where the file belongs to ...
@@ -51,4 +50,11 @@ export const Images = new FilesCollection({
         }
         return false;
     }
-});
+};
+
+if (Meteor.isServer){
+    const settings = JSON.parse(process.env.MGP_SETTINGS);
+    ImageConfig.ImagePath = settings.ImagePath;
+}
+
+export const Images = new FilesCollection(ImageConfig);

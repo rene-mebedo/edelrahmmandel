@@ -8,5 +8,5 @@ import '../imports/api/methods';
 import './datatransfer';
 
 Meteor.startup(() => {
-    
+    console.log( process.env.NODE_ENV )
 });

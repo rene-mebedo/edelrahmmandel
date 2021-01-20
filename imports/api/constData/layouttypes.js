@@ -354,6 +354,7 @@ export const layouttypesObject = {
         title: 'Bild(er)',
         description: 'Dieser Typ dient der Bilddokumentation und kann ein oder mehrer Bilder beinhalten',
         hasChilds: false,
+        defaultValues: { printTitle: 'Bildtitel', text: 'Bildtext' },
         template: `<div class="mbac-item-type-picture">
             {{printTitle}}
         </div>`

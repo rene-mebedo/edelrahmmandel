@@ -94,7 +94,9 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                     refParentDetail: refDetail, // the new parent is the current detail
                     type: 'PICTURE',
                     title: fileObj.name,
-                    orderString: '01000',
+                    printTitle: fileObj.name,
+                    text: 'Bildtext',
+                    //orderString: '01000',
                     files: [fileObj]
                 }
                 Meteor.call('opinionDetail.insert', data, (err, res) => {
@@ -143,7 +145,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                         cancelButtonProps={{className:"mbac-btn-cancel"}}
                         okText="Schließen"
                         maskClosable={false}
-                        onClick={ preventClickPropagation }
+                        //onClick={ preventClickPropagation }
                     >
                         <Upload.Dragger {...props}>
                             <p className="ant-upload-drag-icon">

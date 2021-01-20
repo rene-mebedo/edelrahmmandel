@@ -9,6 +9,7 @@ import { Question } from './detailtypes/Question';
 import { Answer } from './detailtypes/Answer';
 import { ClassifiedOutput } from './detailtypes/ClassifiedOutput';
 import { Pagebreak } from './detailtypes/Pagebreak';
+import { Picture } from './detailtypes/Picture';
 
 export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, depth = 1, canEdit=false, canDelete=false, currentUser }) => {
     const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refParentDetail);
@@ -35,6 +36,7 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, depth 
         if (detail.type == 'QUESTION') return <Question {...props} />;
         if (detail.type == 'ANSWER') return <Answer {...props} />;
         if (detail.type == 'BESTIMMUNGEN') return <Bestimmungen {...props} />;
+        if (detail.type == 'PICTURE') return <Picture {...props} />;
         if (detail.type == 'PAGEBREAK') return <Pagebreak {...props} />;
         
         return <ClassifiedOutput {...props} />;
