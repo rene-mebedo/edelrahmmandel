@@ -1,4 +1,6 @@
 import { Meteor } from 'meteor/meteor';
+import { FlowRouter } from 'meteor/kadira:flow-router';
+
 import React, {Fragment, useState, useEffect, useRef} from 'react';
 
 import { Modal, message, Space, Button, Divider, Tooltip } from 'antd';
@@ -116,7 +118,7 @@ const FloatingActions = ({onSave, onCancel, onSocialClick, onCheckAnswer, onRemo
 }
 
 export const EditableContent = ( { item, type = 'span', className, value, method='opinionDetail.update', field, refDetail, permissions } ) => {
-    const [ mode, setMode ] = useState('SHOW');    
+    const [ mode, setMode ] = useState('SHOW');
     const inputRef = useRef('');
 
     const { canEdit, canDelete } = permissions;
@@ -130,11 +132,17 @@ export const EditableContent = ( { item, type = 'span', className, value, method
                 inputRef.current.focus({cursor: 'all', preventScroll: true});
             }
         }
+
     }, [mode]);
 
     const exitEditmode = () => {
-        AppState.editingDetail = null;
-        delete AppState.editingDetail;        
+        AppState.selectedDetail = null;
+        delete AppState.selectedDetail;
+
+        FlowRouter.withReplaceState(() => {
+            FlowRouter.setQueryParams({activitiesBy: null});
+        });
+
         setMode('SHOW');
     }
 
@@ -229,6 +237,8 @@ export const EditableContent = ( { item, type = 'span', className, value, method
     }
 
     const isDirty = () => {
+        if (mode != 'EDIT') return false;
+
         if (type == 'wysiwyg') {
             newValue = inputRef.current.editor.summernote('code');
         } else {
@@ -239,20 +249,31 @@ export const EditableContent = ( { item, type = 'span', className, value, method
         return (newValue !== value);
     }
 
-    const editData = e => {
-        if (!canEdit) return;
+    const toggleMode = e => {
+        /*if (!canEdit) {
+            setMode('FOCUSED');
+            return;
+        }*/
 
-        if (AppState.editingDetail) {
-            console.log(AppState.editingDetail);
-            if (AppState.editingDetail.isDirty()) {
+        if (AppState.selectedDetail && AppState.selectedDetail.mode == 'EDIT') {
+            if (AppState.selectedDetail.isDirty()) {
                 return message.error('Bitte schließen Sie die aktuelle Bearbeitung ab bevor sie eine neue Stelle beginnen zu Bearbeiten.');
             }
-            AppState.editingDetail.discardChanges();
+            AppState.selectedDetail.discardChanges();
+        } else if (AppState.selectedDetail && AppState.selectedDetail.mode == 'FOCUSED') {
+            AppState.selectedDetail.discardChanges();
         }
-        setMode('EDIT');
-        
-        AppState.editingDetail = {
+
+        const newMode = canEdit ? 'EDIT':'FOCUSED';
+        setMode(newMode);
+
+        FlowRouter.withReplaceState(() => {
+            FlowRouter.setQueryParams({activitiesBy: refDetail});
+        });
+
+        AppState.selectedDetail = {
             _id: refDetail,
+            mode: newMode,
             discardChanges,
             saveData,
             isDirty
@@ -315,7 +336,7 @@ export const EditableContent = ( { item, type = 'span', className, value, method
         }
 
         return (
-            <span className="mbac-rendered-content" onClick={editData}>{value}</span>
+            <span className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`} onClick={toggleMode}>{value}</span>
         )
     } else if (type == 'wysiwyg') {
         if (mode=='EDIT') {
@@ -335,8 +356,8 @@ export const EditableContent = ( { item, type = 'span', className, value, method
         }
 
         return (
-            <div className="mbac-rendered-content"
-                onClick={editData}
+            <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
+                onClick={toggleMode}
                 dangerouslySetInnerHTML={ {__html: value } }
             />
         )

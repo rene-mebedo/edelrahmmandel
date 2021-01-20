@@ -16,7 +16,7 @@ export const Link = props => {
     }
 
     const discardAndGo = () => {
-        const { discardChanges } = AppState.editingDetail;
+        const { discardChanges } = AppState.selectedDetail;
 
         discardChanges();
         go();        
@@ -25,9 +25,9 @@ export const Link = props => {
     const checkEditing = e => {
         e.preventDefault();
 
-        if (AppState.editingDetail) {
+        if (AppState.selectedDetail) {
             if (canCancel) {
-                const { isDirty } = AppState.editingDetail;
+                const { isDirty } = AppState.selectedDetail;
 
                 if (isDirty()) {
                     Modal.confirm({

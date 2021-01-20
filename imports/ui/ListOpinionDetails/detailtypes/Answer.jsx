@@ -34,7 +34,7 @@ export const Answer = ( { item, permissions, first, last } ) => {
                             permissions={permissions}
                         />
                     </div>
-                    <div className="mbac-fix-title">
+                    <div className="mbac-fix-title mbac-could-styled-as-deleted">
                         Antwort/Ist-Zustand
                     </div>
                     <div className="mbac-text">
@@ -59,7 +59,7 @@ export const Answer = ( { item, permissions, first, last } ) => {
                         </div>                    
                     }
                     <div className={`mbac-handlungsempfehlung ${actionCode}`}>
-                        <div className="mbac-action-title">
+                        <div className="mbac-action-title mbac-could-styled-as-deleted">
                             Handlungsempfehlung
                         </div>
                         <div className="mbac-action-text">
@@ -71,7 +71,7 @@ export const Answer = ( { item, permissions, first, last } ) => {
                                 permissions={permissions}
                             />
                         </div>
-                        <div className="mbac-action-longtext">
+                        <div className="mbac-action-longtext mbac-could-styled-as-deleted">
                             {actionCodeLongtext}
                         </div>
                     </div>

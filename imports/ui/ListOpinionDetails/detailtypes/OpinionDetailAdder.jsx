@@ -5,7 +5,7 @@ import {
     PlusCircleOutlined
 } from '@ant-design/icons';
 import { Modal, Form, Select, message, Dropdown, Menu } from 'antd';
-import { useLayouttypes } from '../../../client/trackers';
+//import { useLayouttypes } from '../../../client/trackers';
 import { AppState } from '../../../client/AppState';
 import { layouttypesObject, selectableLayouttypes } from '../../../api/constData/layouttypes';
 const { Option } = Select;
@@ -73,17 +73,21 @@ const ModalTypeSelector = ({ onOk, onCancel }) => {
 }
 */
 export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
+    const { canEdit } = permissions;
+    // no permission, no DetailAdder :-)
+    if (!canEdit) return null;
+
     const [ newPosition, setNewPositon ] = useState(null);
     const data = pseudoItem || item;
-        
+
     const canDoAdd = () => {
         // while editing a opiniondetail this function is disabled
-        if (AppState.editingDetail) {
-            if (AppState.editingDetail.isDirty()) {
+        if (AppState.selectedDetail) {
+            if (AppState.selectedDetail.isDirty()) {
                 message.warning('Sie befinden sich aktuell in der Bearbeitung. Bitte schließen Sie diesen Vorgang zuerst ab.');
                 return false;
             }
-            AppState.editingDetail.discardChanges();
+            AppState.selectedDetail.discardChanges();
         }
         return true;
     }

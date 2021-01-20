@@ -24,7 +24,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } ) => {
     const [ opinion, opinionIsLoading ] = useOpinion(refOpinion);
-    const [ activities, activitiesLoading ] = useActivities(refOpinion, refDetail);
+    const [ activities, activitiesLoading ] = useActivities(refOpinion, FlowRouter.getQueryParam('activitiesBy') || refDetail);
     const [form] = Form.useForm();
     const activitiesEndRef = useRef(null);
 
@@ -37,7 +37,7 @@ export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } 
         const hash = FlowRouter.current().context.hash;
         if (!hash)
             // scroll to end of list
-            activitiesEndRef.current.scrollIntoView({ behavior: "smooth" })
+            activitiesEndRef.current.scrollIntoView(); //{ behavior: "smooth" })
         else {
             // scroll to hashed item
             const el = $('#' + hash).get(0);
@@ -51,7 +51,7 @@ export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } 
         return function cleanup(){
             clearInterval(timer);
         }
-    }, [activities]);
+    }, [activities/*, FlowRouter.getQueryParam('activitiesBy')*/]);
 
 
     if (currentUser && !opinionIsLoading && opinion) {

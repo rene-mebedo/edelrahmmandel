@@ -396,7 +396,7 @@ span.mbac-user-mention {
     color: #444;
     
     &.mbac-opinion-detail-deleted {
-        .mbac-rendered-content {
+        .mbac-could-styled-as-deleted {
             filter: blur(3px);
         }
 
@@ -405,7 +405,10 @@ span.mbac-user-mention {
         }*/
     }
 
-    
+    .mbac-detail-focused {
+        background-color: rgb(243, 225, 192);
+        border: 1px solid rgb(209, 193, 164);
+    }
 
     /*
     .depth-2 { margin-left: 16px; &.mbac-action-add { margin-left: 48px; } }

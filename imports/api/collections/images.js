@@ -54,7 +54,7 @@ let ImageConfig = {
 
 if (Meteor.isServer){
     const settings = JSON.parse(process.env.MGP_SETTINGS);
-    ImageConfig.ImagePath = settings.ImagePath;
+    ImageConfig.storagePath = settings.ImagePath;
 }
 
 export const Images = new FilesCollection(ImageConfig);
