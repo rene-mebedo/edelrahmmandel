@@ -14,7 +14,6 @@ let ImageConfig = {
         return 'Please upload image, with size equal or less than 10MB';
     },
     downloadCallback(fileObj) {
-        //console.log('downloadCallback:',fileObj)
         return true;
 
         if (this.params.query.download == 'true') {
@@ -25,7 +24,6 @@ let ImageConfig = {
         return true;
     },
     protected(fileObj) {
-        //console.log('\n\n\n\nprotected:',fileObj);
         return true;
 
         // read the opinionDetail where the file belongs to ...

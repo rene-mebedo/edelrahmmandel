@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import React, { Fragment, useState } from 'react';
-import { Select } from 'antd';
+import React from 'react';
+import Select from 'antd/lib/select';
 
 import { debounce } from '../../api/helpers/basics';
 

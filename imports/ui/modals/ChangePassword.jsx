@@ -1,15 +1,15 @@
 import React, { Fragment, useState } from 'react';
 import { Accounts } from 'meteor/accounts-base';
 
-import { 
-    Modal,
-    Form,
-    Input,
-    Divider,
-    message
-} from 'antd';
+import Modal from 'antd/lib/modal';
+import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import Divider from 'antd/lib/divider';
+import message from 'antd/lib/message';
 
-import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
+import LockOutlined from '@ant-design/icons/LockOutlined'
+import UnlockOutlined from '@ant-design/icons/UnlockFilled';
+
 import { ModalBackground } from '../components/ModalBackground';
 
 const { useForm } = Form;
@@ -39,9 +39,6 @@ export const ModalChangePassword = ( { currentUser } ) => {
                 message.success('Ihr Passwort wurde erfolgreich geändert');
                 closeDialog();
             });
-
-        }).catch( info => {
-            console.log('Validate Failed:', info);
         });
     }
 

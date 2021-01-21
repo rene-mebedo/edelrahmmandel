@@ -33,7 +33,6 @@ const startRepositioning = () => {
                     depth
                 }
             });
-            //console.log('update', _id, positionCount, parentPosition + positionCount + '.');
         });
     }
 

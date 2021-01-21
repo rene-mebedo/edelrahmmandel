@@ -1,13 +1,11 @@
-import React, {Fragment, useState, useEffect, useRef} from 'react';
-import { ListOpinionDetailsLinkable } from '../ListOpinionDetails';
+import React, { Fragment } from 'react';
+
+import { ListOpinionDetails } from '../ListOpinionDetails';
 import { OpinionDetailAdder } from './OpinionDetailAdder';
 
-import {
-    RightCircleOutlined
-} from '@ant-design/icons';
+import RightCircleOutlined from '@ant-design/icons/RightCircleOutlined';
 
 import { EditableContent } from '../../components/EditableContent';
-import { AppState } from '../../../client/AppState';
 import { Link } from '../../components/Link';
 
 export const Question = ( { item, permissions, first, last } ) => {
@@ -46,7 +44,7 @@ export const Question = ( { item, permissions, first, last } ) => {
         
                     { /*<OpinionDetailAdder pseudoItem={{refOpinion: item.refOpinion, refParentDetail: item._id, depth: item.depth + 1}} permissions={permissions} /> */ }
                     <div className="mbac-child-content">
-                        <ListOpinionDetailsLinkable 
+                        <ListOpinionDetails 
                             refOpinion={item.refOpinion}
                             refParentDetail={item._id}
                             canEdit={permissions.canEdit}

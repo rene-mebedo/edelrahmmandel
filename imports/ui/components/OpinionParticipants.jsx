@@ -1,20 +1,25 @@
-import React, { Component, Fragment } from 'react'
+import React from 'react'
 
-import { List, Empty, Button } from 'antd';
+import List from 'antd/lib/list';
+import Empty from 'antd/lib/empty';
+//import Button from 'antd/lib/button';
 
 import { ModalOpinionParticipant } from '../modals/OpinionParticipant';
 
-import { 
-    useOpinion
-} from '../../client/trackers';
+//import { useOpinion } from '../../client/trackers';
 
-import {
-    ExclamationCircleOutlined,
-    DeleteOutlined, EditOutlined, PlusOutlined, DeleteTwoTone,
-    LikeOutlined, LikeTwoTone,
-    DislikeOutlined, DislikeTwoTone,
-    MessageOutlined
-} from '@ant-design/icons';
+
+/*import ExclamationCircleOutlined from '@ant-design/icons/';
+import DeleteOutlined from '@ant-design/icons/';
+import EditOutlined from '@ant-design/icons/';
+import PlusOutlined from '@ant-design/icons/';
+import DeleteTwoTone from '@ant-design/icons/';
+import LikeOutlined from '@ant-design/icons/';
+import LikeTwoTone from '@ant-design/icons/';
+import DislikeOutlined from '@ant-design/icons/';
+import DislikeTwoTone from '@ant-design/icons/';
+import MessageOutlined from '@ant-design/icons/';*/
+
 
 export const OpinionParticipants = ({refOpinion, participants, currentUser, canEdit=false, canDelete=false}) => {
     return (

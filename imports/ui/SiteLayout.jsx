@@ -1,28 +1,17 @@
-import React, { 
-    Fragment,
-    useState 
-} from 'react';
+import React, { useState } from 'react';
 
 import { ListActivities } from './ListActivities';
 
-import { 
-    Layout, 
-    Menu,
-    Badge,
-    Avatar,
-    Space,
-    Dropdown
-} from 'antd';
+import Layout from 'antd/lib/layout';
+import Menu from 'antd/lib/menu';
+import Badge from 'antd/lib/badge';
   
-import {
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined,
-    ClockCircleOutlined,
-    DownOutlined
-} from '@ant-design/icons';
+import MenuUnfoldOutlined from '@ant-design/icons/MenuUnfoldOutlined';
+import MenuFoldOutlined from '@ant-design/icons/MenuFoldOutlined';
+import UserOutlined from '@ant-design/icons/UserOutlined';
+import VideoCameraOutlined from '@ant-design/icons/VideoCameraOutlined';
+import UploadOutlined from '@ant-design/icons/UploadOutlined';
+import ClockCircleOutlined from '@ant-design/icons/ClockCircleOutlined';
 
 import { useUserActivityCount } from '../client/trackers';
 import { UserActivitiesDrawer } from './components/UserActivitiesDrawer';

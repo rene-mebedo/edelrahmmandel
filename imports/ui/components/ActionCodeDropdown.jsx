@@ -5,7 +5,6 @@ import { Button, Dropdown, Menu, Modal } from 'antd';
 
 import { actionCodes } from '/imports/api/constData/actioncodes'; 
 import DownOutlined from '@ant-design/icons/DownOutlined';
-import { nodeName } from 'jquery';
 
 /*
 export const ActionCodeDropdown = props => {
@@ -14,7 +13,6 @@ export const ActionCodeDropdown = props => {
     const { autoUpdate=true, refDetail, value, onChange } = props;
     const [val, setVal] = useState(value);
 
-    console.log('ActionCodeDropdown', props, val)
     if (!val) {
         setVal('unset');
         return null;

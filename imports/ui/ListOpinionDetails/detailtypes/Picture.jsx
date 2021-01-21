@@ -1,8 +1,11 @@
-import React, {Fragment, useState, useEffect, useRef} from 'react';
+import React, { Fragment } from 'react';
+
 import { EditableContent } from '../../components/EditableContent';
 import { ListImages } from '../../ListImages';
 import { OpinionDetailAdder } from './OpinionDetailAdder';
-import { Col, Row } from 'antd';
+
+import Col from 'antd/lib/col';
+import Row from 'antd/lib/row';
 
 export const Picture = ( { item, permissions, first, last } ) => {
     const { _id, depth, files, printTitle, text, deleted } = item;

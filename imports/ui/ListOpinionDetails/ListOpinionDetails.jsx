@@ -1,6 +1,5 @@
-import React, {Fragment, useState} from 'react';
+import React from 'react';
 
-import { useOpinionDetails } from '../../client/trackers';
 import { Heading } from './detailtypes/Heading';
 import { Text } from './detailtypes/Text';
 import { Bestimmungen } from './detailtypes/Bestimmungen';
@@ -11,7 +10,9 @@ import { ClassifiedOutput } from './detailtypes/ClassifiedOutput';
 import { Pagebreak } from './detailtypes/Pagebreak';
 import { Picture } from './detailtypes/Picture';
 
-export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, depth = 1, canEdit=false, canDelete=false, currentUser }) => {
+import { useOpinionDetails } from '../../client/trackers';
+
+export const ListOpinionDetails = ({ refOpinion, refParentDetail, depth = 1, canEdit=false, canDelete=false, currentUser }) => {
     const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refParentDetail);
     const permissions = { canEdit, canDelete, currentUser };
 

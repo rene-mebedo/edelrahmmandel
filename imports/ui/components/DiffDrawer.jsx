@@ -1,15 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState} from 'react';
-import { 
-    Button,
-    Tooltip,
-    Drawer,
-    Modal,
-    Divider,
-    notification
-} from 'antd';
+import React, { Fragment, useState } from 'react';
 
-import { InfoCircleOutlined, RestOutlined } from '@ant-design/icons';
+import Button from 'antd/lib/button';
+import Tooltip from 'antd/lib/tooltip';
+import Drawer from 'antd/lib/drawer';
+import Modal from 'antd/lib/modal';
+import Divider from 'antd/lib/divider';
+import notification from 'antd/lib/notification';
+
+import InfoCircleOutlined from '@ant-design/icons/InfoCircleOutlined';
+import RestOutlined from '@ant-design/icons/RestOutlined';
 
 import Diff from 'react-stylable-diff';
 
@@ -79,7 +79,6 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
 
         let i=0;
         return changes.map(item => {
-            console.log(item);
             let { oldValue, newValue } = item;
             let diffType = 'words';
 

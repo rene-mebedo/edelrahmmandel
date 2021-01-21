@@ -1,9 +1,11 @@
-import React, {Fragment, useState, useEffect, useRef} from 'react';
+import React from 'react';
 import { AppState } from '../../client/AppState';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { message, Modal } from 'antd';
 
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import message from 'antd/lib/message';
+import Modal from 'antd/lib/modal';
+
+import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 
 export const Link = props => {
     const { href, children, onClick, canCancel } = props;

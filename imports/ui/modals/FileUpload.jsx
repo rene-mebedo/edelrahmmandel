@@ -1,47 +1,27 @@
 import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState} from 'react';
-import { 
-    Button,
-    Select,
-    Modal,
-    Form,
-    Input,
-    Space,
-    Upload,
-    message
-} from 'antd';
+import React, { Fragment, useState } from 'react';
+import Button from 'antd/lib/button';
+//import Select from 'antd/lib/select';
+import Modal from 'antd/lib/modal';
+//import Form from 'antd/lib/form';
+//import Input from 'antd/lib/input';
+import Space from 'antd/lib/space';
+import Upload from 'antd/lib/upload';
+import message from 'antd/lib/message';
 
-import { PictureOutlined, InboxOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-
-import { useTracker } from 'meteor/react-meteor-data';
-import { Layouttypes } from '/imports/api/collections/layouttypes';
-import { OpinionDetails } from '/imports/api/collections/opinionDetails';
+import PictureOutlined from '@ant-design/icons/PictureOutlined';
+import InboxOutlined from '@ant-design/icons/InboxOutlined';
 
 import { Images } from '/imports/api/collections/images';
 import { useImages } from '../../client/trackers';
 
-const { Option } = Select;
+//const { Option } = Select;
 
-import { ModalBackground, preventClickPropagation } from '../components/ModalBackground';
+import { ModalBackground } from '../components/ModalBackground';
 
-/*
-const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 14 },
-};
-
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-*/
 export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
     const [ images, imagesLoading ] = useImages();
     const [ showModal, setShowModal ] = useState(false);
-
-    //const [form] = Form.useForm();
 
     const closeModal = e => {
         //form.resetFields();
@@ -69,8 +49,6 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
     }
 
     const doUpload = (file) => {
-        //console.log('doUpload', file);
-
         const upload = Images.insert({
             file,
             streams: 'dynamic',

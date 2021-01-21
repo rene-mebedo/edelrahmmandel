@@ -1,15 +1,11 @@
-import { Meteor } from 'meteor/meteor';
+import React, { Fragment } from 'react';
 
-import React, {Fragment, useState} from 'react';
+import { useImages } from '../client/trackers';
 
-import { 
-    useImages,
-} from '../client/trackers';
-
-import { Image } from 'antd';
+import Image from 'antd/lib/image';
 
 export const ListImages = ( { imageOrImages } ) => {
-    const [images, isLoading] = useImages(imageOrImages.map( image => image._id ));
+    const [ images, isLoading ] = useImages(imageOrImages.map( image => image._id ));
 
     if (isLoading) return null;
 

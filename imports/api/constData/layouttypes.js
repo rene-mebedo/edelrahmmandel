@@ -400,9 +400,7 @@ export const selectableLayouttypes = layouttypesArray.filter(item => {
  * @param {Object} item Specifies the current item to render with all props
  */
 export const renderTemplate = (item, depth=0) => {
-    //console.log(item)
     const { template } = layouttypesObject[item.type];
-    //console.log(template);
 
     if (item.depth) depth = item.depth;
 
@@ -420,5 +418,4 @@ export const renderTemplate = (item, depth=0) => {
         
 
     return '<div class="mbac-opinion-detail">' + renderedTemplate + '</div>';
-    //return <div className="mbac-opinion-detail" dangerouslySetInnerHTML={ {__html: renderedTemplate}} />
 }

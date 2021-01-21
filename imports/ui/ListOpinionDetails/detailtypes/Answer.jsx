@@ -1,25 +1,17 @@
 import React, {Fragment, useState, useEffect, useRef} from 'react';
-import { ListOpinionDetailsLinkable } from '../ListOpinionDetails';
+import { ListOpinionDetails } from '../ListOpinionDetails';
 import { OpinionDetailAdder } from './OpinionDetailAdder';
 
-import {
-    RightCircleOutlined
-} from '@ant-design/icons';
+//import RightCircleOutlined from '@ant-design/icons/RightCircleOutlined';
 
 import { EditableContent } from '../../components/EditableContent';
-import { AppState } from '../../../client/AppState';
-import { Link } from '../../components/Link';
-//import { actionCodes } from '../../../api/constData/actioncodes';
 
 export const Answer = ( { item, permissions, first, last } ) => {
     let { _id, depth, title, printTitle, text, actionCode, actionText, deleted, parentPosition, position } = item;
     const deletedClass = deleted ? 'mbac-opinion-detail-deleted':'';
 
     if (!parentPosition) position += '.';
-
     
-    //const actionCodeLongtext = actionCode && actionCodes[actionCode].longtext;
-
     return (
         <Fragment>
             <OpinionDetailAdder item={item} permissions={permissions} />
@@ -49,7 +41,7 @@ export const Answer = ( { item, permissions, first, last } ) => {
                     
                     { deleted ? null :
                         <div className="mbac-child-content">
-                            <ListOpinionDetailsLinkable 
+                            <ListOpinionDetails 
                                 refOpinion={item.refOpinion}
                                 refParentDetail={item._id}
                                 canEdit={permissions.canEdit}

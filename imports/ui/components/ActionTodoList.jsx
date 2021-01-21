@@ -1,9 +1,8 @@
-import React, { Fragment, useState } from 'react';
-
-import { Button, Dropdown, Menu, Modal, Table, Tag } from 'antd';
+import React from 'react';
+import Table from 'antd/lib/table';
+import Tag from 'antd/lib/tag';
 
 import { actionCodes } from '../../api/constData/actioncodes';
-
 import { useOpinionActionList } from '../../client/trackers';
 
 export const ActionTodoList = ({refOpinion}) => {

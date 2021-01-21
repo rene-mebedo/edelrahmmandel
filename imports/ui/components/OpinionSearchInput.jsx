@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import React, { Fragment, useState } from 'react';
-import { Select } from 'antd';
+import React from 'react';
+import Select from 'antd/lib/select';
 
 import { debounce } from '../../api/helpers/basics';
 
@@ -48,7 +48,6 @@ export class OpinionSearchInput extends React.Component {
                 value={value && value.userId}
                 placeholder={this.props.placeholder}
                 style={this.props.style || {width:'100%'}}
-                //defaultActiveFirstOption={false}
                 showArrow={true}
                 filterOption={false}
                 onSearch={this.handleSearch}

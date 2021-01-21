@@ -1,14 +1,12 @@
 import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState, useEffect, useRef} from 'react';
-import { 
-    Avatar,
-    List,
-    Form,
-    Button,
-    Comment,
-    Tooltip,
-    Modal
-} from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import Avatar from 'antd/lib/avatar';
+import List from 'antd/lib/list';
+import Form from 'antd/lib/form';
+import Button from 'antd/lib/button';
+import Comment from 'antd/lib/comment';
+import Tooltip from 'antd/lib/tooltip';
+import Modal from 'antd/lib/modal';
 
 import moment from 'moment';
 import localization from 'moment/locale/de';

@@ -1,28 +1,27 @@
 import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState} from 'react';
-import { 
-    Button,
-    Modal,
-    Form,
-    Input,
-    DatePicker,
-    ConfigProvider,
-    Tabs,
-    Switch
-} from 'antd';
+import React, { Fragment, useState } from 'react';
 
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-
-const { TabPane } = Tabs;
-
+import Button from 'antd/lib/button';
+import Modal from 'antd/lib/modal';
+import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import DatePicker from 'antd/lib/date-picker';
+import ConfigProvider from 'antd/lib/config-provider';
 import locale_deDE from 'antd/es/locale/de_DE';
+import Tabs from 'antd/lib/tabs';
+
+import EditOutlined from '@ant-design/icons/EditOutlined';
+import PlusOutlined from '@ant-design/icons/PlusOutlined';
+
+import moment from 'moment';
+
 import { UserSearchInput } from '../components/UserSearchInput';
 import { useOpinion } from '../../client/trackers';
 import { ModalBackground } from '../components/ModalBackground';
-import moment from 'moment';
 import { OpinionSearchInput } from '../components/OpinionSearchInput';
 
 const { useForm } = Form;
+const { TabPane } = Tabs;
 
 export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, buttonType, defaultTab, createTemplate} ) => {
     const [ opinion, isLoading ] = useOpinion(refOpinion);
@@ -60,8 +59,6 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                 }
                 Meteor.call('opinion.insert', values, handleResult);
             }
-        }).catch( info => {
-            console.log('Validate Failed:', info);
         });
     }
 

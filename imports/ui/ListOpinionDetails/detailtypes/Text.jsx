@@ -1,4 +1,5 @@
-import React, {Fragment, useState, useEffect, useRef} from 'react';
+import React, { Fragment } from 'react';
+
 import { EditableContent } from '../../components/EditableContent';
 import { OpinionDetailAdder } from './OpinionDetailAdder';
 

@@ -1,25 +1,25 @@
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-import React, {Fragment, useState, useEffect, useRef} from 'react';
+import React, { Fragment } from 'react';
 
-import { Modal, message, Space, Button, Divider, Tooltip } from 'antd';
+import Modal from 'antd/lib/modal';
+import message from 'antd/lib/message';
+import Space from 'antd/lib/space';
+import Button from 'antd/lib/button';
+import Divider from 'antd/lib/divider';
+import Tooltip from 'antd/lib/tooltip';
 
-import {
-    CloseOutlined,
-    EditOutlined,
-    ExclamationCircleOutlined,
-    DeleteOutlined, DeleteTwoTone,
-    LikeOutlined, LikeTwoTone,
-    DislikeOutlined, DislikeTwoTone,
-    MessageOutlined,
-    MenuOutlined,
-    EyeInvisibleOutlined,
-    EyeOutlined,
-    ScissorOutlined,
-    CheckOutlined
-
-} from '@ant-design/icons';
+import CloseOutlined from '@ant-design/icons/CloseOutlined';
+import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
+import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
+import LikeOutlined from '@ant-design/icons/LikeOutlined';
+import LikeTwoTone from '@ant-design/icons/LikeTwoTone';
+import DislikeOutlined from '@ant-design/icons/DislikeOutlined'; 
+import DislikeTwoTone from '@ant-design/icons/DislikeTwoTone';
+import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
+import EyeOutlined from '@ant-design/icons/EyeOutlined';
+import CheckOutlined from '@ant-design/icons/CheckOutlined';
 
 import { Summernote } from './Summernote';
 import { ActionCodeDropdown } from '../components/ActionCodeDropdown';
@@ -150,8 +150,6 @@ export class EditableContent extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log('MOUNT');
-
         const { type, value } = this.props;
         const { mode } = this.state;
 
@@ -177,7 +175,6 @@ export class EditableContent extends React.Component {
             FlowRouter.setQueryParams({activitiesBy: null});
         });
 
-        console.log('RESET to SHOW', refDetail);
         this.setState({ mode: 'SHOW' });
     }
 
@@ -286,7 +283,6 @@ export class EditableContent extends React.Component {
         const { type, value, field, refDetail } = this.props;
         const { mode } = this.state;
 
-        console.log('isDirty', field, refDetail, mode);
         if (mode != 'EDIT') return false;
 
         let newValue;
@@ -307,11 +303,6 @@ export class EditableContent extends React.Component {
         const { refDetail, field, permissions } = this.props;
         const { mode } = this.state;
         const { canEdit } = permissions;
-
-        if (AppState.selectedDetail)
-            console.log('toggleMode', mode, refDetail, field, AppState.selectedDetail._id, AppState.selectedDetail.mode);
-        else 
-            console.log('toggleMode no selectedDetail', field, refDetail);
 
         if (AppState.selectedDetail && AppState.selectedDetail.mode == 'EDIT') {
             if (AppState.selectedDetail.isDirty()) {
@@ -337,7 +328,6 @@ export class EditableContent extends React.Component {
         }
 
         this.setState({ mode: newMode });
-        console.log('set mode', newMode, refDetail)
     }
 
     discardChanges() {
@@ -445,292 +435,3 @@ export class EditableContent extends React.Component {
         return <div>UNKNOWN type: {type}</div>;
     }
 }
-
-/*
-export const EditableContent = function( { item, type = 'span', className, value, method='opinionDetail.update', field, refDetail, permissions } ) {
-    const [ mode, setMode ] = useState('SHOW');
-    const inputRef = useRef('');
-    var self = this;
-    console.log(self);
-    const { canEdit, canDelete } = permissions;
-
-    console.log('Render', refDetail, mode);
-    
-    useEffect( () => {
-        if (mode == 'EDIT') {
-            if (type == 'wysiwyg') {
-                inputRef.current.editor.summernote('code', value);
-            } else if (type == 'span') {
-                inputRef.current.innerText = value;
-                inputRef.current.focus({cursor: 'all', preventScroll: true});
-            } else if (type == 'actioncode') {
-                // noop the ActionCodeDropdown will handle this via value prop
-            }
-        }
-    }, [mode]);
-
-    const exitEditmode = () => {
-        AppState.selectedDetail = null;
-        delete AppState.selectedDetail;
-
-        FlowRouter.withReplaceState(() => {
-            FlowRouter.setQueryParams({activitiesBy: null});
-        });
-
-        console.log('exit setMode SHOW', refDetail)
-        setMode('SHOW');
-    }
-
-    const toggleDeleted = () => {
-        Meteor.call('opinionDetail.toggleDeleted', refDetail, (err, res) => {
-            if (err) {
-                return Modal.error({
-                    title: 'Fehler',
-                    content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
-                });
-            } else {
-                exitEditmode();
-            }
-        });
-    }
-
-    const finallyRemove = () => {
-        Modal.confirm({
-            title: 'Löschen',
-            icon: <ExclamationCircleOutlined />,
-            content: 'Soll der Eintrag wirklich gelöscht werden?',
-            okText: 'OK',
-            cancelText: 'Abbruch',
-            onOk: closeConfirm => {
-                closeConfirm();
-
-                Meteor.call('opinionDetail.finallyRemove', refDetail, (err, res) => {
-                    if (err) {
-                        return Modal.error({
-                            title: 'Fehler',
-                            content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
-                        });
-                    } else {
-                        exitEditmode();
-                    }
-                });
-            }
-        });
-    }
-
-    const checkAnswer = () => {
-        Meteor.call('opinionDetail.checkAnswer', refDetail, (err, res) => {
-            if (err) {
-                return Modal.error({
-                    title: 'Fehler',
-                    content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
-                });
-            }
-            exitEditmode();
-        });
-    }
-
-    const doSocial = action => {
-        Meteor.call('opinionDetail.doSocial', action, refDetail, (err, res) => {
-            if (err) {
-                return Modal.error({
-                    title: 'Fehler',
-                    content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
-                });
-            }
-        });
-    }
-
-    const saveData = e => {
-        let newValue;
-        if (type == 'wysiwyg') {
-            newValue = inputRef.current.editor.summernote('code');
-        } else if (type == 'span') {
-            newValue = inputRef.current.innerText;
-        } else if (type == 'actioncode') {
-            newValue = inputRef.current.state.value;
-        }
-        
-        // check for changes
-        //TESTif (newValue === value) {
-        if (!isDirty()) return exitEditmode();
-        
-
-        if (!newValue) {
-            inputRef.current.focus({cursor: 'all', preventScroll: true});
-            return message.error('Die Eingabe darf nicht leer sein.');
-        }
-
-        Meteor.call(method, { id: refDetail, data: { [field]: newValue }}, (err, res) => {
-            if (err) {
-                return Modal.error({
-                    title: 'Fehler',
-                    content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
-                });
-            } else {
-                exitEditmode();
-            }
-        });
-    }
-
-    const isDirty = () => {
-        console.log('isDirty', field, refDetail, mode);
-        //if (mode != 'EDIT') return false;
-
-        if (type == 'wysiwyg') {
-            newValue = inputRef.current.editor.summernote('code');
-        } else if (type == 'span') {
-            newValue = inputRef.current.innerText;
-        } else {
-            newValue = inputRef.current.state.value;
-        }
-
-        // check for changes
-        return (newValue !== value);
-    }
-
-    const toggleMode = e => {
-        if (AppState.selectedDetail)
-            console.log('toggleMode', mode, refDetail, field, AppState.selectedDetail._id, AppState.selectedDetail.mode);
-        else 
-            console.log('toggleMode no selectedDetail', field, refDetail);
-
-        if (AppState.selectedDetail && AppState.selectedDetail.mode == 'EDIT') {
-            if (AppState.selectedDetail.isDirty()) {
-                return message.error('Bitte schließen Sie die aktuelle Bearbeitung ab bevor sie eine neue Stelle beginnen zu Bearbeiten.');
-            }
-            AppState.selectedDetail.discardChanges();
-        } else if (AppState.selectedDetail && AppState.selectedDetail.mode == 'FOCUSED') {
-            AppState.selectedDetail.discardChanges();
-        }
-
-        const newMode = canEdit ? 'EDIT':'FOCUSED';
-
-        FlowRouter.withReplaceState(() => {
-            FlowRouter.setQueryParams({activitiesBy: refDetail});
-        });
-
-        setMode(newMode);
-
-        AppState.selectedDetail = {
-            _id: refDetail,
-            mode: newMode,
-            discardChanges,
-            saveData,
-            isDirty,
-            self: this
-        }
-
-        window.AppState = AppState;
-
-        console.log('set mode', newMode, refDetail)
-    }
-
-    const discardChanges = e => {
-        exitEditmode();
-    }
-
-    const uploadImage = function(images, insertImage) {
-        
-        for (let i = 0; i < images.length; i++) {
-            
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                insertImage(reader.result);
-            };
-
-            reader.readAsDataURL(images[i]);
-        }
-    }
-
-    const PasteFromClipboard = e => {
-        const bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
-        
-        e.preventDefault();
-        document.execCommand('insertText', false, bufferText);
-    }
-
-    const PreparedFloatingActions = () => <FloatingActions
-        onSave={saveData} 
-        onCancel={discardChanges}
-        onCheckAnswer={checkAnswer}
-        onRemove={toggleDeleted}   
-        onFinallyRemove={finallyRemove}
-        onSocialClick={doSocial}
-        isDeleted={item.deleted}
-        isAnswer={item.type == 'ANSWER'}
-        likes={item.likes}
-        dislikes={item.dislikes}
-        canEdit={canEdit}
-        canFinallyRemove={canDelete}
-    />;
-
-    if (type == 'span') {
-        if (mode == 'EDIT') {
-            return (
-                <Fragment>
-                    <Space>
-                        <span ref={inputRef} className="mbac-editable-content" contentEditable="true" ></span>
-                        <PreparedFloatingActions />
-                    </Space>
-                </Fragment>
-            )
-        }
-
-        return (
-            <span className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`} onClick={toggleMode}>{value}</span>
-        )
-    } else if (type == 'wysiwyg') {
-        if (mode == 'EDIT') {
-            return (
-                <Fragment>
-                    <Summernote
-                        ref={inputRef}
-                        className="mbac-editable-content mbac-wysiwyg"
-                        onImageUpload={uploadImage}
-                        onPaste={PasteFromClipboard}
-
-                        options={{ airMode: true }}
-                    />
-                    <PreparedFloatingActions />
-                </Fragment>
-            )
-        }
-
-        return (
-            <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
-                onClick={toggleMode}
-                dangerouslySetInnerHTML={ {__html: value } }
-            />
-        )
-
-    } else if (type == 'actioncode') {
-        if (mode == 'EDIT') {
-            return (
-                <Fragment>
-                    <ActionCodeDropdown 
-                        ref={inputRef}
-                        refDetail={refDetail}
-                        autoUpdate={false}
-                        value={value}
-                        //onChange={exitEditmode}
-                    />
-                    <PreparedFloatingActions />
-                </Fragment>
-            )
-        }
-
-        const actionCodeLongtext = actionCodes[value].longtext;
-        return (
-            <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
-                onClick={toggleMode}
-            >
-                {actionCodeLongtext}
-            </div>
-        );
-    }
-
-    return <div>UNKNOWN type: {type}</div>;
-}
-*/

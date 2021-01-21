@@ -96,16 +96,6 @@ Meteor.methods({
                 });
             }
             findAndInsert(null);
-
-            /*const details = OpinionDetails.find({ refOpinion: data.refTemplate }).map( detail => {
-                delete detail._id;
-
-                detail.refOpinion = newOpinionId;
-                bulk.insert(detail);
-            });
-
-            const result = bulkInsert();
-            console.log(result.getRawResponse());*/
         }
     },
 

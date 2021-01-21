@@ -1,22 +1,24 @@
 import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState} from 'react';
-import { 
-    Modal,
-    Tooltip,
-    Drawer,
-    Space,
-    Comment,
-    Avatar,
-    List,
-} from 'antd';
 
-import { EyeOutlined, EyeTwoTone, SoundOutlined } from '@ant-design/icons';
+import React from 'react';
+
+import Modal from 'antd/lib/modal';
+import Tooltip from 'antd/lib/tooltip';
+import Drawer from 'antd/lib/drawer';
+import Space from 'antd/lib/space';
+import Comment from 'antd/lib/comment';
+import Avatar from 'antd/lib/avatar';
+import List from 'antd/lib/list';
+
+import EyeOutlined from '@ant-design/icons/EyeOutlined';
+import EyeTwoTone from '@ant-design/icons/EyeTwoTone';
+import SoundOutlined from '@ant-design/icons/SoundOutlined';
 
 import moment from 'moment';
 import localization from 'moment/locale/de';
 
 import { useUserActivities } from '../../client/trackers';
-import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
+
 import { Link } from './Link';
 
 /**

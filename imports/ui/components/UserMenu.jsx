@@ -1,10 +1,15 @@
-import React, { Fragment, useState } from 'react';
-import { Menu, Dropdown, Space, Avatar } from 'antd';
+import React from 'react';
+
+import Menu from 'antd/lib/menu';
+import Dropdown from 'antd/lib/dropdown';
+import Space from 'antd/lib/space';
+import Avatar from 'antd/lib/avatar';
+
 import { ModalChangePassword } from '../modals/ChangePassword';
 
-import { LogoutOutlined } from '@ant-design/icons';
+import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 
-export const UserMenu = ({currentUser}) => {
+export const UserMenu = ({ currentUser }) => {
     const { firstName, lastName } = currentUser && currentUser.userData || { firstName: '?', lastName: '?' };
 
     const handleUserMenuClick = ({ item, key, keyPath, domEvent }) => {
@@ -29,7 +34,7 @@ export const UserMenu = ({currentUser}) => {
 
     return (
         <div className="mbac-usermenu">
-            <Dropdown overlay={menu} trigger={['click', 'hover']} placement="bottomRight" arrow >
+            <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" arrow >
                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()} >
                     <Space>
                         <Avatar style={{ backgroundColor: 'orange', color: '#fff', verticalAlign: 'middle' }} /*size="large" gap={16}*/>

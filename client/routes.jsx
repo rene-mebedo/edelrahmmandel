@@ -9,7 +9,7 @@ import { Home } from '../imports/ui/Home';
 import { ActivitiesForm } from '../imports/ui/ActivitiesForm';
 import { OpinionsForm } from '../imports/ui/OpinionsForm';
 //import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
-import { OpinionsDetailsFormLinkable } from '../imports/ui/OpinionsDetailsFormLinkable';
+import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
 import { AppState } from '../imports/client/AppState';
 
 // https://github.com/kadirahq/flow-router/issues/318
@@ -120,7 +120,7 @@ FlowRouter.route('/opinions/:id', {
     name: 'opinion.detail',
     action({ id }) {
         mount(App, {
-            content: OpinionsDetailsFormLinkable,
+            content: OpinionsDetailsForm,
             activeMenuKey: 'OPINIONS',
             refOpinion: id,
             refDetail: null,
@@ -132,7 +132,7 @@ FlowRouter.route('/opinions/:id/:refDetail', {
     name: 'opinion.detail.show',
     action({ id, refDetail }) {
         mount(App, {
-            content: OpinionsDetailsFormLinkable,
+            content: OpinionsDetailsForm,
             activeMenuKey: 'OPINIONS',
             refOpinion: id,
             refDetail: refDetail

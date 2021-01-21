@@ -1,14 +1,7 @@
-import React, {Fragment, useState, useEffect, useRef} from 'react';
-import { ListOpinionDetailsLinkable } from '../ListOpinionDetails';
+import React, { Fragment } from 'react';
 import { OpinionDetailAdder } from './OpinionDetailAdder';
 
-import {
-    RightCircleOutlined
-} from '@ant-design/icons';
-
 import { EditableContent } from '../../components/EditableContent';
-import { AppState } from '../../../client/AppState';
-import { Link } from '../../components/Link';
 
 export const ClassifiedOutput = ( { item, permissions, first, last } ) => {
     const { _id, depth, printTitle, text, deleted } = item;

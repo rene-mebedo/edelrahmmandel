@@ -1,14 +1,10 @@
-import React, {Fragment, useState} from 'react';
-import { 
-    Input,
-    Form,
-    Button,
-    Mentions
-} from 'antd';
+import React from 'react';
+import Input from 'antd/lib/input';
+//import Form from 'antd/lib/form';
+//import Button from 'antd/lib/button';
+import Mentions from 'antd/lib/mentions';
 
-const {
-    TextArea
-} = Input;
+const { TextArea } = Input;
 
 //https://unicode.org/emoji/charts/full-emoji-list.html
 const emojisMap = [

@@ -1,7 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { Form, Input, Button, Row, Col, Divider, Modal } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import Button from 'antd/lib/button';
+import Row from 'antd/lib/row';
+import Col from 'antd/lib/col';
+import Divider from 'antd/lib/divider';
+import Modal from 'antd/lib/modal';
+
+import UserOutlined from '@ant-design/icons/UserOutlined';
+import LockOutlined from '@ant-design/icons/LockOutlined';
 
 const layout = {
     labelCol: {

@@ -1,3 +1,5 @@
+/* SORTABLE besipiel vor der Umstellung
+
 import { Meteor } from 'meteor/meteor';
 
 import React, {Fragment, useState} from 'react';
@@ -44,7 +46,7 @@ import {
 
 import { ActionTodoList } from './components/ActionTodoList';
 
-/** drag and drop sortable */
+
 import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 
@@ -89,19 +91,7 @@ const OpinionDetailItemByType = ({ item, refOpinion }) => {
         item.type == 'IMPORTANT' ||
         item.type == 'TEXT'
     ) {
-        /*const { template } = layouttypesObject[item.type];
-
-        const renderedTemplate = template
-            .replace( /\{\{printTitle\}\}/g, item.printTitle || '')
-            .replace( /\{\{text\}\}/g, item.text || '' )
-            .replace( /\{\{actionCode\}\}/g, item.actionCode || '' )
-            .replace( /\{\{actionCodeText\}\}/g, (item.actionCode && actionCodes[item.actionCode].text) || '' )
-            .replace( /\{\{actionCodeLongtext\}\}/g, (item.actionCode && actionCodes[item.actionCode].longtext) || '' )
-            .replace( /\{\{actionText\}\}/g, item.actionText || '' )
-            
-
-        return <div className="mbac-opinion-detail" dangerouslySetInnerHTML={ {__html: renderedTemplate}} />*/
-
+       
         return <div dangerouslySetInnerHTML={ {__html: item.htmlContent } } />
     }
 
@@ -278,7 +268,6 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdi
 
                 setTimeout(_=> {
                     if (rePositionedOpinionDetails !== null) {
-                        console.log('Set NULL')
                         setRepositionedOpinionDetails(null);
                     }
                 }, 1000)
@@ -313,7 +302,7 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdi
                                         <Link href={`/opinions/${item.refOpinion}/${item._id}`}>
                                             <Space>
                                                 {   <Space>
-                                                        <Tag color="blue">{/*item.parentPosition ? item.parentPosition : ''*/}{item.position}</Tag>
+                                                        <Tag color="blue">{item.position}</Tag>
                                                         <Tag color="green">{layouttypesObject[item.type].title}</Tag>
                                                     </Space>
                                                 }
@@ -365,4 +354,4 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, canEdi
             <Skeleton loading={isLoading} paragraph={{rows:14}} />
         </Fragment>
     );
-}
+}*/

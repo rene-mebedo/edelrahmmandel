@@ -1,16 +1,21 @@
-import React, { Component, Fragment } from 'react'
+import React, { Fragment } from 'react'
 
-import { Descriptions, Skeleton, Tag, Avatar, Typography, Row, Col } from 'antd';
+import Descriptions from 'antd/lib/descriptions';
+import Skeleton from 'antd/lib/skeleton';
+import Tag from 'antd/lib/tag';
+import Avatar from 'antd/lib/avatar';
+//import Typography from 'antd/lib/typography';
+import Row from 'antd/lib/row';
+import Col from 'antd/lib/col';
 
 import { useOpinion } from '../client/trackers';
 
 import moment from 'moment';
 
 import { OpinionParticipants } from './components/OpinionParticipants';
-import { UserSearchInput } from './components/UserSearchInput';
 import { ModalOpinion } from './modals/Opinion';
 
-const { Text } = Typography;
+//const { Text } = Typography;
 
 const Expert = ({user}) => {
     if (!user) return null;

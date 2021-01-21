@@ -1,15 +1,9 @@
-import React, { 
-    Fragment,
-    useEffect
-} from 'react';
+import React, { useEffect } from 'react';
 
-import { useTracker } from 'meteor/react-meteor-data';
-
-import { Spin } from 'antd';
+import Spin from 'antd/lib/spin';
 
 import { LoginForm } from '/imports/ui/LoginForm';
 import { SiteLayout } from '/imports/ui/SiteLayout';
-import { Roles } from '/imports/api/collections/roles';
 import { useAccount, useRoles } from '../client/trackers';
 
 export const App = ({content, refOpinion, refDetail, activeMenuKey}) => {

@@ -1,10 +1,9 @@
 import React, { Fragment, useState } from 'react';
-import { Form, Button } from 'antd';
+import Form from 'antd/lib/form';
+import Button from 'antd/lib/button';
 import { MentionsWithEmojis } from './MentionsWithEmojis';
 
 const { useForm } = Form;
-
-
 
 export const ReplyTo = ( { refOpinion, refActivity } ) => {
     const [ showInput, setShowInput ] = useState(false);
@@ -23,10 +22,7 @@ export const ReplyTo = ( { refOpinion, refActivity } ) => {
                     setWorking(false);
                 });
             }, 100);
-        }).catch( err => {
-            // ignore
-            console.log('catch', err);
-        });
+        })
     }
 
     return (

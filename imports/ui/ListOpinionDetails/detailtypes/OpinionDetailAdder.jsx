@@ -1,77 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState, useEffect, useRef} from 'react';
+import React, {Fragment, useState } from 'react';
 
-import {
-    PlusCircleOutlined
-} from '@ant-design/icons';
-import { Modal, Form, Select, message, Dropdown, Menu } from 'antd';
-//import { useLayouttypes } from '../../../client/trackers';
+import message from 'antd/lib/message';
+import Dropdown from 'antd/lib/dropdown';
+import Menu from 'antd/lib/menu';
+
+import PlusCircleOutlined from '@ant-design/icons/PlusCircleOutlined';
+
 import { AppState } from '../../../client/AppState';
 import { layouttypesObject, selectableLayouttypes } from '../../../api/constData/layouttypes';
-const { Option } = Select;
 
-/*const defaultValuesByType = {
-    HEADING: { title: 'X', printTitle: 'Überschrift' },
-    TEXT: { title: 'T', text: 'Text' },
-    QUESTION: { title: 'Q', printTitle:'Frage', text: 'Zusatztext', actionText: 'Maßnahmentext', actionCode: 'unset' },
-    ANSWER: { title: 'A', printTitle:'Antwort', text: 'Antworttext', actionText:'Handlungsempfehlungstext', actionCode: 'okay' },
-    BESTIMMUNGEN: { title: 'B', printTitle:'Bestimmungstitel', text: 'Bestimmungen' },
-    HINT: { title: 'H', printTitle:'Hinweistitel', text: 'Hinweistext' },
-    INFO: { title: 'I', printTitle:'Infotitel', text: 'Infotext' },
-    IMPORTANT: { title: 'IM', printTitle:'Titel', text: 'Wichtigtext' },
-    RECOMMENDATION: { title: 'E', printTitle:'Empfehlungstitel', text: 'Empfehlungstext' },
-    NOTE: { title: 'N', printTitle:'Hinweistitel', text: 'Hinweistext' },
-    REMARK: { title: 'R', printTitle:'Anmerkungstitel', text: 'Anmerkungstext' },
-    ATTENTION: { title: 'AT', printTitle:'Achtungstitel', text: 'Achtungstext' },
-    DEFINITION: { title: 'D', printTitle:'Definitionstitel', text: 'Definitionstext' },
-}
-*/
-/*
-
-const ModalTypeSelector = ({ onOk, onCancel }) => {
-    const [ layouttypes, isLoadingLayouttypes ] = useLayouttypes();
-    const [ form ] = Form.useForm();
-
-    const handleOkay = () => {
-        form.validateFields().then( ({type}) => {
-            onOk && onOk(type);
-        });
-    }
-
-    return (
-        <Modal
-            title="Neues Detail erstellen"
-            visible={ true }
-            onOk={ handleOkay }
-            onCancel={ onCancel }
-            maskClosable={false}
-        >
-            <p>Zum Erstellen eines neuen Details wählen Sie bitte den Typ aus und bestätigen mit Okay.</p>
-
-            <Form
-                layout="vertical"
-                form={form}
-            >
-
-                <Form.Item
-                    label="Typ"
-                    name="type"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Bitte geben Sie einen Typ an.',
-                        },
-                    ]}
-                >
-                    <Select autoFocus loading={isLoadingLayouttypes}>
-                        { layouttypes.map (t => <Option key={t._id} value={t._id}>{t.title}</Option>) } 
-                    </Select>
-                </Form.Item>
-            </Form>
-        </Modal>
-    )
-}
-*/
 export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
     const { canEdit } = permissions;
     // no permission, no DetailAdder :-)
@@ -132,7 +70,6 @@ export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
     }
     
     const menuClick = ({ item, key, keyPath, domEvent }) => {
-        //console.log(key) //, keyPath, domEvent)
         createItem(key);
     }
 

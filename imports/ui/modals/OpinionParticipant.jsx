@@ -1,15 +1,18 @@
 import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState} from 'react';
-import { 
-    Button,
-    Select,
-    Modal,
-    Form,
-    Input,
-    List
-} from 'antd';
+import React, { Fragment, useState } from 'react';
 
-import { DeleteOutlined, PlusOutlined, EditOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import Button from 'antd/lib/button';
+import Select from 'antd/lib/select';
+import Modal from 'antd/lib/modal';
+import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import List from 'antd/lib/list';
+
+import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
+import PlusOutlined from '@ant-design/icons/PlusOutlined';
+import EditOutlined from '@ant-design/icons/EditOutlined';
+import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
+
 import { ModalBackground, preventClickPropagation } from '../components/ModalBackground';
 
 const { Option } = Select;
@@ -44,8 +47,6 @@ export const ModalOpinionParticipant = ( { mode/*NEW|EDIT*/, refOpinion, partici
                 form.resetFields();
                 setShowModal(false);
             });
-        }).catch( info => {
-            console.log('Validate Failed:', info);
         });
     }
 

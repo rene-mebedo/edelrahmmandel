@@ -1,10 +1,7 @@
-import { Meteor } from 'meteor/meteor';
-import React, {Fragment, useState} from 'react';
-import { 
-    PageHeader, 
-    Breadcrumb,
-    Space,
-} from 'antd';
+import React, { Fragment } from 'react';
+import PageHeader from 'antd/lib/page-header';
+import Breadcrumb from 'antd/lib/breadcrumb';
+import Space from 'antd/lib/space';
 
 import { ModalOpinion } from './modals/Opinion';
 import { ListOpinions } from './ListOpinions';

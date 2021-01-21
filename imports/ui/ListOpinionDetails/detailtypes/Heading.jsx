@@ -1,17 +1,15 @@
-import React, {Fragment, useState, useEffect, useRef} from 'react';
-import { ListOpinionDetailsLinkable } from '../ListOpinionDetails';
+import React, { Fragment, useState } from 'react';
+
+import Space from 'antd/lib/space';
+
+import RightCircleOutlined from '@ant-design/icons/RightCircleOutlined';
+import PlusSquareOutlined from '@ant-design/icons/PlusSquareOutlined';
+import MinusSquareOutlined from '@ant-design/icons/MinusSquareOutlined';
+
+import { ListOpinionDetails } from '../ListOpinionDetails';
 import { OpinionDetailAdder } from './OpinionDetailAdder';
-
-import {
-    RightCircleOutlined,
-    PlusSquareOutlined,
-    MinusSquareOutlined,
-} from '@ant-design/icons';
-
 import { EditableContent } from '../../components/EditableContent';
-import { AppState } from '../../../client/AppState';
 import { Link } from '../../components/Link';
-import { Space } from 'antd';
 
 export const Heading = ( { item, permissions, first, last } ) => {
     const [collapsed, setCollapsed] = useState(true);
@@ -44,7 +42,7 @@ export const Heading = ( { item, permissions, first, last } ) => {
 
                     { collapsed || deleted ? null : 
                         <div className="mbac-child-content">
-                            <ListOpinionDetailsLinkable 
+                            <ListOpinionDetails 
                                 refOpinion={item.refOpinion}
                                 refParentDetail={item._id}
                                 canEdit={permissions.canEdit}
