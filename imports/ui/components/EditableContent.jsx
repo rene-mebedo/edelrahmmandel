@@ -131,21 +131,6 @@ export class EditableContent extends React.Component {
         const {item} = this.props;
         const {canEdit, canDelete} = this.props.permissions;
 
-        this.PreparedFloatingActions = <FloatingActions
-            onSave={this.saveData.bind(this)} 
-            onCancel={this.discardChanges.bind(this)}
-            onCheckAnswer={this.checkAnswer.bind(this)}
-            onRemove={this.toggleDeleted.bind(this)}
-            onFinallyRemove={this.finallyRemove.bind(this)}
-            onSocialClick={this.doSocial.bind(this)}
-            isDeleted={item.deleted}
-            isAnswer={item.type == 'ANSWER'}
-            likes={item.likes}
-            dislikes={item.dislikes}
-            canEdit={canEdit}
-            canFinallyRemove={canDelete}
-        />;
-
         this.inputRef = React.createRef();
     }
 
@@ -360,12 +345,28 @@ export class EditableContent extends React.Component {
 
 
     render() {
-        const { type, value, refDetail } = this.props;
+        const { item, type, value, refDetail, permissions } = this.props;
         const { mode } = this.state;
+        const { canEdit, canDelete } = permissions;
 
         const toggleMode = this.toggleMode.bind(this);
         const uploadImage = this.uploadImage.bind(this);
         const PasteFromClipboard = this.PasteFromClipboard.bind(this);
+
+        const PreparedFloatingActions = <FloatingActions
+            onSave={this.saveData.bind(this)} 
+            onCancel={this.discardChanges.bind(this)}
+            onCheckAnswer={this.checkAnswer.bind(this)}
+            onRemove={this.toggleDeleted.bind(this)}
+            onFinallyRemove={this.finallyRemove.bind(this)}
+            onSocialClick={this.doSocial.bind(this)}
+            isDeleted={item.deleted}
+            isAnswer={item.type == 'ANSWER'}
+            likes={item.likes}
+            dislikes={item.dislikes}
+            canEdit={canEdit}
+            canFinallyRemove={canDelete}
+        />;
 
         if (type == 'span') {
             if (mode == 'EDIT') {
@@ -373,7 +374,7 @@ export class EditableContent extends React.Component {
                     <Fragment>
                         <Space>
                             <span ref={this.inputRef} className="mbac-editable-content" contentEditable="true" ></span>
-                            { this.PreparedFloatingActions }
+                            { PreparedFloatingActions }
                         </Space>
                     </Fragment>
                 )
@@ -394,7 +395,7 @@ export class EditableContent extends React.Component {
 
                             options={{ airMode: true }}
                         />
-                        { this.PreparedFloatingActions }
+                        { PreparedFloatingActions }
                     </Fragment>
                 )
             }
@@ -417,7 +418,7 @@ export class EditableContent extends React.Component {
                             autoUpdate={false}
                             value={value}
                         />
-                        { this.PreparedFloatingActions }
+                        { PreparedFloatingActions }
                     </Fragment>
                 )
             }

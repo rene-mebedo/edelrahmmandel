@@ -1,4 +1,4 @@
-import React from 'react'
+/*import React from 'react'
 
 import Skeleton from 'antd/lib/skeleton';
 
@@ -38,4 +38,4 @@ export const OpinionDetailContent = ({refOpinion, refDetail, permissions}) => {
     if (detail.type == 'PAGEBREAK') return <Pagebreak {...props} />;
     
     return <ClassifiedOutput {...props} />;
-}
+}*/
