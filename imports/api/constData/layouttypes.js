@@ -15,9 +15,6 @@ export const layouttypesObject = {
                     <span class="mbac-position mbac-media-screen">{{parentPosition}}{{position}}</span>
                     <span>{{printTitle}}</span>
                 </div>
-                <div class="mbac-text">
-                    {{text}}
-                </div>
                 <div class="mbac-child-content">
                     {{childContent}}
                 </div>

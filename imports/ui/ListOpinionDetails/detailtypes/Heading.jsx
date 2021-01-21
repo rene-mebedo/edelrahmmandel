@@ -25,7 +25,7 @@ export const Heading = ( { item, permissions, first, last } ) => {
             <OpinionDetailAdder item={item} permissions={permissions} />
             <div className={`mbac-opinion-detail depth-${depth} ${deletedClass}`}>
                 <div id={item._id} className={`mbac-item-type-heading depth-${depth}`}>
-                    <div className="mbac-title">
+                    <div className="mbac-title"> 
                         <Space>
                             { collapsed ? <PlusSquareOutlined onClick={e=>setCollapsed(!collapsed)}/> : <MinusSquareOutlined onClick={e=>setCollapsed(!collapsed)}/> }
                             <span className="mbac-position mbac-media-screen">{parentPosition}{position}</span>

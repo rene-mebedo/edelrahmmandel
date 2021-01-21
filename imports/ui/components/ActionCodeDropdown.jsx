@@ -4,6 +4,8 @@ import React, { Fragment, useState } from 'react';
 import { Button, Dropdown, Menu, Modal } from 'antd';
 
 import { actionCodes } from '/imports/api/constData/actioncodes'; 
+import DownOutlined from '@ant-design/icons/DownOutlined';
+import { nodeName } from 'jquery';
 
 /*
 export const ActionCodeDropdown = props => {
@@ -75,7 +77,7 @@ export class ActionCodeDropdown extends React.Component {
                         const item = actionCodes[k];
                         return (
                             <Menu.Item key={k} style={{color:item.color}}>
-                                {item.text}
+                                {item.longtext}
                             </Menu.Item>
                         );
                     })
@@ -99,7 +101,7 @@ export class ActionCodeDropdown extends React.Component {
 
         this.setState({value: e.key});
         if (onChange) onChange(e.key);
-
+ 
         this.waitForComponentDidUpdate = true;
     }
 
@@ -118,11 +120,14 @@ export class ActionCodeDropdown extends React.Component {
     }
     
     render() {
-        const { color, text } = actionCodes[this.state.value];
-
+        const { color, longtext } = actionCodes[this.state.value];
+        const className = `mbac-actioncode-dropdown ${this.props.className}`;
+        
         return (
-            <Dropdown trigger={['click']}  overlay={this.menu}>
-                <Button className="dropdown-handlungsbedarf" style={{color, borderColor: color}} >{ text }</Button>
+            <Dropdown className={className} trigger={['click']} overlay={this.menu}>
+                <Button type="text" style={{color}} >
+                    {longtext} <DownOutlined />
+                </Button>
             </Dropdown>
         );
     };

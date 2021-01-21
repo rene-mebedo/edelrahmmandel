@@ -9,7 +9,7 @@ import {
 import { EditableContent } from '../../components/EditableContent';
 import { AppState } from '../../../client/AppState';
 import { Link } from '../../components/Link';
-import { actionCodes } from '../../../api/constData/actioncodes';
+//import { actionCodes } from '../../../api/constData/actioncodes';
 
 export const Answer = ( { item, permissions, first, last } ) => {
     let { _id, depth, title, printTitle, text, actionCode, actionText, deleted, parentPosition, position } = item;
@@ -18,7 +18,7 @@ export const Answer = ( { item, permissions, first, last } ) => {
     if (!parentPosition) position += '.';
 
     
-    const actionCodeLongtext = actionCode && actionCodes[actionCode].longtext;
+    //const actionCodeLongtext = actionCode && actionCodes[actionCode].longtext;
 
     return (
         <Fragment>
@@ -71,8 +71,14 @@ export const Answer = ( { item, permissions, first, last } ) => {
                                 permissions={permissions}
                             />
                         </div>
-                        <div className="mbac-action-longtext mbac-could-styled-as-deleted">
-                            {actionCodeLongtext}
+                        <div className="mbac-action-longtext">
+                            <EditableContent type="actioncode" 
+                                value={actionCode}
+                                field="actionCode"
+                                refDetail={_id}
+                                item={item}
+                                permissions={permissions}
+                            />
                         </div>
                     </div>
                 </div>

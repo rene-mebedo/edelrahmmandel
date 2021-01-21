@@ -40,7 +40,6 @@ export const ListOpinionDetailsLinkable = ({ refOpinion, refParentDetail, depth 
         if (detail.type == 'PAGEBREAK') return <Pagebreak {...props} />;
         
         return <ClassifiedOutput {...props} />;
-
     });
 
 };
