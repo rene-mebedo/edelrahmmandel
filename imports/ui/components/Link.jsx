@@ -21,7 +21,7 @@ export const Link = props => {
         const { discardChanges } = AppState.selectedDetail;
 
         discardChanges();
-        go();        
+        go();
     }
 
     const checkEditing = e => {

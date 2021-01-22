@@ -8,6 +8,7 @@ import { Activities } from '../api/collections/activities';
 import { UserActivities } from '../api/collections/userActivities';
 import { Images } from '../api/collections/images';
 import { Layouttypes } from '../api/collections/layouttypes';
+import { OpinionPdfs } from '../api/collections/opinion-pdfs';
 
 
 export const useOpinionSubscription = id => useTracker( () => {
@@ -341,3 +342,31 @@ export const useOpinionActionList = refOpinion => useTracker( () => {
     return [ actionListitems, false ];
 }, [refOpinion]);
 
+/**
+ * Load the given Pdf-meta-data for the given opinion.
+ * 
+ * @param {String} refOpinion   id of the Opinion
+ */
+export const useOpinionPdfs = refOpinion => useTracker( () => {
+    const noDataAvailable = [ [] /*opinionPdfs*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const handler = Meteor.subscribe('opinion-pdfs', refOpinion);
+
+    if (!handler.ready()) { 
+        return noDataAvailable;
+    }
+
+    const data = OpinionPdfs.find({ "meta.refOpinion": refOpinion }, { sort: { 'meta.createdAt': -1 }}).fetch();
+
+    return [
+        data.map( file => {
+            let link = OpinionPdfs.findOne({_id: file._id}).link();
+            file.link = link;
+            return file;
+        }), 
+        false
+    ];
+}, [refOpinion]);

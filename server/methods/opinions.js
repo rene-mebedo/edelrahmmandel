@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
 import { Opinions } from '../../imports/api/collections/opinions';
@@ -88,56 +89,23 @@ Meteor.methods({
             finallyRemoved: false
         }).fetch();
         
-        console.log('start PDF');
-        const filename = `/home/rene/meteor/data/gutachten/${refOpinion}.pdf`;
+        const newId = (new Mongo.ObjectID)._str;
+        const filename = `/home/rene/meteor/data/pdf/${newId}.pdf`;
         const outputHtml = await opinionDocumenter.pdfCreate(opinion, details, filename);
-        console.log('PDF created');
 
-        OpinionPdfs.load(filename, {
-            fileName: `file://${refOpinion}.pdf`,
-            meta: { refOpinion }
-        });
-
-        const res = OpinionPdfs.find({}).fetch()
-        console.log(res);
-
-        /*upload = OpinionPdfs.insert({
-            file,
-            streams: 'dynamic',
-            chunkSize: 'dynamic',
-            meta: { refOpinion }
-        }, false);
-    
-        upload.on('start', function () {
-            //console.log('upload start', this)
-        });
-
-        upload.on('end', function (error, fileObj) {
-            //console.log('upload end', error, fileObj)
-            if (error) {
-                message.error(`Fehler beim Upload: ${error}`);
-                //console.log(`Error during upload: ${error}`);
-            } else {
-                console.log(`File successfully uploaded`, fileObj);
-                const data = {
-                    refOpinion,
-                    refParentDetail: refDetail, // the new parent is the current detail
-                    type: 'PICTURE',
-                    title: fileObj.name,
-                    printTitle: fileObj.name,
-                    text: 'Bildtext',
-                    files: [fileObj]
+        OpinionPdfs.addFile(filename, {
+            fileName: `${refOpinion}.pdf`,
+            type: 'application/pdf',
+            meta: { 
+                refOpinion, 
+                createdAt: new Date(), 
+                createdBy: {
+                    userId: currentUser._id,
+                    firstName: currentUser.userData.firstName,
+                    lastName: currentUser.userData.lastName
                 }
-
-                Meteor.call('opinionDetail.insert', data, (err, res) => {
-                    if (err) {
-                        message.error(`${err.message} file upload failed.`);
-                    }
-                });
             }
         });
-
-        upload.start();*/
 
         return 'Finished';
     }

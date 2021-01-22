@@ -166,11 +166,11 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [ canEdit, setCanEdit ] = useState(false);
     const [ canDelete, setCanDelete ] = useState(false);
     
-    const createPDF = () => {
+    /*const createPDF = () => {
         Meteor.call('opinion.createPDF', refOpinion, (err, res) => {
             console.log(err, res);
         });
-    }
+    }*/
 
     if (currentUser && !opinionIsLoading && opinion) {
         let edit = false,
@@ -211,11 +211,11 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                     />
                 );
 
-                pageHeaderButtons.push(
+                /*pageHeaderButtons.push(
                     <Button key="2"
                         onClick={createPDF}
                     >PDF erstellen</Button>
-                );
+                );*/
             }
         } else {
             // place possibility to upload pictures

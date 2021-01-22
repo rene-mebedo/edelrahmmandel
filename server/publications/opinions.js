@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { Opinions } from '/imports/api/collections/opinions';
+import { OpinionPdfs } from '../../imports/api/collections/opinion-pdfs';
 
 Meteor.publish('opinions', function publishOpinions(id) {
     if (!id) return Opinions.find({
@@ -13,4 +14,13 @@ Meteor.publish('opinions', function publishOpinions(id) {
         _id: id,
         "sharedWith.user.userId": this.userId
     });
+});
+
+
+Meteor.publish('opinion-pdfs', function publishOpinionPdfs(refOpinion) {
+    check (refOpinion, String);
+    
+    return OpinionPdfs.find({
+        "meta.refOpinion": refOpinion
+    }).cursor;
 });

@@ -1,21 +1,25 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 
 import Descriptions from 'antd/lib/descriptions';
 import Skeleton from 'antd/lib/skeleton';
 import Tag from 'antd/lib/tag';
 import Avatar from 'antd/lib/avatar';
-//import Typography from 'antd/lib/typography';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
+import Button from 'antd/lib/button';
+import Table from 'antd/lib/table';
+import Space from 'antd/lib/space';
 
-import { useOpinion } from '../client/trackers';
+import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 
-import moment from 'moment';
+import { useOpinion, useOpinionPdfs } from '../client/trackers';
 
 import { OpinionParticipants } from './components/OpinionParticipants';
 import { ModalOpinion } from './modals/Opinion';
 
-//const { Text } = Typography;
+import filesize from 'filesize';
+import moment from 'moment';
+
 
 const Expert = ({user}) => {
     if (!user) return null;
@@ -69,8 +73,17 @@ const Expert = ({user}) => {
 }
 
 export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelete=false}) => {
-    const [opinion, isLoading] = useOpinion(refOpinion);
+    const [ opinion, isLoading ] = useOpinion(refOpinion);
+    const [ pdfs, isPdfLoading ] = useOpinionPdfs(refOpinion);
+    const [ pendingPdfCreation, setPendingPdfCreation] = useState(false);
 
+    const createPDF = () => {
+        setPendingPdfCreation(true);
+        Meteor.call('opinion.createPDF', refOpinion, (err, res) => {
+            setPendingPdfCreation(false);
+        });
+    }
+    
     if (isLoading) {
         return (
             <Skeleton paragraph={{ rows: 4 }} />
@@ -126,6 +139,56 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
 
                 <Descriptions.Item label="Gutachter 2">
                     <Expert user={opinion.expert2} />
+                </Descriptions.Item>
+
+                <Descriptions.Item label="PDF-Dokumente">
+                    <Table
+                        //bordered
+                        size="small"
+                        loading={isPdfLoading}
+                        pagination={false}
+                        dataSource={pdfs}
+                        rowKey="_id"
+                        showHeader={false}
+                        columns={[
+                            {
+                                title: 'Erstellt am',
+                                dataIndex: 'meta.createdAt',
+                                key: 'createdAt',
+                                render: (text, item) => <a href={item.link} target="_blank">
+                                    <Space><FilePdfOutlined />{moment(item.meta.createdAt).format('DD.MM.YYYY HH:mm:ss')}</Space>
+                                </a>
+                            }, {
+                                title: 'Erstellt von',
+                                dataIndex: 'meta.createdBy',
+                                key: 'createdBy',
+                                render: (text, item) => {
+                                    if (!item.meta.createdBy) return 'Unbekannt';
+                                    
+                                    const { firstName, lastName } = item.meta.createdBy;
+                                    
+                                    return `${firstName} ${lastName}`
+                                }
+                                
+                            }, {
+                                title: 'Größe',
+                                dataIndex: 'size',
+                                key: 'size',
+                                align:"right",
+                                render: size => filesize(size)
+                            }, {
+                                title: 'Status',
+                                dataIndex: '_id',
+                                key: '_id',
+                                align:"center",
+                                render: (_id, item, index) => <Tag color={index==0?"green":"orange"}>{index == 0 ? 'Aktuell':'Entwurf'}</Tag>
+                            }
+                        ]}
+                    />
+
+                    <Button block onClick={createPDF} loading={pendingPdfCreation} style={{marginTop:16}}>
+                        <FilePdfOutlined /> PDF erstellen
+                    </Button>
                 </Descriptions.Item>
             </Descriptions>
         </Fragment>
