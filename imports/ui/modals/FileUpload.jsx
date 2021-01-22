@@ -1,10 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React, { Fragment, useState } from 'react';
 import Button from 'antd/lib/button';
-//import Select from 'antd/lib/select';
 import Modal from 'antd/lib/modal';
-//import Form from 'antd/lib/form';
-//import Input from 'antd/lib/input';
 import Space from 'antd/lib/space';
 import Upload from 'antd/lib/upload';
 import message from 'antd/lib/message';
@@ -15,9 +12,9 @@ import InboxOutlined from '@ant-design/icons/InboxOutlined';
 import { Images } from '/imports/api/collections/images';
 import { useImages } from '../../client/trackers';
 
-//const { Option } = Select;
-
 import { ModalBackground } from '../components/ModalBackground';
+
+import Compressor from 'compressorjs';
 
 export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
     const [ images, imagesLoading ] = useImages();
@@ -49,45 +46,64 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
     }
 
     const doUpload = (file) => {
-        const upload = Images.insert({
-            file,
-            streams: 'dynamic',
-            chunkSize: 'dynamic',
-            //someOtherStuff: 'Hallo Welt'
-        }, false);
-    
-        upload.on('start', function () {
-            //console.log('upload start', this)
-        });
+        //new Compressor(file)
 
-        upload.on('end', function (error, fileObj) {
-            //console.log('upload end', error, fileObj)
-            if (error) {
-                message.error(`Fehler beim Upload: ${error}`);
-                //console.log(`Error during upload: ${error}`);
-            } else {
-                //console.log(`File "${fileObj.name}" successfully uploaded`);
-                const data = {
-                    refOpinion,
-                    refParentDetail: refDetail, // the new parent is the current detail
-                    type: 'PICTURE',
-                    title: fileObj.name,
-                    printTitle: fileObj.name,
-                    text: 'Bildtext',
-                    //orderString: '01000',
-                    files: [fileObj]
-                }
-                Meteor.call('opinionDetail.insert', data, (err, res) => {
-                    if (err) {
-                        message.error(`${err.message} file upload failed.`);
+        const uploadImage = file => {
+
+            const upload = Images.insert({
+                file,
+                streams: 'dynamic',
+                chunkSize: 'dynamic',
+                //someOtherStuff: 'Hallo Welt'
+            }, false);
+        
+            upload.on('start', function () {
+                //console.log('upload start', this)
+            });
+
+            upload.on('end', function (error, fileObj) {
+                //console.log('upload end', error, fileObj)
+                if (error) {
+                    message.error(`Fehler beim Upload: ${error}`);
+                    //console.log(`Error during upload: ${error}`);
+                } else {
+                    //console.log(`File "${fileObj.name}" successfully uploaded`);
+                    const data = {
+                        refOpinion,
+                        refParentDetail: refDetail, // the new parent is the current detail
+                        type: 'PICTURE',
+                        title: fileObj.name,
+                        printTitle: fileObj.name,
+                        text: 'Bildtext',
+                        files: [fileObj]
                     }
-                });
-            }
-            
-            
-        });
 
-        upload.start();
+                    Meteor.call('opinionDetail.insert', data, (err, res) => {
+                        if (err) {
+                            message.error(`${err.message} file upload failed.`);
+                        }
+                    });
+                }
+            });
+
+            upload.start();
+        }
+
+        new Compressor(file, {
+            maxWidth: 600,
+            quality: 0.6,
+            drew(context, canvas) {
+                context.fillStyle = '#fff';
+                context.font = '11pt Arial';
+                context.fillText('© MEBEDO Consulting GmbH', 20, canvas.height - 20);
+            },
+            success(compressedImage) {
+                uploadImage(compressedImage);
+            },
+            error(err) {
+                console.log('compressor-err:', err);
+            },
+        });
     }
 
     const props = {
@@ -95,15 +111,16 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
         multiple: true,
         action: doUpload,
         onChange(info) {
-          const { status } = info.file;
-          if (status !== 'uploading') {
-            //console.log(info.file, info.fileList);
-          }
-          if (status === 'done') {
-            //message.success(`${info.file.name} file uploaded successfully.`);
-          } else if (status === 'error') {
-            //message.error(`${info.file.name} file upload failed.`);
-          }
+            const { status } = info.file;
+            if (status !== 'uploading') {
+                //console.log(info.file, info.fileList);
+            }
+            if (status === 'done') {
+                //message.success(`${info.file.name} file uploaded successfully.`);
+            } else if (status === 'error') {
+                //message.error(`${info.file.name} file upload failed.`);
+                console.log('Error Upload', info);
+            }
         },
     };
 
