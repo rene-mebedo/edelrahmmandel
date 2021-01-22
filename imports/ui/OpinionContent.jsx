@@ -152,12 +152,17 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                         showHeader={false}
                         columns={[
                             {
+                                title: 'Titel',
+                                dataIndex: 'title',
+                                key: 'title',
+                                render: (text, item) => <a href={item.link} target="_blank">
+                                    <Space><FilePdfOutlined /><span>Gutachtliche Stellungnahme</span></Space>
+                                </a>
+                            }, {
                                 title: 'Erstellt am',
                                 dataIndex: 'meta.createdAt',
                                 key: 'createdAt',
-                                render: (text, item) => <a href={item.link} target="_blank">
-                                    <Space><FilePdfOutlined />{moment(item.meta.createdAt).format('DD.MM.YYYY HH:mm:ss')}</Space>
-                                </a>
+                                render: (text, item) => moment(item.meta.createdAt).format('DD.MM.YYYY HH:mm:ss')
                             }, {
                                 title: 'Erstellt von',
                                 dataIndex: 'meta.createdBy',
@@ -169,7 +174,6 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                     
                                     return `${firstName} ${lastName}`
                                 }
-                                
                             }, {
                                 title: 'Größe',
                                 dataIndex: 'size',
@@ -181,7 +185,10 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                 dataIndex: '_id',
                                 key: '_id',
                                 align:"center",
-                                render: (_id, item, index) => <Tag color={index==0?"green":"orange"}>{index == 0 ? 'Aktuell':'Entwurf'}</Tag>
+                                render: (_id, item, index) => <Space>
+                                    <Tag color={index==0?"green":"orange"}>{index == 0 ? 'Aktuell':'Entwurf'}</Tag>
+                                    <Tag color="blue">v{pdfs.length - index}</Tag>
+                                </Space>
                             }
                         ]}
                     />
