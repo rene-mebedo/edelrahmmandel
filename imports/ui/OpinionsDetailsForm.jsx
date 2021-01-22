@@ -6,6 +6,7 @@ import Affix from 'antd/lib/affix';
 import Space from 'antd/lib/space';
 import Skeleton from 'antd/lib/skeleton';
 import Spin from 'antd/lib/spin';
+import Button from 'antd/lib/button';
 
 const { Content } = Layout;
 
@@ -24,6 +25,7 @@ import {
     useOpinion,
     useOpinionDetail
 } from '../client/trackers';
+
 
 /*
 export const DetailForm = ({refOpinion, refDetail, currentUser}) => {
@@ -164,6 +166,12 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [ canEdit, setCanEdit ] = useState(false);
     const [ canDelete, setCanDelete ] = useState(false);
     
+    const createPDF = () => {
+        Meteor.call('opinion.createPDF', refOpinion, (err, res) => {
+            console.log(err, res);
+        });
+    }
+
     if (currentUser && !opinionIsLoading && opinion) {
         let edit = false,
             del = false,
@@ -201,6 +209,12 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                         mode="EDIT"
                         refOpinion={refOpinion}
                     />
+                );
+
+                pageHeaderButtons.push(
+                    <Button key="2"
+                        onClick={createPDF}
+                    >PDF erstellen</Button>
                 );
             }
         } else {
