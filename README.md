@@ -49,7 +49,8 @@ geplanter `Going-Live: KW 3`
   - [x] Pflege abhängig vom Typ machen
 - [ ] Bilder
   - [x] Ablageort prüfen
-  - [ ] Komprimierung
+  - [x] Komprimierung
+  - [ ] mehrere Bilder zu einem OpinionDetail-Eintrag verwalten (hinzufügen, löschen)
 - [x] Menu vollständig einklappbar
 - [x] Aktivitätsleiste vollständig einklappbar
 - [x] Übernahme der Maßnahmen inkl. Maßnahmentexte in Punkt 8 - Abschlussbetrachtung
@@ -61,12 +62,12 @@ geplanter `Going-Live: KW 3`
 - [x] Opiniondetails `pagebreakAfter` implementieren
 > Eigenes Detail `PageBreak` erstellt inkl. Darstellung für Endbenutzer
 - [x] Opiniondetails Check-Answer
-- [ ] Selectbox layouttypes sortiert nach Name
+- [x] Selectbox layouttypes sortiert nach Name
 - [ ] Dropdown Gutachter - Feld zurücksetzen/leeren nicht möglich
 
 ### IT Operations
 - [x] Hosting
-- [ ] Backup
+- [x] Backup
 
 ### Going-Live Vorbereitungen
 - [ ] Update `printTitle` mit Wert aus `Title` über alle `OpinionDetails`

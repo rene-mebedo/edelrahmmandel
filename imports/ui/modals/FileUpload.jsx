@@ -54,7 +54,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                 file,
                 streams: 'dynamic',
                 chunkSize: 'dynamic',
-                //someOtherStuff: 'Hallo Welt'
+                meta: { refOpinion }
             }, false);
         
             upload.on('start', function () {
@@ -67,7 +67,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                     message.error(`Fehler beim Upload: ${error}`);
                     //console.log(`Error during upload: ${error}`);
                 } else {
-                    //console.log(`File "${fileObj.name}" successfully uploaded`);
+                    console.log(`File successfully uploaded`, fileObj);
                     const data = {
                         refOpinion,
                         refParentDetail: refDetail, // the new parent is the current detail

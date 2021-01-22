@@ -1,6 +1,6 @@
 import { FilesCollection } from 'meteor/ostrio:files';
 import { Opinions } from '../collections/opinions';
-import { OpinionDetails } from '../collections/opinionDetails';
+//import { OpinionDetails } from '../collections/opinionDetails';
 
 let ImageConfig = {
     collectionName: 'images',
@@ -24,29 +24,22 @@ let ImageConfig = {
         return true;
     },
     protected(fileObj) {
-        return true;
+        // protect access to the file
+        // only autth users that has shared the opinion can
+        // access the image-file
+        if (!this.userId) return false;
 
-        // read the opinionDetail where the file belongs to ...
-        const detail = OpinionDetails.findOne({
-            'files._id': fileObj._id
-        });
+        const { refOpinion } = fileObj.meta;
 
-        if (!detail) return false;
         // ... and check then if the current-user is member of sharedWith
-        const opinion = Opinions.findeOne({
-            _id: detail.refOpinion,
+        const opinion = Opinions.findOne({
+            _id: refOpinion,
             'sharedWith.user.userId': this.userId
         });
 
         if (!opinion) return false;
 
         return true;
-        
-        // Check if current user is owner of the file
-        if (fileObj.meta.owner === this.userId) {
-            return false;
-        }
-        return false;
     }
 };
 
