@@ -11,6 +11,14 @@ import opinionDocumenter from 'opinion-documenter';
 import { OpinionDetails } from '../../imports/api/collections/opinionDetails';
 import { OpinionPdfs } from '../../imports/api/collections/opinion-pdfs';
 
+import fs from 'fs';
+import path from 'path';
+
+const readFile = Meteor.wrapAsync(fs.readFile, fs);
+const writePdf = Meteor.wrapAsync(OpinionPdfs.write, OpinionPdfs);
+
+const settings = JSON.parse(process.env.MGP_SETTINGS);
+
 Meteor.methods({
     /**
      * Returns all Opinions that are shared with the current user
@@ -89,14 +97,15 @@ Meteor.methods({
             finallyRemoved: false
         }).fetch();
         
-        const newId = (new Mongo.ObjectID)._str;
-        const filename = `/home/rene/meteor/data/pdf/${newId}.pdf`;
-        const outputHtml = await opinionDocumenter.pdfCreate(opinion, details, filename);
+        const filename = path.join(settings.PdfPath, `${opinion.opinionNo}.pdf`);
+        /*const filename = */await opinionDocumenter.pdfCreate(opinion, details, settings.PdfPath);
 
-        OpinionPdfs.addFile(filename, {
+        const data = readFile(filename);
+
+        const fileRef = writePdf(data, {
             fileName: `${refOpinion}.pdf`,
             type: 'application/pdf',
-            meta: { 
+            meta: {
                 refOpinion, 
                 createdAt: new Date(), 
                 createdBy: {
@@ -107,6 +116,7 @@ Meteor.methods({
             }
         });
 
-        return 'Finished';
+        fs.unlinkSync(filename);
+        fs.unlinkSync(filename.replace('.pdf', '.tmp.pdf'));
     }
 });

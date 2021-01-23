@@ -79,7 +79,8 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
 
     const createPDF = () => {
         setPendingPdfCreation(true);
-        Meteor.call('opinion.createPDF', refOpinion, (err, res) => {
+        Meteor.call('opinion.createPDF', refOpinion, (err, fileRef) => {
+            console.log(fileRef);
             setPendingPdfCreation(false);
         });
     }
