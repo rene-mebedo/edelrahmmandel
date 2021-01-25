@@ -97,26 +97,30 @@ Meteor.methods({
             finallyRemoved: false
         }).fetch();
         
-        const filename = path.join(settings.PdfPath, `${opinion.opinionNo}.pdf`);
-        /*const filename = */await opinionDocumenter.pdfCreate(opinion, details, settings.PdfPath);
+        try {
+            //const filename = path.join(settings.PdfPath, `${opinion.opinionNo}.pdf`);
+            const filename = await opinionDocumenter.pdfCreate(opinion, details, settings.PdfPath);
 
-        const data = readFile(filename);
+            const data = readFile(filename);
 
-        const fileRef = writePdf(data, {
-            fileName: `${refOpinion}.pdf`,
-            type: 'application/pdf',
-            meta: {
-                refOpinion, 
-                createdAt: new Date(), 
-                createdBy: {
-                    userId: currentUser._id,
-                    firstName: currentUser.userData.firstName,
-                    lastName: currentUser.userData.lastName
+            const fileRef = writePdf(data, {
+                fileName: `${refOpinion}.pdf`,
+                type: 'application/pdf',
+                meta: {
+                    refOpinion, 
+                    createdAt: new Date(), 
+                    createdBy: {
+                        userId: currentUser._id,
+                        firstName: currentUser.userData.firstName,
+                        lastName: currentUser.userData.lastName
+                    }
                 }
-            }
-        });
+            });
 
-        fs.unlinkSync(filename);
-        fs.unlinkSync(filename.replace('.pdf', '.tmp.pdf'));
+            fs.unlinkSync(filename);
+            //fs.unlinkSync(filename.replace('.pdf', '.tmp.pdf'));
+        } catch (err) {
+            return err;
+        }
     }
 });
