@@ -1,10 +1,9 @@
 import { FilesCollection } from 'meteor/ostrio:files';
 import { Opinions } from './opinions';
-//import { OpinionDetails } from '../collections/opinionDetails';
 
 let Config = {
     collectionName: 'opinionpdfs',
-    downloadRoute: '/files/opinions',
+    downloadRoute: '/files',
     allowClientCode: false, // Disallow remove files from Client
     onBeforeUpload(file) {
         // Allow upload files under 10MB, and only in png/jpg/jpeg formats

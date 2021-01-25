@@ -98,7 +98,6 @@ Meteor.methods({
         }).fetch();
         
         try {
-            //const filename = path.join(settings.PdfPath, `${opinion.opinionNo}.pdf`);
             const filename = await opinionDocumenter.pdfCreate(opinion, details, settings.PdfPath);
 
             const data = readFile(filename);
@@ -118,9 +117,8 @@ Meteor.methods({
             });
 
             fs.unlinkSync(filename);
-            //fs.unlinkSync(filename.replace('.pdf', '.tmp.pdf'));
         } catch (err) {
-            return err;
+            throw new Meteor.Error(err);
         }
     }
 });

@@ -13,16 +13,6 @@ let ImageConfig = {
         }
         return 'Please upload image, with size equal or less than 10MB';
     },
-    downloadCallback(fileObj) {
-        return true;
-
-        if (this.params.query.download == 'true') {
-          // Increment downloads counter
-          Images.update(fileObj._id, {$inc: {'meta.downloads': 1}});
-        }
-        // Must return true to continue download
-        return true;
-    },
     protected(fileObj) {
         // protect access to the file
         // only autth users that has shared the opinion can
