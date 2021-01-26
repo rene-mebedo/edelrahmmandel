@@ -44,6 +44,12 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
 
     const handleOk = e => {
         form.validateFields().then( values => {
+            // change undefined values to null,
+            // so that these values could be transferd via ddp and
+            // stored in the database/document
+            Object.keys(values).map(k => values[k] === undefined ? values[k] = null : null);
+            console.log(values);
+            
             if (values.dateFromTill) {
                 // transform dateFromTill
                 values.dateFrom = values.dateFromTill[0].toDate();

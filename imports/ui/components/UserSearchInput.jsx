@@ -77,6 +77,7 @@ export class UserSearchInput extends React.Component {
                 onSearch={this.handleSearch}
                 onChange={this.handleChange}
                 notFoundContent={null}
+                allowClear={true}
             >
                 { options }
             </Select>

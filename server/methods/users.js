@@ -64,4 +64,25 @@ Meteor.methods({
         
         return users;
     },
+
+    'users.getAll'(refOpinion, searchText){
+        check(refOpinion, String);
+        check(searchText, String);
+
+        const escapedText = escapeRegExp(searchText);
+
+        const users =  Meteor.users.find({
+            $or: [
+                { 'username': { $regex : escapedText, $options:"i" } },
+                { 'userData.firstName': { $regex : escapedText, $options:"i" } },
+                { 'userData.lastName': { $regex : escapedText, $options:"i" } }
+            ]
+        }, { fields: { 'userData.roles': 0 }, limit: 10 }).fetch().map( user => {
+            const { _id, username, userData } = user;
+
+            return { userId: _id, username, ...userData};
+        });
+        
+        return users;
+    }
 });

@@ -11,11 +11,12 @@ import { Answer } from './detailtypes/Answer';
 import { ClassifiedOutput } from './detailtypes/ClassifiedOutput';
 import { Pagebreak } from './detailtypes/Pagebreak';
 import { Picture } from './detailtypes/Picture';
+import { PictureContainer } from './detailtypes/PictureContainer';
 
 import { useOpinionDetails } from '../../client/trackers';
 
 
-export const ListOpinionDetails = ({ refOpinion, refParentDetail, depth = 1, canEdit=false, canDelete=false, currentUser }) => {
+export const ListOpinionDetails = ({ refOpinion, refParentDetail, depth = 1, disableDetailAdder = false, canEdit=false, canDelete=false, currentUser }) => {
     const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refParentDetail);
     const permissions = { canEdit, canDelete, currentUser };
 
@@ -24,7 +25,7 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail, depth = 1, can
     const maxItems = opinionDetails.length;
 
     if (maxItems == 0 && canEdit) {
-        return <OpinionDetailAdder pseudoItem={{refOpinion, refParentDetail, depth: depth + 1}} permissions={permissions} />
+        return disableDetailAdder ? null : <OpinionDetailAdder pseudoItem={{refOpinion, refParentDetail, depth: depth + 1}} permissions={permissions} />
     }
 
     return opinionDetails.map( (detail, index) => {
@@ -41,6 +42,7 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail, depth = 1, can
         if (detail.type == 'ANSWER') return <Answer {...props} />;
         if (detail.type == 'BESTIMMUNGEN') return <Bestimmungen {...props} />;
         if (detail.type == 'PICTURE') return <Picture {...props} />;
+        if (detail.type == 'PICTURECONTAINER') return <PictureContainer {...props} />;
         if (detail.type == 'PAGEBREAK') return <Pagebreak {...props} />;
         if (detail.type == 'TODOLIST') return <ActionTodoList refOpinion={refOpinion} />
         

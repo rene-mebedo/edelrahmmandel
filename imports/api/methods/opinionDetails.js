@@ -275,6 +275,10 @@ Meteor.methods({
             rePositionSiblings = true;
         }
 
+        // showInToC was removed from ui because of inline-editing style
+        // now every heading will be show in ToC
+        detailData.showInToC = (detailData.type == 'HEADING' && detailData.depth <= 2);
+
         let detail = injectUserData({ currentUser }, {...detailData}, { created: true });
         detail.activitiesCount = 1;
         

@@ -130,7 +130,7 @@ Meteor.methods({
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
             throw new Meteor.Error('Keine Berechtigung zum Aktualisieren des angegebenen Gutachtens.');
         }
-
+        
         Opinions.update(refOpinion, {
             $set: data
         });

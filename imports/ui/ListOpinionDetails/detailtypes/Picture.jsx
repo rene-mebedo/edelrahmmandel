@@ -13,7 +13,7 @@ export const Picture = ( { item, permissions, first, last } ) => {
 
     return (
         <Fragment>
-            <OpinionDetailAdder item={item} permissions={permissions} />
+            {/*<OpinionDetailAdder item={item} permissions={permissions} />*/}
             <div className={`mbac-opinion-detail depth-${depth} ${deletedClass}`}>
                 <div id={_id} className={`mbac-item-type-picture depth-${depth}`}>
                     <div className="mbac-picture">
@@ -46,7 +46,7 @@ export const Picture = ( { item, permissions, first, last } ) => {
                     </div>
                 </div>
             </div>
-            { !last ? null : <OpinionDetailAdder after item={item} permissions={permissions} /> }
+            { /*!last ? null : <OpinionDetailAdder after item={item} permissions={permissions} /> */}
         </Fragment>
     )
 }

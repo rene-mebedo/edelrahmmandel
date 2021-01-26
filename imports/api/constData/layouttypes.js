@@ -344,17 +344,46 @@ export const layouttypesObject = {
         `
     },
 
+    PICTURECONTAINER: {
+        _id: 'PICTURECONTAINER',
+        active: true,
+        title: 'Bildcontainer',
+        description: 'Dieser Typ dient der Aufstellung/Liste einzelner Bilddokumentationen',
+        hasChilds: true,
+        isPictureable: true,
+        defaultValues: { title: 'BC', printTitle:'Bildcontainer', text: 'Im nachfolgenden finden Sie eine Auflistung der Bildern.' },
+        template: `<div class="mbac-item-type-picture-container">
+            <div class="mbac-text">
+                {{text}}
+            </div>
+            <table class="mbac-item-type-picture-container">
+                <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>Fotodokumentation</td>
+                        <td>Bemerkungen</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{childContent}}
+                </tbody>
+            </table>
+        </div>`
+    },
 
     PICTURE: {
         _id: 'PICTURE',
         active: true,
+        internalUseOnly: true,
         title: 'Bild(er)',
         description: 'Dieser Typ dient der Bilddokumentation und kann ein oder mehrer Bilder beinhalten',
         hasChilds: false,
         defaultValues: { printTitle: 'Bildtitel', text: 'Bildtext' },
-        template: `<div class="mbac-item-type-picture">
-            {{printTitle}}
-        </div>`
+        template: `<tr class="mbac-item-type-picture">
+            <td>{{index}}</td>
+            <td>{{pictures}}</td>
+            <td>{{text}}</td>
+        <tr>`
     },
 
     PAGEBREAK: {
