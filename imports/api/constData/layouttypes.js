@@ -383,7 +383,7 @@ export const layouttypesObject = {
             <td>{{index}}</td>
             <td>{{pictures}}</td>
             <td>{{text}}</td>
-        <tr>`
+        </tr>`
     },
 
     PAGEBREAK: {

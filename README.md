@@ -38,7 +38,7 @@ geplanter `Going-Live: KW 3`
 - [x] Opinion und OpininoDetail-Felder abgleichen und implementieren mit Edelrahm RS-MT
 - [x] Einbindung PDF-Erstellung in Edelrahm
 - [x] Benutzermanagement (Logout, Passwort ändern)
-- [ ] Teilen des Gutachtens mit anderen Benutzers
+- [x] Teilen des Gutachtens mit anderen Benutzers
 - [x] Stammdatenverwaltung (Bearbeitung von Teilnehmern, Gutachter 1, 2 usw.)
 - [x] Neuanlage Gutachten
   - [x] Erstellen einer Vorlage
@@ -63,7 +63,9 @@ geplanter `Going-Live: KW 3`
 > Eigenes Detail `PageBreak` erstellt inkl. Darstellung für Endbenutzer
 - [x] Opiniondetails Check-Answer
 - [x] Selectbox layouttypes sortiert nach Name
-- [ ] Dropdown Gutachter - Feld zurücksetzen/leeren nicht möglich
+- [x] Dropdown Gutachter - Feld zurücksetzen/leeren nicht möglich
+- [ ] Benutzerprofil bearbeiten
+
 
 ### IT Operations
 - [x] Hosting

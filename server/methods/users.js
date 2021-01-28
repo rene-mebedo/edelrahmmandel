@@ -7,6 +7,7 @@ import { Roles } from '../../imports/api/collections/roles';
 
 import { hasPermission } from '../../imports/api/helpers/roles';
 import { escapeRegExp } from '../../imports/api/helpers/basics';
+import { Activities } from '../../imports/api/collections/activities';
 
 const SECRET_PASSWORD = 'jhd&%/f54ff!54hDRa6 H9La3"6*~';
 
@@ -148,17 +149,90 @@ Meteor.methods({
         Accounts.sendVerificationEmail(userId, email);
     },
 
+    /**
+     * Returns the initial password to change at verifyEmail
+     * 
+     */
     'users.getInitialPassword'(){
         if (!this.userId) {
             throw new Meteor.Error('Not Authorized.');
         }
 
         return SECRET_PASSWORD;
+    },
+
+    /**
+     * Update the current logged in users profile
+     * 
+     * @param {Object} data 
+     */
+    'users.updateProfile'(data) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        const oldUser = Meteor.users.findOne(this.userId);
+        // the roles could not be updated by the user itself
+        data.roles = ['EMPLOYEE'] //oldUser.userData.roles;
+
+        Meteor.users.update(this.userId, {
+            $set: { 
+                userData: data 
+            }
+        });
+
+        // check if firstName or lastName changed
+        if (
+            oldUser.userData.firstName !== data.firstName || 
+            oldUser.userData.lastName !== data.lastName
+        ) {
+            Opinions.update({
+                'sharedWith.user.userId': this.userId
+            }, {
+                $set: { 
+                    'sharedWith.$.user': { userId: this.userId, firstName: data.firstName, lastName: data.lastName }
+                }
+            }, { multiple: true });
+
+            Activities.update({
+                'createdBy.userId': this.userId
+            }, {
+                $set: { 
+                    'createdBy.firstName': data.firstName,
+                    'createdBy.lastName': data.lastName
+                }
+            }, { multiple: true });
+
+            Activities.update({
+                'answers.createdBy.userId': this.userId
+            }, {
+                $set: { 
+                    'answers.$.createdBy.firstName': data.firstName,
+                    'answers.$.createdBy.lastName': data.lastName
+                }
+            }, { multiple: true });
+        }
+
+        Opinions.update({
+            'expert1.userId': this.userId
+        }, {
+            $set: { 
+                'expert1': { userId: this.userId, ...data }
+            }
+        }, { multiple: true });
+
+        Opinions.update({
+            'expert2.userId': this.userId
+        }, {
+            $set: { 
+                'expert2': { userId: this.userId, ...data }
+            }
+        }, { multiple: true });
+
     }
 
 });
 
-//export MAIL_URL='smtp://gutachtenplus@mebedo-ac.de:afASRr2fdVCa2646xS@smtp.office365.com:587/'
 Accounts.emailTemplates.siteName = 'MEBEDO GutachtenPlus';
 Accounts.emailTemplates.from = 'MEBEDO Consulting GmbH <gutachtenplus@mebedo-ac.de>';
 

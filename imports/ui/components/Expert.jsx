@@ -1,24 +1,34 @@
 import React, { Fragment, useState } from 'react'
 
 import Avatar from 'antd/lib/avatar';
+import Image from 'antd/lib/image';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 
-export const Expert = ({user, showFull = true}) => {
+import { useAvatar } from '../../client/trackers';
+
+
+export const Expert = ({ user, showFull = true }) => {
     if (!user) return null;
 
     const { userId, firstName, lastName, company, position, qualification, advancedQualification } = user;
+    const [ userAvatarLink, isLoadingAvatar ] = useAvatar(userId);
 
+    const getInitials = () => {
+        return (firstName && firstName.length > 0)
+            ? firstName.substring(0,1) + lastName.substring(0,1)
+            : lastName.substring(0,2)
+    }
     return (
         <div className="user-avatar-data">
             <Row>
                 <Col flex="40px">
-                    <Avatar style={{ /*backgroundColor: 'orange',*/ verticalAlign: 'middle' }} /*size="large" gap={16}*/>
-                        { firstName && firstName.length > 0
-                            ? firstName.substring(0,1) + lastName.substring(0,1)
-                            : lastName.substring(0,2)
-                        }
-                    </Avatar>
+                    { userAvatarLink 
+                        ? <Avatar src={userAvatarLink} />
+                        : <Avatar style={{ verticalAlign: 'middle' }} >
+                            { getInitials() }
+                          </Avatar>
+                    }
                 </Col>
                 <Col flex="auto">
                     { showFull ? <div className="user-name" style={{marginTop: 6}}>{firstName} {lastName}</div>

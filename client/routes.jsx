@@ -12,6 +12,7 @@ import { OpinionsForm } from '../imports/ui/OpinionsForm';
 import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
 import { AppState } from '../imports/client/AppState';
 import { VerifyEMail } from '../imports/ui/components/VerifyEMail';
+import { UserProfileForm } from '../imports/ui/components/user-profile-form';
 
 // https://github.com/kadirahq/flow-router/issues/318
 // Prevent routing when there are unsaved changes
@@ -95,7 +96,18 @@ FlowRouter.route('/verify-email/:token', {
         mount(App, {
             content: VerifyEMail,
             token,
-            showEMailVerification: true
+            authenticatedRoute: false
+        });
+    },
+});
+
+FlowRouter.route('/profile', {
+    name: 'userprofile',
+    action({ token }) {
+        mount(App, {
+            content: UserProfileForm,
+            token,
+            authenticatedRoute: true
         });
     },
 });
@@ -105,6 +117,7 @@ FlowRouter.route('/', {
     action() {
         mount(App, {
             content: Home,
+            authenticatedRoute: true
         });
     },
 });
@@ -114,6 +127,7 @@ FlowRouter.route('/activities', {
     action() {
         mount(App, {
             content: ActivitiesForm,
+            authenticatedRoute: true
         });
     },
 });
@@ -124,6 +138,7 @@ FlowRouter.route('/opinions', {
         mount(App, {
             content: OpinionsForm,
             activeMenuKey: 'OPINIONS',
+            authenticatedRoute: true
         });
     },
 });
@@ -136,6 +151,7 @@ FlowRouter.route('/opinions/:id', {
             activeMenuKey: 'OPINIONS',
             refOpinion: id,
             refDetail: null,
+            authenticatedRoute: true
         });
     },
 });
@@ -147,7 +163,8 @@ FlowRouter.route('/opinions/:id/:refDetail', {
             content: OpinionsDetailsForm,
             activeMenuKey: 'OPINIONS',
             refOpinion: id,
-            refDetail: refDetail
+            refDetail: refDetail,
+            authenticatedRoute: true
         });
     },
 });

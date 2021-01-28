@@ -9,7 +9,7 @@ import { UserActivities } from '../api/collections/userActivities';
 import { Images } from '../api/collections/images';
 import { Layouttypes } from '../api/collections/layouttypes';
 import { OpinionPdfs } from '../api/collections/opinion-pdfs';
-
+import { Avatars } from '../api/collections/avatars';
 
 export const useOpinionSubscription = id => useTracker( () => {
     const subscription = Meteor.subscribe('opinions', id)
@@ -370,3 +370,29 @@ export const useOpinionPdfs = refOpinion => useTracker( () => {
         false
     ];
 }, [refOpinion]);
+
+
+/**
+ * Load the current Avatar for the given user
+ * 
+ * @param {String} userId   Specifies the user
+ */
+export const useAvatar = userId => useTracker( () => {
+    const noDataAvailable = [ null /*avatar*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const handler = Meteor.subscribe('avatar', userId);
+
+    if (!handler.ready()) { 
+        return noDataAvailable;
+    }
+
+    const avatar = Avatars.findOne({ userId });
+
+    return [
+        avatar ? avatar.link() : null,
+        false
+    ];
+}, [userId]);

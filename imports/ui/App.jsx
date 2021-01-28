@@ -21,7 +21,7 @@ export const App = ({content, refOpinion, refDetail, activeMenuKey, ...props}) =
         return <Spin size="large" />
     }
 
-    if (props.showEMailVerification) {
+    if (!props.authenticatedRoute) {
         return React.createElement(content, { ...props });
     }
 
