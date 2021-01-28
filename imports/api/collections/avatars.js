@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { FilesCollection } from 'meteor/ostrio:files';
 
 let Config = {

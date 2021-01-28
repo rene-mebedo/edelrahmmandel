@@ -42,7 +42,7 @@ const UploadUserImage = ({ currentUser, onExit }) => {
         setFileList(newFileList);
     };
     
-    const onPreview = async file => {
+    const onPreview = async (file) => {
         let src = file.url;
         if (!src) {
             src = await new Promise(resolve => {
@@ -57,7 +57,7 @@ const UploadUserImage = ({ currentUser, onExit }) => {
         imgWindow.document.write(image.outerHTML);
     };
 
-    saveAvatar = file => {
+    const saveAvatar = file => {
         const newAvatar = fileList[0].originFileObj;
 
         const uploadImage = file => {
