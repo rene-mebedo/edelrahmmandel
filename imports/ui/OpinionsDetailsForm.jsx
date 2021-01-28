@@ -111,7 +111,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                         </Button>
                     );
                 } else if (activeTabPane == 'SHARE' && canShare) {
-                    pageHeaderButtons.push(<ModalShareWith key="share" />);
+                    pageHeaderButtons.push(<ModalShareWith key="share" refOpinion={refOpinion} />);
                         /*<Button type="dashed" onClick={null}>
                             <ShareAltOutlined /> Dokument teilen
                         </Button>*/

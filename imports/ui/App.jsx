@@ -6,7 +6,7 @@ import { LoginForm } from '/imports/ui/LoginForm';
 import { SiteLayout } from '/imports/ui/SiteLayout';
 import { useAccount, useRoles } from '../client/trackers';
 
-export const App = ({content, refOpinion, refDetail, activeMenuKey}) => {
+export const App = ({content, refOpinion, refDetail, activeMenuKey, ...props}) => {
     const { currentUser, isLoggedIn, accountsReady } = useAccount();
     const { roles, rolesLoading } = useRoles();
 
@@ -19,6 +19,10 @@ export const App = ({content, refOpinion, refDetail, activeMenuKey}) => {
 
     if (!accountsReady) {
         return <Spin size="large" />
+    }
+
+    if (props.showEMailVerification) {
+        return React.createElement(content, { ...props });
     }
 
     if (!isLoggedIn) {

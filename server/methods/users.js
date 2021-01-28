@@ -1,11 +1,14 @@
 import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
 import { check } from 'meteor/check';
 
 import { Opinions } from '../../imports/api/collections/opinions';
+import { Roles } from '../../imports/api/collections/roles';
 
 import { hasPermission } from '../../imports/api/helpers/roles';
 import { escapeRegExp } from '../../imports/api/helpers/basics';
 
+const SECRET_PASSWORD = 'jhd&%/f54ff!54hDRa6 H9La3"6*~';
 
 Meteor.methods({
     'users.getExperts'(refOpinion, searchText){
@@ -65,6 +68,12 @@ Meteor.methods({
         return users;
     },
 
+    /**
+     * Lists all users that a currently in the system
+     * 
+     * @param {*} refOpinion 
+     * @param {*} searchText 
+     */
     'users.getAll'(refOpinion, searchText){
         check(refOpinion, String);
         check(searchText, String);
@@ -84,5 +93,132 @@ Meteor.methods({
         });
         
         return users;
+    },
+
+    /**
+     * Returns alle Roles, that could be used by the current User
+     * to assign to a new User
+     */
+    'users.getInvitableRoles'() {
+        if (!this.userId) {
+            throw new Meteor.Error('Sie sind nicht angemeldet.');
+        }
+
+        let inviteableRoles = {};
+        const currentUser = Meteor.users.findOne(this.userId);
+
+        Roles.find({
+            _id: { $in: currentUser.userData.roles }
+        }, { fields: { _id: 1, invitableRoles: 1 } }).fetch().map( role => {
+            role.invitableRoles.forEach( ir => {
+                inviteableRoles[ir.roleId] = ir.displayName
+            })
+        });
+        
+        return Object.keys(inviteableRoles).map( k => {
+            return { roleId: k, displayName: inviteableRoles[k] }
+        });
+    },
+
+    /**
+     * Invite a new user to the system
+     * 
+     * @param {Object} data Specifies the min Data for a new user
+     */
+    'users.inviteUser'(refOpinion, data) {
+        const { email, firstName, lastName } = data;
+
+        const userId = Accounts.createUser({
+            email,
+            password: SECRET_PASSWORD
+        });
+
+        Meteor.users.update(userId, {
+            $set: { userData: data }
+        });
+
+        Opinions.update(refOpinion, {
+            $push: { 
+                sharedWith: { 
+                    user: { userId, firstName, lastName }
+                }
+            }
+        });
+
+        Accounts.sendVerificationEmail(userId, email);
+    },
+
+    'users.getInitialPassword'(){
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        return SECRET_PASSWORD;
     }
+
 });
+
+//export MAIL_URL='smtp://gutachtenplus@mebedo-ac.de:afASRr2fdVCa2646xS@smtp.office365.com:587/'
+Accounts.emailTemplates.siteName = 'MEBEDO GutachtenPlus';
+Accounts.emailTemplates.from = 'MEBEDO Consulting GmbH <gutachtenplus@mebedo-ac.de>';
+
+Accounts.emailTemplates.enrollAccount.subject = (user) => {
+  return `Welcome to Awesome Town, ${user.userData.firstName}`;
+};
+
+Accounts.emailTemplates.enrollAccount.text = (user, url) => {
+  return 'You have been selected to participate in building a better future!'
+    + ' To activate your account, simply click the link below:\n\n'
+    + url;
+};
+
+Accounts.emailTemplates.resetPassword.from = () => {
+  // Overrides the value set in `Accounts.emailTemplates.from` when resetting
+  // passwords.
+  return 'AwesomeSite Password Reset <no-reply@example.com>';
+};
+Accounts.emailTemplates.verifyEmail = {
+   subject() {
+      return "MEBEDO GutachtenPlus - Zugang aktivieren";
+   },
+   html(user, url) {
+        const { gender, firstName, lastName} = user.userData;
+        const [ host, token ] = url.split('/#/verify-email/');
+
+        return `Guten Tag ${gender} ${lastName},<br>
+            <p>
+                Sie sind eingeladen im System <strong>MEBEDO GutachtenPlus</strong> mitzuwirken!
+            </p>
+            <p>
+                Hierfür wurde ein Benutzer mit Ihrer E-Mailadresse angelegt.
+                <br>
+                Wir bitten Sie um Bestätigung dieses Benutzerzugangs indem Sie den nachfolgenden Link anwählen.
+                <br>
+                Mit der Bestätigung werden Sie automatisch aufgefordert Ihr Kennwort zu vergeben.
+                <br>
+                <br>
+                <a href="https://gutachten.mebedo-ac.de/verify-email/${token}" target="_blank">Jetzt Zugang bestätigen</a>
+            </p>
+            <p>
+                Nach erfolgreicher Bestätigung können Sie jederzeit die Anwendung über <a href="https://gutachten.mebedo-ac.de">gutachten.mebedo-ac.de</a> erreichen.
+            </p>
+            <p>
+                Sollten Sie Fragen haben, so wenden Sie sich bitte direkt an:
+                <br>
+                <br>MEBEDO Consulting GmbH
+                <br><strong>Herrn Rene Schulte ter Hardt</strong>
+                <br>Aubachstraße 22
+                <br>56410 Montabaur
+                <br>
+                <br>Telefon: <a href="tel:+49260295081298">+49(0)2602 9508-1298</a>
+                <br>E-Mail: schulteterhardt@mebedo-ac.de
+            </p>
+            <p>
+                Beste Grüße
+                <br>
+                <br>
+                <br><strong>Ihre MEBEDO Consulting GmbH</strong>
+            </p>
+        `;
+   }
+};

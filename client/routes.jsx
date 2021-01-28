@@ -11,6 +11,7 @@ import { OpinionsForm } from '../imports/ui/OpinionsForm';
 //import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
 import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
 import { AppState } from '../imports/client/AppState';
+import { VerifyEMail } from '../imports/ui/components/VerifyEMail';
 
 // https://github.com/kadirahq/flow-router/issues/318
 // Prevent routing when there are unsaved changes
@@ -72,21 +73,32 @@ function preventRouteChange (targetContext) {
         // Without it, calling FlowRouter.go() at this stage would cause problems (we would
         // ultimately end up at the wrong URL, i.e. that of the current context).
         setTimeout(function () {
-          FlowRouter.go(previousPath);
+            FlowRouter.go(previousPath);
         });
       }
       else {
-        // This is a regular route change, e.g. user clicked a navigation control.
-        // setTimeout for the same reasons as above.
-        setTimeout(function () {
-          // Since we know the user didn't navigate using browser history, we can safely use
-          // history.back(), keeping the browser history clean.
-          history.back();
-        });
+          // This is a regular route change, e.g. user clicked a navigation control.
+          // setTimeout for the same reasons as above.
+          setTimeout(function () {
+              // Since we know the user didn't navigate using browser history, we can safely use
+              // history.back(), keeping the browser history clean.
+              history.back();
+          });
       }
     }
   }]);
 
+
+FlowRouter.route('/verify-email/:token', {
+    name: 'verifyMail',
+    action({ token }) {
+        mount(App, {
+            content: VerifyEMail,
+            token,
+            showEMailVerification: true
+        });
+    },
+});
 
 FlowRouter.route('/', {
     name: 'root',

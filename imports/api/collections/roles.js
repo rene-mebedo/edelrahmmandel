@@ -20,7 +20,23 @@ export const RolesSchema = new SimpleSchema({
         label: 'Wertigkeit der ROlle im Vergleich zu allen anderen Rollen. Je höher der Score desto wertiger die Rolle.',
         defaultValue: 0
     },
+    invitableRoles: {
+        label: 'Einladbare Rollen',
+        type: Array
+    },
+    'invitableRoles.$': {
+        label: 'Einladbare Rolle',
+        type: new SimpleSchema({
+            roleId: {
+                type: String
+            },
+            displayName: {
+                type: String
+            }
+        })
+    },
     permissions: {
+        label: 'Berechtigungen',
         type: new SimpleSchema({
             opinion: {
                 type: new SimpleSchema({
@@ -50,7 +66,6 @@ export const RolesSchema = new SimpleSchema({
                 defaultValue: 0
             },
         }),
-        label: 'Berechtigungen'
     }
 });
 
