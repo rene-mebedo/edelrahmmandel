@@ -103,10 +103,9 @@ FlowRouter.route('/verify-email/:token', {
 
 FlowRouter.route('/profile', {
     name: 'userprofile',
-    action({ token }) {
+    action() {
         mount(App, {
             content: UserProfileForm,
-            token,
             authenticatedRoute: true
         });
     },

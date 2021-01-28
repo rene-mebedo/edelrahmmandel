@@ -172,12 +172,10 @@ Meteor.methods({
         }
 
         const oldUser = Meteor.users.findOne(this.userId);
-        // the roles could not be updated by the user itself
-        data.roles = ['EMPLOYEE'] //oldUser.userData.roles;
 
         Meteor.users.update(this.userId, {
             $set: { 
-                userData: data 
+                userData: { ...data, roles: oldUser.userData.roles }
             }
         });
 
