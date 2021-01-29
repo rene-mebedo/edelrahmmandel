@@ -109,8 +109,8 @@ const FloatingActions = ({onSave, onCancel, onSocialClick, onCheckAnswer, onRemo
             <div className="mbac-primary-actions">
                 { canEdit 
                     ?   <Space>
-                            <Button type="primary" icon={<CheckOutlined />} /*size="large"*/ onClick={onSave}>Speichern</Button>
                             <Button type="dashed" icon={<CloseOutlined />} /*size="large"*/ onClick={onCancel}>Abbruch</Button>
+                            <Button type="primary" icon={<CheckOutlined />} /*size="large"*/ onClick={onSave}>Speichern</Button>
                         </Space>
                     : <Button type="primary" onClick={onCancel}>OK</Button>
                 }
