@@ -64,7 +64,7 @@ geplanter `Going-Live: KW 3`
 - [x] Opiniondetails Check-Answer
 - [x] Selectbox layouttypes sortiert nach Name
 - [x] Dropdown Gutachter - Feld zurücksetzen/leeren nicht möglich
-- [ ] Benutzerprofil bearbeiten
+- [x] Benutzerprofil bearbeiten
 
 
 ### IT Operations

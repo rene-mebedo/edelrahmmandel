@@ -97,8 +97,42 @@ Meteor.methods({
             finallyRemoved: false
         }).fetch();
         
+        let detailsTodolist = OpinionDetails.find({
+            refOpinion,
+            type: 'QUESTION',
+            deleted: false,
+            finallyRemoved: false,
+            actionCode: { $ne: 'okay' },
+            actionText: { $ne: null }
+        }, {
+            fields: {
+                _id: 1,
+                actionCode: 1,
+                actionText: 1
+            },
+            sort: {
+                actionPrio: 1,
+                //orderString: 1,
+                parentPosition: 1,
+                position: 1
+            }
+        });
+
+        /*const neueNummerierung = {
+            kfhggkjhh: '4.3.2',
+            jhksgh: '4.3.1'
+        }
+
+        const _id = 'kfhggkjhh';
+
+        details[7].parentPosition = '4.3'
+        details[7].position = '1'
+        neueDetails[details[7]._id] = details[7];
+        const aktKapitelNo = neueDetails[_id]
+        */
+
         try {
-            const filename = await opinionDocumenter.pdfCreate(opinion, details, settings.PdfPath);
+            const filename = await opinionDocumenter.pdfCreate(opinion, details, /*detailsTodolist,*/ settings.PdfPath);
 
             const data = readFile(filename);
 

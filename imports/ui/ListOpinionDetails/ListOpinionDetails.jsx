@@ -14,7 +14,7 @@ import { Picture } from './detailtypes/Picture';
 import { PictureContainer } from './detailtypes/PictureContainer';
 
 import { useOpinionDetails } from '../../client/trackers';
-
+import { ActionTodoList } from '../components/ActionTodoList';
 
 export const ListOpinionDetails = ({ refOpinion, refParentDetail, depth = 1, disableDetailAdder = false, canEdit=false, canDelete=false, currentUser }) => {
     const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refParentDetail);
@@ -34,7 +34,8 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail, depth = 1, dis
             item: detail, 
             permissions,
             first: (index===0),
-            last: (maxItems===index+1)
+            last: (maxItems===index+1),
+            refOpinion
         }
         if (detail.type == 'HEADING') return <Heading {...props} />;
         if (detail.type == 'TEXT') return <Text {...props} />;
@@ -44,7 +45,7 @@ export const ListOpinionDetails = ({ refOpinion, refParentDetail, depth = 1, dis
         if (detail.type == 'PICTURE') return <Picture {...props} />;
         if (detail.type == 'PICTURECONTAINER') return <PictureContainer {...props} />;
         if (detail.type == 'PAGEBREAK') return <Pagebreak {...props} />;
-        if (detail.type == 'TODOLIST') return <ActionTodoList refOpinion={refOpinion} />
+        if (detail.type == 'TODOLIST') return <ActionTodoList {...props} />
         
         return <ClassifiedOutput {...props} />;
     });

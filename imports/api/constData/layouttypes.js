@@ -291,6 +291,7 @@ export const layouttypesObject = {
         title: 'Aufstellung Maßnahmen',
         description: 'Hier wird die Liste aller Maßnahmen aufgeführt.',
         hasChilds: false,
+        defaultValues: { title: 'TL', text: 'Im nachfolgenden finden Sie eine Auflistung der einzelnen Maßnahmen.' },
         template: `
             <div id="{{_id}}" class="mbac-item-type-todolist">
                 <div class="mbac-print-title">

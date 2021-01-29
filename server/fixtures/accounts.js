@@ -24,7 +24,7 @@ if (!Accounts.findUserByUsername(USERNAME)) {
     });
 
 
-    Accounts.createUser({
+/*    Accounts.createUser({
         username: 'tester',
         password: 'test',
     });
@@ -39,9 +39,10 @@ if (!Accounts.findUserByUsername(USERNAME)) {
                 roles: ['EVERYBODY', 'EMPLOYEE']
             }
         }
-    });
+    });*/
 }
 
+/*
 if (!Accounts.findUserByUsername('tester')) {
     
     Accounts.createUser({
@@ -81,3 +82,4 @@ if (!Accounts.findUserByUsername('readonly')) {
         }
     });
 }
+*/

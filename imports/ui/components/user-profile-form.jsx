@@ -28,100 +28,6 @@ import { useAvatar } from '../../client/trackers';
 
 import Compressor from 'compressorjs';
 
-const UploadUserImage = ({ currentUser, onExit }) => {
-    const [fileList, setFileList] = useState([
-        /*{
-            uid: '-1',
-            name: 'image.png',
-            status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },*/
-    ]);
-
-    const onChange = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-    };
-    
-    const onPreview = async (file) => {
-        let src = file.url;
-        if (!src) {
-            src = await new Promise(resolve => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj);
-                reader.onload = () => resolve(reader.result);
-            });
-        }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow.document.write(image.outerHTML);
-    };
-
-    const saveAvatar = file => {
-        const newAvatar = fileList[0].originFileObj;
-
-        const uploadImage = file => {
-            Avatars.find({ userId: currentUser._id }).remove();
-            /*if (oldAvatar) {
-                Avatars.remove({ userId: currentUser._id });
-            }*/
-
-            const upload = Avatars.insert({
-                file,
-                streams: 'dynamic',
-                chunkSize: 'dynamic',
-                meta: { userId: currentUser._id }
-            }, false);
-        
-            upload.on('start', function () {
-                //console.log('upload start', this)
-            });
-
-            upload.on('end', function (error, fileObj) {
-                //console.log('upload end', error, fileObj)
-                if (error) {
-                    message.error(`Fehler beim Upload: ${error}`);
-                    //console.log(`Error during upload: ${error}`);
-                } else {
-                    console.log(`File successfully uploaded`, fileObj);
-                    if (onExit) onExit();
-                }
-            });
-
-            upload.start();
-        }
-
-        //uploadImage(newAvatar);
-        new Compressor(newAvatar, {
-            maxWidth: 128,
-            quality: 0.8,
-            success(compressedImage) {
-                uploadImage(compressedImage);
-            },
-            error(err) {
-                console.log('compressor-err:', err);
-            },
-        });
-    }
-
-    return (
-        <Fragment>
-            <ImgCrop quality={1} modalTitle="Bild bearbeiten" maxZoom={5}>
-                <Upload
-                    action={null}
-                    listType="picture-card"
-                    fileList={fileList}
-                    onChange={onChange}
-                    onPreview={onPreview}
-                >
-                    {fileList.length < 1 && '+ Upload'}
-                </Upload>
-            </ImgCrop>
-            { fileList.length == 1 ? <div style={{width:'100%',padding:16}}><Button type="dashed" size="small" onClick={saveAvatar} >Übernehmen</Button></div> : null }
-        </Fragment>
-    );
-}
-
 const UserImage = ({userId}) => {
     const [ avatarLink, isLoading ] = useAvatar(userId);
 
@@ -166,6 +72,54 @@ export class UserProfileForm extends React.Component {
         this.setState({ editImage: true });
     }
 
+    beforeUpload(file) {
+        const { currentUser } = this.props;
+
+        const newAvatar = file; //fileList[0].originFileObj;
+
+        const uploadImage = file => {
+            Avatars.find({ userId: currentUser._id }).remove();
+
+            const upload = Avatars.insert({
+                file,
+                streams: 'dynamic',
+                chunkSize: 'dynamic',
+                meta: { userId: currentUser._id }
+            }, false);
+        
+            upload.on('start', function () {
+                //console.log('upload start', this)
+            });
+
+            upload.on('end', function (error, fileObj) {
+                //console.log('upload end', error, fileObj)
+                if (error) {
+                    message.error(`Fehler beim Upload: ${error}`);
+                    //console.log(`Error during upload: ${error}`);
+                } else {
+                    console.log(`File successfully uploaded`, fileObj);
+                    //this.setState({editImage:false});
+                }
+            });
+
+            upload.start();
+        }
+
+        //uploadImage(newAvatar);
+        new Compressor(newAvatar, {
+            maxWidth: 128,
+            quality: 0.8,
+            success(compressedImage) {
+                uploadImage(compressedImage);
+            },
+            error(err) {
+                console.log('compressor-err:', err);
+            },
+        });
+
+        return false;
+    }
+
     render() {
         const saveProfile = this.saveProfile.bind(this);
         const editUserimage = this.editUserimage.bind(this);
@@ -200,13 +154,15 @@ export class UserProfileForm extends React.Component {
                             <Card 
                                 title="Benutzer"
                                 bordered={false}
-                                cover={
-                                    !editImage
-                                        ? <UserImage userId={this.props.currentUser._id} />
-                                        : <UploadUserImage currentUser={this.props.currentUser} onExit={_=>this.setState({ editImage: false })}/>
-                                }
+                                cover={ <UserImage userId={this.props.currentUser._id} /> }
                                 extra={[
-                                    <EditOutlined key="1" onClick={editUserimage}/>
+                                    <ImgCrop key="1" quality={1} modalTitle="Bild bearbeiten" maxZoom={5}>
+                                        <Upload 
+                                            beforeUpload={this.beforeUpload.bind(this)}
+                                        >
+                                            <EditOutlined onClick={editUserimage} />
+                                        </Upload>
+                                    </ImgCrop>
                                 ]}
                             >
                                 <span>Foo bar</span>
