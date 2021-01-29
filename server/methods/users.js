@@ -5,9 +5,10 @@ import { check } from 'meteor/check';
 import { Opinions } from '../../imports/api/collections/opinions';
 import { Roles } from '../../imports/api/collections/roles';
 
-import { hasPermission } from '../../imports/api/helpers/roles';
+import { hasPermission, injectUserData } from '../../imports/api/helpers/roles';
 import { escapeRegExp } from '../../imports/api/helpers/basics';
 import { Activities } from '../../imports/api/collections/activities';
+import { UserActivities } from '../../imports/api/collections/userActivities';
 
 const SECRET_PASSWORD = 'jhd&%/f54ff!54hDRa6 H9La3"6*~';
 
@@ -127,6 +128,28 @@ Meteor.methods({
      * @param {Object} data Specifies the min Data for a new user
      */
     'users.inviteUser'(refOpinion, data) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        let currentUser = Meteor.users.findOne(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWith')) {
+            throw new Meteor.Error('Sie besitzen keine Berechtigung zum Teilen des Gutachtens mit anderen Benutzern.');
+        }
+
         const { email, firstName, lastName } = data;
 
         const userId = Accounts.createUser({
@@ -147,6 +170,67 @@ Meteor.methods({
         });
 
         Accounts.sendVerificationEmail(userId, email);
+    },
+
+    /**
+     * Share the specified opinion with a existing user
+     * 
+     * @param {Object} data Specifies the min Data for a new user
+     */
+    'users.shareWith'(refOpinion, data) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        let currentUser = Meteor.users.findOne(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWith')) {
+            throw new Meteor.Error('Sie besitzen keine Berechtigung zum Teilen des Gutachtens mit anderen Benutzern.');
+        }
+
+        const { userId, firstName, lastName } = data;
+
+
+        const alreadyShared = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": userId
+        });
+        if (alreadyShared) {
+            throw new Meteor.Error('Das Gutachten wurde bereits mit dem ausgewählten Benutzer geteilt.');
+        }
+
+        const opinion = Opinions.findOne(refOpinion);
+
+        Opinions.update(refOpinion, {
+            $push: { 
+                sharedWith: { 
+                    user: { userId, firstName, lastName }
+                }
+            }
+        });
+
+        UserActivities.insert(
+            injectUserData({ currentUser }, {
+                refUser: userId,
+                type: 'SHAREDWITH',
+                refs: { refOpinion },
+                message: `${currentUser.userData.firstName} ${currentUser.userData.lastName} hat ${opinion.isTemplate ? 'eine Gutachtenvorlage':'ein Gutachten'} mit Ihnen geteilt.`,
+                originalContent: `Gutachten / ${opinion.title} / ${opinion.opinionNo}`,
+                unread: true
+            }, { created: true })
+        );
     },
 
     /**

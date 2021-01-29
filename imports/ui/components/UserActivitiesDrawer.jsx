@@ -48,6 +48,13 @@ const getUrl = item => {
         
             break;
 
+        case 'SHAREDWITH':
+            if (refOpinion) {
+                url = `/opinions/${refOpinion}`;
+            }
+       
+            break;
+
         default:
             url = '/';
     }

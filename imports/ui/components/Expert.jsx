@@ -19,6 +19,7 @@ export const Expert = ({ user, showFull = true }) => {
             ? firstName.substring(0,1) + lastName.substring(0,1)
             : lastName.substring(0,2)
     }
+    
     return (
         <div className="user-avatar-data">
             <Row>
