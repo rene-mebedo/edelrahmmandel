@@ -21,13 +21,13 @@ import { UserProfileForm } from '../imports/ui/components/user-profile-form';
 // This function will be called on every route change.
 // Return true to 'prevent' the route from changing.
 function preventRouteChange (targetContext) {
-    if (AppState.editingDetail && AppState.editingDetail.isDirty()) {
+    if (AppState.selectedDetail && AppState.selectedDetail.isDirty()) {
       if (!window.confirm('Achtung! Sie befinden sich aktuell in der Bearbeitung eines Details.\n\nMöchten Sie Ihre Änderungen verwerfen?')) {
         return true;
       }
-      AppState.editingDetail.discardChanges();
+      AppState.selectedDetail.discardChanges();
     }
-    if (AppState.editingDetail) AppState.editingDetail.discardChanges();
+    if (AppState.selectedDetail) AppState.selectedDetail.discardChanges();
     return false;
   }
   

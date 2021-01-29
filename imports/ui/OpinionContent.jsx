@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 
 import Descriptions from 'antd/lib/descriptions';
 import Skeleton from 'antd/lib/skeleton';
@@ -22,6 +22,7 @@ import { Expert } from './components/Expert';
 
 import filesize from 'filesize';
 import moment from 'moment';
+import { AppState } from '../client/AppState';
 
 const { TabPane } = Tabs;
 
@@ -67,31 +68,35 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                     <Descriptions.Item label="Datum von">{moment(opinion.dateFrom).format('DD. MMMM YYYY')}</Descriptions.Item>
                     <Descriptions.Item label="Datum bis">{moment(opinion.dateTill).format('DD. MMMM YYYY')}</Descriptions.Item>
 
-                    <Descriptions.Item label="Teilnehmer" span={2}>
-                        <OpinionParticipants 
-                            refOpinion={refOpinion} 
-                            participants={opinion.participants} 
-                            currentUser={currentUser} 
-                            canEdit={canEdit} 
-                            canDelete={canDelete} 
-                        />
-                    </Descriptions.Item>
+                    { opinion.isTemplate ? null :  /* keine Teilnehmer und Gutachter in einer Vorlage */
+                        <Fragment>
+                            <Descriptions.Item label="Teilnehmer" span={2}>
+                                <OpinionParticipants 
+                                    refOpinion={refOpinion} 
+                                    participants={opinion.participants} 
+                                    currentUser={currentUser} 
+                                    canEdit={canEdit} 
+                                    canDelete={canDelete} 
+                                />
+                            </Descriptions.Item>
 
-                    <Descriptions.Item label="Gutachter 1">
-                        { opinion.expert1 
-                            ? <Expert user={opinion.expert1} />
-                            : <ModalOpinion 
-                                    mode='EDIT' refOpinion={refOpinion} 
-                                    buttonCaption="Jetzt Gutachter festlegen" 
-                                    buttonType="dashed"
-                                    defaultTab="Erweitert"
-                            />
-                        }
-                    </Descriptions.Item>
+                            <Descriptions.Item label="Gutachter 1">
+                                { opinion.expert1 
+                                    ? <Expert user={opinion.expert1} />
+                                    : <ModalOpinion 
+                                            mode='EDIT' refOpinion={refOpinion} 
+                                            buttonCaption="Jetzt Gutachter festlegen" 
+                                            buttonType="dashed"
+                                            defaultTab="Erweitert"
+                                    />
+                                }
+                            </Descriptions.Item>
 
-                    <Descriptions.Item label="Gutachter 2">
-                        <Expert user={opinion.expert2} />
-                    </Descriptions.Item>
+                            <Descriptions.Item label="Gutachter 2">
+                                <Expert user={opinion.expert2} />
+                            </Descriptions.Item>
+                        </Fragment>
+                    }
                 </Descriptions>
             </TabPane>
 
