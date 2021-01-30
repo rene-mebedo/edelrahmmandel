@@ -296,7 +296,7 @@ export class EditableContent extends React.Component {
     }
 
     toggleMode() {
-        const { refDetail, field, permissions } = this.props;
+        const { refDetail, field, permissions, elementType } = this.props;
         const { mode } = this.state;
         const { canEdit } = permissions;
 
@@ -309,7 +309,7 @@ export class EditableContent extends React.Component {
             AppState.selectedDetail.discardChanges();
         }
 
-        const newMode = canEdit ? 'EDIT':'FOCUSED';
+        const newMode = elementType === "Pagebreak" ? 'FOCUSED' : (canEdit ? 'EDIT':'FOCUSED');
 
         FlowRouter.withReplaceState(() => {
             FlowRouter.setQueryParams({activitiesBy: refDetail});
@@ -365,7 +365,7 @@ export class EditableContent extends React.Component {
 
 
     render() {
-        const { item, type, value, refDetail, permissions } = this.props;
+        const { item, type, value, refDetail, permissions, elementType } = this.props;
         const { mode } = this.state;
         const { canEdit, canDelete } = permissions;
 
@@ -384,7 +384,7 @@ export class EditableContent extends React.Component {
             isAnswer={item.type == 'ANSWER'}
             likes={item.likes}
             dislikes={item.dislikes}
-            canEdit={canEdit}
+            canEdit={elementType !== "Pagebreak" && canEdit}
             canFinallyRemove={canDelete}
         />;
 
@@ -401,7 +401,10 @@ export class EditableContent extends React.Component {
             }
 
             return (
-                <span className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`} onClick={toggleMode}>{value}</span>
+                <Fragment>
+                    <span className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`} onClick={toggleMode}>{value}</span>
+                    { mode === 'FOCUSED' ? PreparedFloatingActions : null }
+                </Fragment>
             )
         } else if (type == 'wysiwyg') {
             if (mode == 'EDIT') {

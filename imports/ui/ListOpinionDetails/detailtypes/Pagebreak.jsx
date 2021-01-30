@@ -14,6 +14,7 @@ export const Pagebreak = ( { item, permissions, first, last } ) => {
                     <div className="mbac-border"></div>
                     <div className="mbac-border-title" >
                         <EditableContent type="span" 
+                            elementType="Pagebreak"
                             value="Seitenumbruch"
                             field="title"
                             refDetail={_id}
