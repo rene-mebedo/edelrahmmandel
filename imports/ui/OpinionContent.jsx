@@ -22,7 +22,7 @@ import { Expert } from './components/Expert';
 
 import filesize from 'filesize';
 import moment from 'moment';
-import { AppState } from '../client/AppState';
+import { useAppState } from '../client/AppState';
 
 const { TabPane } = Tabs;
 
@@ -32,6 +32,8 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
     const [ pdfs, isPdfLoading ] = useOpinionPdfs(refOpinion);
 
     onTabPaneChanged = onTabPaneChanged || function(){};
+
+    const [ selectedDetail ] = useAppState('selectedDetail');
     
     if (isLoading) {
         return (
@@ -39,13 +41,15 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
         );
     }
 
+    const disableTabPanes = (selectedDetail && selectedDetail.mode == 'EDIT');
+
     return (
         <Tabs onChange={onTabPaneChanged} size="large">
             <TabPane tab={<span><FormOutlined />Dokument</span>} key="DOCUMENT">
                 {children}
             </TabPane>
 
-            <TabPane tab={<span><ContactsOutlined />Allgemein</span>} key="GENERAL">
+            <TabPane disabled={disableTabPanes} tab={<span><ContactsOutlined />Allgemein</span>} key="GENERAL">
                 { !opinion.isTemplate ? null :
                     <p><Tag size="large" color="green">Vorlage</Tag></p>
                 }
@@ -100,7 +104,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                 </Descriptions>
             </TabPane>
 
-            <TabPane tab={<span><FilePdfOutlined />PDF</span>} key="PDF">
+            <TabPane tab={<span><FilePdfOutlined />PDF</span>} key="PDF" disabled={disableTabPanes} >
                 <Table
                     //bordered
                     size="small"
@@ -153,7 +157,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                 />
             </TabPane>
 
-            <TabPane tab={<span><ShareAltOutlined />geteilt mit</span>} key="SHARE">
+            <TabPane tab={<span><ShareAltOutlined />geteilt mit</span>} key="SHARE" disabled={disableTabPanes}>
                 <Table
                     size="small"
                     loading={false}

@@ -19,6 +19,7 @@ import { useOpinion, useActivities } from '../client/trackers';
 import { hasPermission } from '../api/helpers/roles';
 
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { useAppState } from '../client/AppState';
 
 export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } ) => {
     const [ opinion, opinionIsLoading ] = useOpinion(refOpinion);

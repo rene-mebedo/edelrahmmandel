@@ -25,7 +25,7 @@ import { Summernote } from './Summernote';
 import { ActionCodeDropdown } from '../components/ActionCodeDropdown';
 import { actionCodes } from '../../api/constData/actioncodes';
 
-import { AppState } from '../../client/AppState';
+import { AppState, setAppState } from '../../client/AppState';
 
 const IconText = ({ icon, text }) => (
     <Space>
@@ -153,8 +153,9 @@ export class EditableContent extends React.Component {
     exitEditmode() {
         const { refDetail } = this.props;
 
-        AppState.selectedDetail = null;
-        delete AppState.selectedDetail;
+        setAppState({ selectedDetail: null });
+        //OLDAppState.selectedDetail = null;
+        //OLDdelete AppState.selectedDetail;
 
         FlowRouter.withReplaceState(() => {
             FlowRouter.setQueryParams({activitiesBy: null});
@@ -260,6 +261,16 @@ export class EditableContent extends React.Component {
                 });
             } else {
                 this.setState({ mode: 'FOCUSED' });
+
+                setAppState({
+                    selectedDetail: {
+                        _id: refDetail,
+                        mode: 'FOCUSED',
+                        discardChanges: this.discardChanges.bind(this),
+                        saveData: this.saveData.bind(this),
+                        isDirty: this.isDirty.bind(this)
+                    }
+                });        
             }
         });
     }
@@ -304,13 +315,22 @@ export class EditableContent extends React.Component {
             FlowRouter.setQueryParams({activitiesBy: refDetail});
         });
 
-        AppState.selectedDetail = {
+        /*OLDAppState.selectedDetail = {
             _id: refDetail,
             mode: newMode,
             discardChanges: this.discardChanges.bind(this),
             saveData: this.saveData.bind(this),
             isDirty: this.isDirty.bind(this)
-        }
+        }*/
+        setAppState({
+            selectedDetail: {
+                _id: refDetail,
+                mode: newMode,
+                discardChanges: this.discardChanges.bind(this),
+                saveData: this.saveData.bind(this),
+                isDirty: this.isDirty.bind(this)
+            }
+        });
 
         this.setState({ mode: newMode });
     }
