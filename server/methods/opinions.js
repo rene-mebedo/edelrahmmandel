@@ -115,7 +115,7 @@ Meteor.methods({
                 parentPosition: 1,
                 position: 1
             }
-        });
+        }).fetch();
 
         try {
             const filename = await opinionDocumenter.pdfCreate(opinion, details, detailsTodolist, settings.PdfPath);
