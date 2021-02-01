@@ -4,11 +4,13 @@ export var AppState = {};
 
 var callbacksByState = {};
 
-export const setAppState = (newState) => {
+export const setAppState = newState => {
     Object.keys(newState).forEach( propName => {
         const newValue = newState[propName];
 
         AppState[propName] = newValue;
+        
+        if (!callbacksByState[propName]) return;
         callbacksByState[propName].forEach( updateRev => updateRev() );
     });
 }

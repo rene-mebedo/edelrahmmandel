@@ -192,7 +192,7 @@ Meteor.methods({
             // da der eigentlich betroffene Detailpunkt nicht verändert wurde
             refDetail: opinionDetail.refParentDetail,
             type: 'SYSTEM-LOG',
-            action: 'UPDATE',
+            action: 'CHECKANSWER',
             message: `hat die Antwort mit dem Titel <strong>${opinionDetail.title}</strong> als zutreffend ausgewählt.`,
             changes: [{
                 message: "Der Handlungsbedarf (Code) wurde geändert.",

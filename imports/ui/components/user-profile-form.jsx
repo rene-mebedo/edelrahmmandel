@@ -86,19 +86,12 @@ export class UserProfileForm extends React.Component {
                 chunkSize: 'dynamic',
                 meta: { userId: currentUser._id }
             }, false);
-        
-            upload.on('start', function () {
-                //console.log('upload start', this)
-            });
 
             upload.on('end', function (error, fileObj) {
-                //console.log('upload end', error, fileObj)
                 if (error) {
                     message.error(`Fehler beim Upload: ${error}`);
-                    //console.log(`Error during upload: ${error}`);
                 } else {
-                    console.log(`File successfully uploaded`, fileObj);
-                    //this.setState({editImage:false});
+                    //console.log(`File successfully uploaded`, fileObj);
                 }
             });
 
@@ -156,7 +149,7 @@ export class UserProfileForm extends React.Component {
                                 bordered={false}
                                 cover={ <UserImage userId={this.props.currentUser._id} /> }
                                 extra={[
-                                    <ImgCrop key="1" quality={1} modalTitle="Bild bearbeiten" maxZoom={5}>
+                                    <ImgCrop key="1" quality={1} modalTitle="Bild bearbeiten" minZoom={0.5} maxZoom={5}>
                                         <Upload 
                                             beforeUpload={this.beforeUpload.bind(this)}
                                         >

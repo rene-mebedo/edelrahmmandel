@@ -8,7 +8,7 @@ import Col from 'antd/lib/col';
 import { useAvatar } from '../../client/trackers';
 
 
-export const Expert = ({ user, showFull = true }) => {
+export const Expert = ({ user, showFull = true, onlyAvatar }) => {
     if (!user) return null;
 
     const { userId, firstName, lastName, company, position, qualification, advancedQualification } = user;
@@ -20,6 +20,14 @@ export const Expert = ({ user, showFull = true }) => {
             : lastName.substring(0,2)
     }
     
+    if (onlyAvatar) {
+        return userAvatarLink 
+            ? <Avatar src={userAvatarLink} />
+            : <Avatar style={{ verticalAlign: 'middle' }} >
+                { getInitials() }
+            </Avatar>
+    }
+
     return (
         <div className="user-avatar-data">
             <Row>

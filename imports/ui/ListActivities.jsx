@@ -20,6 +20,7 @@ import { hasPermission } from '../api/helpers/roles';
 
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { useAppState } from '../client/AppState';
+import { Expert } from './components/Expert';
 
 export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } ) => {
     const [ opinion, opinionIsLoading ] = useOpinion(refOpinion);
@@ -102,7 +103,7 @@ export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } 
                     <li>
                         <Comment                        
                             author={item.createdBy.firstName + ' ' + item.createdBy.lastName}
-                            avatar={<Avatar>{item.createdBy.firstName.charAt(0) + item.createdBy.lastName.charAt(0)}</Avatar>}
+                            avatar={<Expert onlyAvatar user={item.createdBy}/> /*<Avatar>{item.createdBy.firstName.charAt(0) + item.createdBy.lastName.charAt(0)}</Avatar>*/}
                             content={
                                 <span dangerouslySetInnerHTML={ { __html: item.message } }></span>
                             }
@@ -144,7 +145,7 @@ export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } 
                                 <ReplyTo refOpinion={refOpinion} refActivity={item._id} />
                             ] : []}
                             author={ item.createdBy.firstName + ' ' + item.createdBy.lastName }
-                            avatar={ <Avatar>{item.createdBy.firstName.charAt(0) + item.createdBy.lastName.charAt(0)}</Avatar> }
+                            avatar={ <Expert onlyAvatar user={item.createdBy}/> /*<Avatar>{item.createdBy.firstName.charAt(0) + item.createdBy.lastName.charAt(0)}</Avatar> */}
                             content={
                                 <div>
                                     <span dangerouslySetInnerHTML={ { __html: item.message } }></span>
