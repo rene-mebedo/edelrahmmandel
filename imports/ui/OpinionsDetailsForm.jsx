@@ -58,11 +58,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     }
 
     if (currentUser && !opinionIsLoading && opinion) {
-        let edit = false,
-            del = false,
-            share = false,
-            cancelShare = false,
-            perm = { currentUser };
+        let perm = { currentUser };
 
         const sharedWithUser = opinion.sharedWith.find( shared => shared.user.userId === currentUser._id );
         
@@ -70,10 +66,10 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
             perm.sharedRole = sharedWithUser.role;
         }
         
-        edit = hasPermission(perm, 'opinion.edit');
-        del = hasPermission(perm, 'opinion.remove');
-        share = hasPermission(perm, 'shareWith');
-        cancelShare = hasPermission(perm, 'cancelSharedWith');
+        let edit = hasPermission(perm, 'opinion.edit'),
+            del = hasPermission(perm, 'opinion.remove'),
+            share = hasPermission(perm, 'shareWith'),
+            cancelShare = hasPermission(perm, 'cancelSharedWith');
 
         if (edit != canEdit) setCanEdit(edit);
         if (del != canDelete) setCanDelete(del);
