@@ -11,7 +11,7 @@ export class OpinionBreadcrumb extends Component {
         
         const {refOpinion, refDetail} = props;
 
-        //this.getBreadcrumbItems(refOpinion, refDetail);
+        this.firstTime = true;
     }
 
     state = {
@@ -33,8 +33,13 @@ export class OpinionBreadcrumb extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { refOpinion, refDetail } = this.props;
 
-        if (prevProps.refOpinion !== refOpinion || prevProps.refDetail !== refDetail) {
+        if (this.firstTime) {
+            this.firstTime = false;
             this.getBreadcrumbItems(refOpinion, refDetail);
+        } else {
+            if (prevProps.refOpinion !== refOpinion || prevProps.refDetail !== refDetail) {
+                this.getBreadcrumbItems(refOpinion, refDetail);
+            }
         }
     }
 

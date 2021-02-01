@@ -635,6 +635,17 @@ Meteor.methods({
     }
 });
 
+const getPageHeaderTitle = (refDetail, detail) => {
+    if (detail.type == 'HEADING') return detail.printTitle;
+    if (detail.type == 'TEXT') return detail.text;
+    if (detail.type == 'QUESTION') return detail.printTitle;
+    if (detail.type == 'ANSWER') return detail.title;
+    if (detail.type == 'BESTIMMUNGEN') return detail.printTitle;
+    if (detail.type == 'PAGEBREAK') return detail.title;
+    
+    return detail.printTitle;
+}
+
 if (Meteor.isServer) {
     Meteor.methods({
         'opinionDetail.getBreadcrumbItems'({refOpinion, refDetail}) {
@@ -653,8 +664,10 @@ if (Meteor.isServer) {
                 let item = OpinionDetails.findOne(id);
                 if (item && item.refParentDetail !== null) {
                     getRecursive(item.refParentDetail);
+                }
+                if (item) {
                     items.push({
-                        title: item.title,
+                        title: getPageHeaderTitle(item._id, item), 
                         uri: `/opinions/${item.refOpinion}/${item._id}`
                     });
                 }
