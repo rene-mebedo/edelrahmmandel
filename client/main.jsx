@@ -1,4 +1,5 @@
 import './routes';
+import './css/summernote-lite.min.css';
 import '../imports/api/methods';
 
 import React from 'react';

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import './Summernote/summernote-lite.min.css';
+// https://github.com/meteor/meteor/issues/10247
+//import '/public/css/summernote-lite.min.css'; import is now at /client/main.jsx located and the file at /client/css
+
 import './Summernote/summernote-lite.min.js';
 
 import PropTypes from 'prop-types';

@@ -486,7 +486,7 @@ span.mbac-user-mention {
 
     .mbac-item-type-pagebreak {
         .mbac-border {
-            border-top: 5px dotted #999;
+            border-top: 2px dotted #ccc;
             height: 24px;
             margin-top: 8px;
         }
@@ -498,7 +498,7 @@ span.mbac-user-mention {
             padding-left: 8px;
             padding-right: 8px;
             font-weight: 400 !important;
-            font-size: 16px !important;
+            font-size: 14px !important;
         }
     }
 
@@ -548,7 +548,7 @@ span.mbac-user-mention {
     }
 
     .mbac-item-type-question {
-        border: 1px solid #999;
+        //border: 1px solid #999;
         //padding: 8px 16px;
 
         .mbac-title {
@@ -563,6 +563,47 @@ span.mbac-user-mention {
             margin-top: -16px;
             margin-left: 48px;
         }
+
+        .mbac-abschlussbetrachtung {
+            padding: 0 56px 8px;
+            border-bottom: 1px dashed #ccc;
+            margin-bottom: 16px;
+        }
+    }
+
+    .mbac-handlungsempfehlung,
+    .mbac-abschlussbetrachtung {
+        &.adhoc {
+            .mbac-action-longtext {
+                color: red;
+            }
+        }
+        &.kurz {
+            .mbac-action-longtext {
+                color: orange;
+            }
+        }
+        &.mittel {
+            .mbac-action-longtext {
+                color: rgba(191, 191, 23, 1);
+            }
+        }
+        &.verbesserung {
+            .mbac-action-longtext {
+                color: green;
+            }
+        }
+        &.okay {
+            .mbac-action-longtext {
+                color: #999;
+            }
+        }
+        &.okay {
+            .mbac-action-longtext {
+                color: #444;
+            }
+        }
+
     }
 
     .mbac-item-type-answer {
@@ -591,49 +632,16 @@ span.mbac-user-mention {
         }
 
         .mbac-handlungsempfehlung {
-            //border-top: 1px solid #999;
-
-            &.adhoc {
-                .mbac-action-longtext {
-                    color: red;
-                }
-            }
-            &.kurz {
-                .mbac-action-longtext {
-                    color: orange;
-                }
-            }
-            &.mittel {
-                .mbac-action-longtext {
-                    color: rgba(191, 191, 23, 1);
-                }
-            }
-            &.verbesserung {
-                .mbac-action-longtext {
-                    color: green;
-                }
-            }
-            &.okay {
-                .mbac-action-longtext {
-                    color: #999;
-                }
-            }
-            &.okay {
-                .mbac-action-longtext {
-                    color: #444;
-                }
-            }
-
             .mbac-action-text {
                 padding-bottom: 0;
-            }
-
+            }    
         }
     }
 
-    /** Hinweis, Information */
+    /** Hinweis, Information, Anmerkung */
     .mbac-item-type-hint,
-    .mbac-item-type-info {
+    .mbac-item-type-info,
+    .mbac-item-type-remark {
         .mbac-fix-title,
         .mbac-print-title {
             font-size: 12px;
@@ -644,6 +652,9 @@ span.mbac-user-mention {
         .mbac-text {
             font-size: 12px;
             padding-bottom: 8px;
+            margin-top: 0;
+            margin-left: 0;
+            padding-left: 0;
         }
     }
 

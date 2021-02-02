@@ -95,8 +95,8 @@ Meteor.methods({
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
-        if (! hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
-            throw new Meteor.Error('Keine Berechtigung zum Löschen dieses Details zum Gutachten.');
+        if (! hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten des Gutachten. Somit kann die Löschmarkierung nicht geändert werden.');
         }
 
         OpinionDetails.update(id, {

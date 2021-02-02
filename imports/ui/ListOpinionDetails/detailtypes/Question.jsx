@@ -9,7 +9,7 @@ import { EditableContent } from '../../components/EditableContent';
 import { Link } from '../../components/Link';
 
 export const Question = ( { item, permissions, first, last } ) => {
-    let { _id, depth, printTitle, text, deleted, parentPosition, position } = item;
+    let { _id, depth, printTitle, actionText, actionCode, text, deleted, parentPosition, position } = item;
     const deletedClass = deleted ? 'mbac-opinion-detail-deleted':'';
 
     if (!parentPosition) position += '.';
@@ -41,8 +41,28 @@ export const Question = ( { item, permissions, first, last } ) => {
                             permissions={permissions}
                         />
                     </div>
-        
-                    { /*<OpinionDetailAdder pseudoItem={{refOpinion: item.refOpinion, refParentDetail: item._id, depth: item.depth + 1}} permissions={permissions} /> */ }
+                    <div className={`mbac-abschlussbetrachtung ${actionCode || 'unset'}`}>
+                        <h3>Details zur Abschlussbetrachtung</h3>
+                        <div className="mbac-action-text">
+                            <EditableContent type="wysiwyg" 
+                                value={actionText}
+                                field="actionText"
+                                refDetail={_id}
+                                item={item}
+                                permissions={permissions}
+                            />
+                        </div>
+                        <div className="mbac-action-longtext">
+                            <EditableContent type="actioncode" 
+                                value={actionCode || 'unset'}
+                                field="actionCode"
+                                refDetail={_id}
+                                item={item}
+                                permissions={permissions}
+                            />
+                        </div>
+                    </div>
+
                     <div className="mbac-child-content">
                         <ListOpinionDetails 
                             refOpinion={item.refOpinion}

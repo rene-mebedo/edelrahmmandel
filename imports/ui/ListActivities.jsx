@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect, useRef } from 'react';
-import Avatar from 'antd/lib/avatar';
 import List from 'antd/lib/list';
 import Form from 'antd/lib/form';
 import Button from 'antd/lib/button';
@@ -19,7 +18,6 @@ import { useOpinion, useActivities } from '../client/trackers';
 import { hasPermission } from '../api/helpers/roles';
 
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { useAppState } from '../client/AppState';
 import { Expert } from './components/Expert';
 
 export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } ) => {
@@ -31,6 +29,9 @@ export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } 
     const [ currentTime, setTime ] = useState(new Date());
     const [ working, setWorking ] = useState(false);
     const [ canPostMessage, setCanPostMessage ] = useState(false);
+
+    // We have to use the "wright" refDetail, so that a user-post will be stored to wright detail
+    refDetail = FlowRouter.getQueryParam('activitiesBy') || refDetail;
 
     useEffect( () => {
         // check for hash in route
