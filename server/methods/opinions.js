@@ -108,7 +108,8 @@ Meteor.methods({
             fields: {
                 _id: 1,
                 actionCode: 1,
-                actionText: 1
+                actionText: 1,
+                actionPrio: 1
             },
             sort: {
                 actionPrio: 1,

@@ -19,15 +19,15 @@ Accounts.validateLoginAttempt( loginData => {
     if (methodName == 'login') {
         if (loginData.methodArguments[0].resume && allowed) return true;
 
-        const { email, username, resume } = loginData.methodArguments[0].user;
+        const { user } = loginData.methodArguments[0];
         
         // check if we got a user like "admin" that signed in without email
-        if (username && !email && allowed) {
+        if (user.username && !user.email && allowed) {
             return true;
         }
 
         const verifiedUser = Meteor.users.findOne({
-            'emails.address': email,
+            'emails.address': user.email,
             'emails.verified': true
         });
 
