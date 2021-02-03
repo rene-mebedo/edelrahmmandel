@@ -27,6 +27,21 @@ import { actionCodes } from '../../api/constData/actioncodes';
 
 import { AppState, setAppState } from '../../client/AppState';
 
+const summernoteOptions = { 
+    airMode: true, 
+    popover: {
+        air: [
+            ['font', ['bold', 'underline', 'italic', 'superscript']],
+            ['font1', ['clear']],
+            ['color', ['forecolor', 'backcolor']],
+            ['para', ['ul', 'ol']],
+            ['para1', ['paragraph']],
+            ['table', ['table']],
+            ['view', ['fullscreen', 'codeview']]
+        ]
+    }  
+};
+
 const IconText = ({ icon, text }) => (
     <Space>
         {React.createElement(icon)}
@@ -315,13 +330,6 @@ export class EditableContent extends React.Component {
             FlowRouter.setQueryParams({activitiesBy: refDetail});
         });
 
-        /*OLDAppState.selectedDetail = {
-            _id: refDetail,
-            mode: newMode,
-            discardChanges: this.discardChanges.bind(this),
-            saveData: this.saveData.bind(this),
-            isDirty: this.isDirty.bind(this)
-        }*/
         setAppState({
             selectedDetail: {
                 _id: refDetail,
@@ -416,7 +424,7 @@ export class EditableContent extends React.Component {
                             onImageUpload={uploadImage}
                             onPaste={PasteFromClipboard}
 
-                            options={{ airMode: true }}
+                            options={summernoteOptions}
                         />
                         { PreparedFloatingActions }
                     </Fragment>
