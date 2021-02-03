@@ -5,5 +5,5 @@ export const actionCodes = {
     verbesserung: { color: 'green', text: 'Verbesserungsvorschlag', longtext: 'Es besteht Verbesserungsbedarf.', orderId: 4 },
     okay: { color: 'lightgrey', text: 'Kein Handlungsbedarf', longtext: 'Es besteht derzeit kein Handlungsbedarf.', orderId: 5 },
 
-    unset: { color: 'black', text: 'noch nicht bewertet', longtext: '', orderId: 6 }
+    unset: { color: 'black', text: 'noch nicht bewertet', longtext: 'Aktuell noch nicht bewertet.', orderId: 6 }
 }
