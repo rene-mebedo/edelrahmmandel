@@ -9,10 +9,10 @@ import { EditableContent } from '../../components/EditableContent';
 import { Link } from '../../components/Link';
 
 export const Question = ( { item, permissions, first, last } ) => {
-    let { _id, depth, printTitle, actionText, actionCode, text, deleted, parentPosition, position } = item;
+    let { _id, depth, printTitle, actionText, actionCode, text, deleted, printParentPosition, printPosition } = item;
     const deletedClass = deleted ? 'mbac-opinion-detail-deleted':'';
 
-    if (!parentPosition) position += '.';
+    if (!printParentPosition) printPosition += '.';
 
     return (
         <Fragment>
@@ -20,7 +20,7 @@ export const Question = ( { item, permissions, first, last } ) => {
             <div className={`mbac-opinion-detail depth-${depth} ${deletedClass}`}>
                 <div id={_id} className={`mbac-item-type-question depth-${depth}`}>
                     <div className="mbac-title">
-                        <span className="mbac-position mbac-media-screen">{parentPosition}{position}</span>
+                        <span className="mbac-position mbac-media-screen">{printParentPosition}{printPosition}</span>
                         <EditableContent type="span" 
                             value={printTitle}
                             field="printTitle"

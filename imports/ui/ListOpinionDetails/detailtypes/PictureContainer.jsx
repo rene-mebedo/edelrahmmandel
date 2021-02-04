@@ -17,10 +17,10 @@ export const PictureContainer = ( { item, permissions, first, last } ) => {
     const [ collapsed, setCollapsed ] = useState(true);
     const [ selectedDetail ] = useAppState('selectedDetail');
 
-    let { _id, depth, parentPosition, position, printTitle, text, deleted } = item;
+    let { _id, depth, printParentPosition, printPosition, printTitle, text, deleted } = item;
     const deletedClass = deleted ? 'mbac-opinion-detail-deleted':'';
 
-    if (!parentPosition) position += '.';
+    if (!printParentPosition) printPosition += '.';
 
     const toggleCollapse = e => {
         // check if we are currently in edit-mode of a detail
@@ -42,7 +42,7 @@ export const PictureContainer = ( { item, permissions, first, last } ) => {
                     <div className="mbac-title">
                         <Space>
                             { collapsed ? <PlusSquareOutlined onClick={toggleCollapse}/> : <MinusSquareOutlined onClick={toggleCollapse}/> }
-                            <span className="mbac-position mbac-media-screen">{parentPosition}{position}</span>
+                            <span className="mbac-position mbac-media-screen">{printParentPosition}{printPosition}</span>
                             <EditableContent type="span"
                                 value={printTitle}
                                 field="printTitle"

@@ -12,6 +12,7 @@ import { actionCodes } from '../constData/actioncodes';
 //import { data } from 'jquery';
 
 import { renderTemplate } from '../constData/layouttypes';
+import { rePositionDetails } from '../helpers/opinionDetails';
 
 Meteor.methods({
     /**
@@ -236,7 +237,7 @@ Meteor.methods({
 
         let currentUser = Meteor.users.findOne(this.userId);
 
-        if (!hasPermission({ currentUser }, 'opinion.create')) {
+        if (!hasPermission({ currentUser }, 'opinion.edit')) {
             throw new Meteor.Error('Keine Berechtigung zum Erstellen eines neuen Details zu einem Gutachten.');
         }
         
@@ -252,9 +253,11 @@ Meteor.methods({
             // if we got no Parent, we are at top level
             detailData.depth = 1;
             detailData.parentPosition = null;
+            detailData.printParentPosition = null;
         } else {
             detailData.depth = parentDetail.depth + 1;
             detailData.parentPosition = (parentDetail.parentPosition || '') + parentDetail.position + '.';
+            detailData.printParentPosition = (parentDetail.printParentPosition || '') + parentDetail.printPosition + '.';
         }
 
         // check for given position
@@ -316,6 +319,8 @@ Meteor.methods({
         }, { created: true });
 
         Activities.insert(activity);
+
+        if (Meteor.isServer) rePositionDetails(detailData.refOpinion);
     },
 
     /**
@@ -427,6 +432,10 @@ Meteor.methods({
                         '</ul>'
                 }
             });*/
+
+            if (Meteor.isServer) {
+                rePositionDetails(old.refOpinion);
+            }
 
             return changes;
         }
@@ -543,6 +552,8 @@ Meteor.methods({
         }, { created: true });
 
         Activities.insert(activity);
+
+        if (Meteor.isServer) rePositionDetails(old.refOpinion);
     },
 
     /**

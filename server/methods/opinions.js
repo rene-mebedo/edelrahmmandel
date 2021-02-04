@@ -19,6 +19,9 @@ const writePdf = Meteor.wrapAsync(OpinionPdfs.write, OpinionPdfs);
 
 const settings = JSON.parse(process.env.MGP_SETTINGS);
 
+import { rePositionDetails } from '../../imports/api/helpers/opinionDetails';
+
+
 Meteor.methods({
     /**
      * Returns all Opinions that are shared with the current user
@@ -90,6 +93,8 @@ Meteor.methods({
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
             throw new Meteor.Error('Keine Berechtigung zum Bearbeiten (Erstellen eines PDF) des angegebenen Gutachtens.');
         }
+
+        rePositionDetails(refOpinion);
 
         const details = OpinionDetails.find({
             refOpinion,

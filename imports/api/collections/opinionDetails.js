@@ -23,6 +23,16 @@ export const OpinionDetailSchema = new SimpleSchema({
         label: 'Position Vorgänger',
         optional: true
     },
+    printPosition: {
+        type: SimpleSchema.Integer,
+        label: 'Position (im Ausdruck)',
+        optional: true
+    },
+    printParentPosition: {
+        type: String,
+        label: 'Position (Vorgänger, im Ausdruck)',
+        optional: true
+    },
     depth: {
         type: SimpleSchema.Integer,
         label: 'Verschachtelungsebene',

@@ -416,31 +416,21 @@ span.mbac-user-mention {
 .mbac-opinion-detail {
     color: #444;
     
+    .mbac-text,
+    .mbac-action-text {
+        padding-right: 4px;
+    }
+
     &.mbac-opinion-detail-deleted {
         .mbac-could-styled-as-deleted {
             filter: blur(3px);
         }
-
-        /*.mbac-child-content {
-            display:none;
-        }*/
     }
 
     .mbac-detail-focused {
         background-color: rgb(243, 225, 192);
         border: 1px solid rgb(209, 193, 164);
     }
-
-    /*
-    .depth-2 { margin-left: 16px; &.mbac-action-add { margin-left: 48px; } }
-    .depth-3 { margin-left: 32px; &.mbac-action-add { margin-left: 48px; } }
-    .depth-4 { margin-left: 48px; &.mbac-action-add { margin-left: 80px; } }
-    .depth-5 { margin-left: 64px; &.mbac-action-add { margin-left: 96px; } }
-    .depth-6 { margin-left: 96px; &.mbac-action-add { margin-left: 128px; } }
-    .depth-7 { margin-left: 128px; &.mbac-action-add { margin-left: 160px; } }
-    .depth-8 { margin-left: 160px; &.mbac-action-add { margin-left: 64px; } }
-    .depth-9 { margin-left: 192px; &.mbac-action-add { margin-left: 64px; } }
-*/
 
     .depth-2,
     .depth-3,
@@ -479,8 +469,6 @@ span.mbac-user-mention {
     }
 
     .mbac-child-content {
-        //background-color: antiquewhite;
-        
         > ul.mbac-child-content-list {
             list-style: none;
             padding: 0;
@@ -520,15 +508,7 @@ span.mbac-user-mention {
     .mbac-item-type-heading {
         padding-bottom: 16px;
 
-        /*.mbac-editable-title {
-            color: #444;
-            padding: 0;
-            border:none;
-            border-bottom: 1px dashed #aaa;
-        }*/
-
         .mbac-title {
-        //.mbac-editable-title {
             font-weight: 600;
             font-size: 18px;
         }
@@ -546,7 +526,6 @@ span.mbac-user-mention {
         .mbac-title {
             font-size: 18px;
             font-weight: 600;
-            //color: #666
         }
         .mbac-text {
             padding: 8px 32px;
@@ -563,8 +542,6 @@ span.mbac-user-mention {
     }
 
     .mbac-item-type-question {
-        //border: 1px solid #999;
-        //padding: 8px 16px;
 
         .mbac-title {
             font-weight: 600;
