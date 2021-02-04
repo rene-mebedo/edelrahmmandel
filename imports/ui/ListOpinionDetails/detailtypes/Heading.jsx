@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 
 import Space from 'antd/lib/space';
+import message from 'antd/lib/message';
 
 import RightCircleOutlined from '@ant-design/icons/RightCircleOutlined';
 import PlusSquareOutlined from '@ant-design/icons/PlusSquareOutlined';
@@ -10,13 +11,30 @@ import { ListOpinionDetails } from '../ListOpinionDetails';
 import { OpinionDetailAdder } from './OpinionDetailAdder';
 import { EditableContent } from '../../components/EditableContent';
 import { Link } from '../../components/Link';
+import { useAppState } from '../../../client/AppState';
+
 
 export const Heading = ( { item, permissions, first, last } ) => {
     const [collapsed, setCollapsed] = useState(true);
+    const [ selectedDetail ] = useAppState('selectedDetail');
+
     let { _id, depth, printTitle, deleted, parentPosition, position } = item;
     const deletedClass = deleted ? 'mbac-opinion-detail-deleted':'';
 
+
     if (!parentPosition) position += '.';
+
+    const toggleCollapse = e => {
+        // check if we are currently in edit-mode of a detail
+        if (selectedDetail) {
+            if (selectedDetail.isDirty()) {
+                return message.warning('Bitte beenden Sie zuerst Ihre aktuelle Bearbeitung.');
+            } else {
+                selectedDetail.discardChanges();
+            }
+        }
+        setCollapsed(!collapsed);
+    }
 
     return (
         <Fragment>
@@ -25,7 +43,7 @@ export const Heading = ( { item, permissions, first, last } ) => {
                 <div id={item._id} className={`mbac-item-type-heading depth-${depth}`}>
                     <div className="mbac-title"> 
                         <Space>
-                            { collapsed ? <PlusSquareOutlined onClick={e=>setCollapsed(!collapsed)}/> : <MinusSquareOutlined onClick={e=>setCollapsed(!collapsed)}/> }
+                            { collapsed ? <PlusSquareOutlined onClick={toggleCollapse}/> : <MinusSquareOutlined onClick={toggleCollapse}/> }
                             <span className="mbac-position mbac-media-screen">{parentPosition}{position}</span>
                             <EditableContent type="span"
                                 value={printTitle}

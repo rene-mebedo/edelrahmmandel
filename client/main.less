@@ -370,7 +370,7 @@ span.mbac-user-mention {
 }
 
 
-.mbac-action-plus.mbac-action-add {
+.mbac-action-plus.mbac-action-add {   
     height: 12px;
     margin-left: 16px;
     color: #1890ff;
@@ -403,6 +403,11 @@ span.mbac-user-mention {
                 cursor: pointer
             }
         }
+    }
+
+    // hide plus-symbol while edit-mode is active
+    &.mbac-edit-mode-active {
+        visibility: hidden;
     }
 }
 

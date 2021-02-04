@@ -6,17 +6,33 @@ import { ListOpinionDetails } from '../ListOpinionDetails';
 import { Link } from '../../components/Link';
 
 import Space from 'antd/lib/space';
+
 import RightCircleOutlined from '@ant-design/icons/RightCircleOutlined';
 import PlusSquareOutlined from '@ant-design/icons/PlusSquareOutlined';
 import MinusSquareOutlined from '@ant-design/icons/MinusSquareOutlined';
 
+import { useAppState } from '../../../client/AppState';
+
 export const PictureContainer = ( { item, permissions, first, last } ) => {
-    const [collapsed, setCollapsed] = useState(true);
+    const [ collapsed, setCollapsed ] = useState(true);
+    const [ selectedDetail ] = useAppState('selectedDetail');
 
     let { _id, depth, parentPosition, position, printTitle, text, deleted } = item;
     const deletedClass = deleted ? 'mbac-opinion-detail-deleted':'';
 
     if (!parentPosition) position += '.';
+
+    const toggleCollapse = e => {
+        // check if we are currently in edit-mode of a detail
+        if (selectedDetail) {
+            if (selectedDetail.isDirty()) {
+                return message.warning('Bitte beenden Sie zuerst Ihre aktuelle Bearbeitung.');
+            } else {
+                selectedDetail.discardChanges();
+            }
+        }
+        setCollapsed(!collapsed);
+    }
 
     return (
         <Fragment>
@@ -25,7 +41,7 @@ export const PictureContainer = ( { item, permissions, first, last } ) => {
                 <div id={_id} className={`mbac-item-type-picture-container depth-${depth}`}>
                     <div className="mbac-title">
                         <Space>
-                            { collapsed ? <PlusSquareOutlined onClick={e=>setCollapsed(!collapsed)}/> : <MinusSquareOutlined onClick={e=>setCollapsed(!collapsed)}/> }
+                            { collapsed ? <PlusSquareOutlined onClick={toggleCollapse}/> : <MinusSquareOutlined onClick={toggleCollapse}/> }
                             <span className="mbac-position mbac-media-screen">{parentPosition}{position}</span>
                             <EditableContent type="span"
                                 value={printTitle}

@@ -169,8 +169,6 @@ export class EditableContent extends React.Component {
         const { refDetail } = this.props;
 
         setAppState({ selectedDetail: null });
-        //OLDAppState.selectedDetail = null;
-        //OLDdelete AppState.selectedDetail;
 
         FlowRouter.withReplaceState(() => {
             FlowRouter.setQueryParams({activitiesBy: null});

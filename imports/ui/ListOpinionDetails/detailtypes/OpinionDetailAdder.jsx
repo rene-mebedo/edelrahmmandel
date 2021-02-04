@@ -7,7 +7,7 @@ import Menu from 'antd/lib/menu';
 
 import PlusCircleOutlined from '@ant-design/icons/PlusCircleOutlined';
 
-import { AppState } from '../../../client/AppState';
+import { useAppState } from '../../../client/AppState';
 import { layouttypesObject, selectableLayouttypes } from '../../../api/constData/layouttypes';
 
 export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
@@ -16,16 +16,18 @@ export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
     if (!canEdit) return null;
 
     const [ newPosition, setNewPositon ] = useState(null);
+    const [ selectedDetail ] = useAppState('selectedDetail');
+
     const data = pseudoItem || item;
 
     const canDoAdd = () => {
         // while editing a opiniondetail this function is disabled
-        if (AppState.selectedDetail) {
-            if (AppState.selectedDetail.isDirty()) {
+        if (selectedDetail) {
+            if (selectedDetail.isDirty()) {
                 message.warning('Sie befinden sich aktuell in der Bearbeitung. Bitte schließen Sie diesen Vorgang zuerst ab.');
                 return false;
             }
-            AppState.selectedDetail.discardChanges();
+            selectedDetail.discardChanges();
         }
         return true;
     }
@@ -86,13 +88,12 @@ export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
             }
         </Menu>
     );
-      
+    
     return (
         <Fragment>           
            
-            <div className={`mbac-action-plus mbac-action-add depth-${data.depth}`}>
+            <div className={`mbac-action-plus mbac-action-add ${selectedDetail ? 'mbac-edit-mode-active':''} depth-${data.depth}`}>
                 <Dropdown overlay={menu} 
-                    //visible={newPosition !== null} 
                     trigger={['click']}
                  >
                     <PlusCircleOutlined 
@@ -100,13 +101,6 @@ export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
                     />  
                 </Dropdown>   
             </div>  
-            
-            { /*newPosition === null ? null :
-                <ModalTypeSelector
-                    onOk={createItem}
-                    onCancel={closeModal}
-                />*/
-            }
         </Fragment>
     )
 }
