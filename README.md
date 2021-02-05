@@ -54,8 +54,8 @@ geplanter `Going-Live: KW 3`
 - [x] Menu vollständig einklappbar
 - [x] Aktivitätsleiste vollständig einklappbar
 - [x] Übernahme der Maßnahmen inkl. Maßnahmentexte in Punkt 8 - Abschlussbetrachtung
-- [ ] Verwaltung von Variablen, die dynamisch im Gutachten ersetzt werden
-  - [ ] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
+- [x] Verwaltung von Variablen, die dynamisch im Gutachten ersetzt werden
+  - [x] Beim erstellen eines Gutachten auf Basis einer Vorlage, müssen die Variablen übernommen werden, jedoch die aktuellen Werte gelöscht sein.
 - [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
 - [ ] UI-Optimierungen für Tablet und Smartphones ( medium and small devices )
 - [x] Opiniondetails `pagebreakBefore` implementieren

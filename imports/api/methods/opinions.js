@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
 import { Opinions, OpinionsSchema } from '../collections/opinions';
@@ -48,6 +49,24 @@ Meteor.methods({
             opinion.opinionNo = '?'
         }
 
+        // check if we need to copy data from a choosen template
+        let template;
+        if (data.refTemplate) {
+            template = Opinions.findOne(data.refTemplate);
+
+            // copy the document variables
+            if (!template.userVariables) {
+                opinion.userVariables = [];
+            } else {
+                opinion.userVariables = template.userVariables.map( v => {
+                    // remove the current value from the var
+                    v._id = new Mongo.ObjectID()._str;
+                    v.value = '';
+                    return v;
+                })
+            }
+        }
+
         try {
             OpinionsSchema.validate(opinion);
         } catch (err) {
@@ -66,11 +85,7 @@ Meteor.methods({
 
         // check if we need to copy the details from a template
         if (Meteor.isServer && data.refTemplate) {
-            //const bulk = OpinionDetails.rawCollection().initializeUnorderedBulkOp();
-            //const bulkInsert = Meteor.wrapAsync(bulk.execute, bulk);
-
             let oldToNewRefs = {};
-            //const sourceOpinion = Opinions.findOne(data.refTemplate);
 
             const findAndInsert = parent => {
                 OpinionDetails.find({ refOpinion: data.refTemplate, refParentDetail: parent }).map( detail => {
@@ -173,6 +188,202 @@ Meteor.methods({
         return shared && shared.sharedWith.map( sw => {
             return sw.user;
         });
+    },
+
+    /**
+     * Adds a new Variable to the userVariables of the opinion
+     * 
+     * @param {String} refOpinion Specifies the Opinion by ID
+     * @param {Object} data Object with name and value of the new Variable
+     */
+    'opinion.addVariable'(refOpinion, data) {
+        check(refOpinion, String);
+        check(data, Object);
+        check(data.name, String);
+        check(data.value, String);
+
+        let currentUser = Meteor.users.findOne(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten der Teilnehmer eines Gutachten.');
+        }
+
+        data._id = new Meteor.Collection.ObjectID().toHexString();
+
+        try {
+            if (!shared.userVariables) {
+                Opinions.update(refOpinion, {
+                    $set: {
+                        userVariables: [data]
+                    }
+                });
+            } else {
+                Opinions.update(refOpinion, {
+                    $push: {
+                        userVariables: data
+                    }
+                });
+            }
+
+            const changes = [{
+                message: "Die Variable wurde hinzugefügt",
+                propName: "userVariables",
+                oldValue: null,
+                newValue: data
+            }];
+            let activity = injectUserData({ currentUser }, {
+                refOpinion: refOpinion,
+                type: 'SYSTEM-LOG',
+                action: 'INSERT',
+                message: `hat die Variable mit dem Namen <b>${data.name}</b> hinzugefügt.`,
+                changes
+            }, { created: true });
+
+            Activities.insert(activity);
+        } catch (err) {
+            throw new Meteor.Error(err.message);
+        }
+        
+        // return the new Variable with it's id as pushed to the array
+        return data;
+    },
+
+    /**
+     * Update the given Variable by refOption an the id itself
+     * 
+     * @param {String} refOpinion Reference to the Opinion the participant belongs to
+     * @param {Object} variable Data of the variable to update including the id
+     */
+    'opinion.updateVariable'(refOpinion, variable) {
+        check(refOpinion, String);
+        check(variable, Object);
+        check(variable._id, String);
+        check(variable.name, String);
+        check(variable.value, String);
+
+        const newVariable = {
+            _id: variable._id,
+            name: variable.name,
+            value: variable.value
+        }
+
+        let currentUser = Meteor.users.findOne(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+            throw new Meteor.Error('Keine Berechtigung zum Editieren der Variablen eines Gutachten.');
+        }
+
+        const oldVariable = shared.userVariables.find( v => v._id == newVariable._id );
+
+        try {
+            Opinions.update({
+                _id: refOpinion, 
+                'userVariables._id': newVariable._id
+            },{
+                $set: {
+                    'userVariables.$': newVariable
+                }
+            });
+
+            const changes = [{
+                message: "Die Variable wurden geändert",
+                propName: "userVariables",
+                oldValue: oldVariable,
+                newValue: newVariable
+            }];
+            let activity = injectUserData({ currentUser }, {
+                refOpinion: refOpinion,
+                type: 'SYSTEM-LOG',
+                action: 'UPDATE',
+                message: `hat die Variable mit dem Namen <b>${newVariable.name}</b> geändert.`,
+                changes
+            }, { created: true });
+    
+            Activities.insert(activity);
+        } catch (err) {
+            throw new Meteor.Error(err.message);
+        } 
+    },
+
+    /**
+     * Remove the given variable by refOption an the id itself
+     * 
+     * @param {String} refOpinion Reference to the Opinion the participant belongs to
+     * @param {Object} participant Data of the participant to remove including the id of the participant
+     */
+    'opinion.removeVariable'(refOpinion, variable) {
+        check(refOpinion, String);
+        check(variable && variable._id, String);
+
+        let currentUser = Meteor.users.findOne(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+            throw new Meteor.Error('Keine Berechtigung zum Löschen der Variablen eines Gutachten.');
+        }
+
+        try {
+            Opinions.update({
+                _id: refOpinion
+            },{
+                $pull: {
+                    'userVariables': variable
+                }
+            });
+
+            const changes = [{
+                message: "Der Variable wurde gelöscht",
+                propName: "userVariables",
+                oldValue: variable,
+                newValue: null
+            }];
+            let activity = injectUserData({ currentUser }, {
+                refOpinion: refOpinion,
+                type: 'SYSTEM-LOG',
+                action: 'REMOVE',
+                message: `hat die Variable mit dem Namen <b>${variable.name}</b> gelöscht.`,
+                changes
+            }, { created: true });
+    
+            Activities.insert(activity);
+        } catch (err) {
+            throw new Meteor.Error(err.message);
+        }
     },
 
     /**

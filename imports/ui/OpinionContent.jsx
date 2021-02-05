@@ -8,15 +8,18 @@ import Space from 'antd/lib/space';
 import Tabs from 'antd/lib/tabs';
 
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
+import PlusOutlined from '@ant-design/icons/PlusOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import FormOutlined from '@ant-design/icons/FormOutlined';
 import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 import ContactsOutlined from '@ant-design/icons/ContactsOutlined';
+import ImportOutlined from '@ant-design/icons/ImportOutlined';
 
 import { useOpinion, useOpinionPdfs } from '../client/trackers';
 
 import { OpinionParticipants } from './components/OpinionParticipants';
+import { OpinionVariables } from './components/OpinionVariables';
 import { ModalOpinion } from './modals/Opinion';
 import { Expert } from './components/Expert';
 
@@ -44,7 +47,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
     const disableTabPanes = (selectedDetail && selectedDetail.mode == 'EDIT');
 
     return (
-        <Tabs onChange={onTabPaneChanged} size="large">
+        <Tabs onChange={onTabPaneChanged} size="large" tabPosition={window.innerWidth > 800 ? 'left':'top'}>
             <TabPane tab={<span><FormOutlined />Dokument</span>} key="DOCUMENT">
                 {children}
             </TabPane>
@@ -102,6 +105,14 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                         </Fragment>
                     }
                 </Descriptions>
+            </TabPane>
+
+            <TabPane tab={<span><ImportOutlined />Variablen</span>} key="VARS" disabled={disableTabPanes} >
+                <OpinionVariables
+                    refOpinion={refOpinion}
+                    data={opinion.userVariables || []} 
+                    permissions={{canEdit, canDelete}}
+                />
             </TabPane>
 
             <TabPane tab={<span><FilePdfOutlined />PDF</span>} key="PDF" disabled={disableTabPanes} >
