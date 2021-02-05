@@ -20,6 +20,7 @@ import DislikeTwoTone from '@ant-design/icons/DislikeTwoTone';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import CheckOutlined from '@ant-design/icons/CheckOutlined';
+import CloseSquareOutlined from '@ant-design/icons/CloseSquareOutlined';
 
 import { Summernote } from './Summernote';
 import { ActionCodeDropdown } from '../components/ActionCodeDropdown';
@@ -65,7 +66,7 @@ const MbacTooltip = props => {
     )
 }
 
-const FloatingActions = ({onSave, onCancel, onSocialClick, onCheckAnswer, onRemove, onFinallyRemove, isDeleted, isAnswer, likes, dislikes, canEdit = false, canFinallyRemove = false }) => {
+const FloatingActions = ({mode, onSave, onCancel, onSocialClick, onCheckAnswer, onRemove, onFinallyRemove, isDeleted, isAnswer, likes, dislikes, canEdit = false, canFinallyRemove = false }) => {
     onSave = onSave || function(){};
     onCancel = onCancel || function(){};
     onCheckAnswer = onCheckAnswer || function(){};
@@ -93,6 +94,7 @@ const FloatingActions = ({onSave, onCancel, onSocialClick, onCheckAnswer, onRemo
 
     return (
         <div className="mbac-floating-actions">
+            <CloseSquareOutlined className="mbac-cancel-icon" onClick={onCancel} />
 
             <div className="mbac-additional-actions">
                 <Space split={<Divider type="vertical" />}>
@@ -121,15 +123,18 @@ const FloatingActions = ({onSave, onCancel, onSocialClick, onCheckAnswer, onRemo
                     { canFinallyRemove ? <DeleteOutlined onClick={onFinallyRemove} /> : null }
                 </Space>
             </div>
-            <div className="mbac-primary-actions">
-                { canEdit 
-                    ?   <Space>
-                            <Button type="dashed" icon={<CloseOutlined />} /*size="large"*/ onClick={onCancel}>Abbruch</Button>
-                            <Button type="primary" icon={<CheckOutlined />} /*size="large"*/ onClick={onSave}>Speichern</Button>
-                        </Space>
-                    : <Button type="primary" onClick={onCancel}>OK</Button>
-                }
-            </div>
+            { mode !== 'FOCUSED' ?
+                <div className="mbac-primary-actions">
+                    { canEdit & mode == 'EDIT'
+                        ?   <Space>
+                                <Button type="dashed" icon={<CloseOutlined />} /*size="large"*/ onClick={onCancel}>Abbruch</Button>
+                                <Button type="primary" icon={<CheckOutlined />} /*size="large"*/ onClick={onSave}>Speichern</Button>
+                            </Space>
+                        : <Button type="primary" onClick={onCancel}>OK</Button>
+                    }
+                </div>
+                : null
+            }
         </div>
     )
 }
@@ -138,7 +143,6 @@ export class EditableContent extends React.Component {
     constructor(props) {
         super(props);
 
-        // { item, type = 'span', className, value, method='opinionDetail.update', field, refDetail, permissions }
         this.state = {
             mode: 'SHOW'
         }
@@ -165,16 +169,18 @@ export class EditableContent extends React.Component {
         }
     }
 
-    exitEditmode() {
+    exitEditmode(newMode = 'SHOW') {
         const { refDetail } = this.props;
 
-        setAppState({ selectedDetail: null });
+        if (newMode == 'SHOW') {
+            setAppState({ selectedDetail: null });
 
-        FlowRouter.withReplaceState(() => {
-            FlowRouter.setQueryParams({activitiesBy: null});
-        });
+            //FlowRouter.withReplaceState(() => {
+                FlowRouter.setQueryParams({ activitiesBy: null });
+            //});
+        }
 
-        this.setState({ mode: 'SHOW' });
+        this.setState({ mode: newMode });
     }
 
     toggleDeleted() {
@@ -322,11 +328,16 @@ export class EditableContent extends React.Component {
             AppState.selectedDetail.discardChanges();
         }
 
-        const newMode = elementType === "Pagebreak" ? 'FOCUSED' : (canEdit ? 'EDIT':'FOCUSED');
+        let newMode = 'SHOW';
+        if (mode == 'SHOW') {
+            newMode = 'FOCUSED';
+        } else if (mode == 'FOCUSED') {
+            newMode = elementType === "Pagebreak" ? 'FOCUSED' : (canEdit ? 'EDIT':'FOCUSED');
+        }
 
-        FlowRouter.withReplaceState(() => {
+        //FlowRouter.withReplaceState(() => {
             FlowRouter.setQueryParams({activitiesBy: refDetail});
-        });
+        //});
 
         setAppState({
             selectedDetail: {
@@ -343,6 +354,15 @@ export class EditableContent extends React.Component {
 
     discardChanges() {
         this.exitEditmode();
+    }
+
+    cancelEditmode() {
+        const { mode } = this.state;
+        
+        if ( mode == 'EDIT' )
+            this.exitEditmode('FOCUSED');
+        else if ( mode == 'FOCUSED' )
+            this.exitEditmode('SHOW');
     }
 
     uploadImage(images, insertImage) {
@@ -380,8 +400,9 @@ export class EditableContent extends React.Component {
         const PasteFromClipboard = this.PasteFromClipboard.bind(this);
 
         const PreparedFloatingActions = <FloatingActions
+            mode={mode}
             onSave={this.saveData.bind(this)} 
-            onCancel={this.discardChanges.bind(this)}
+            onCancel={this.cancelEditmode.bind(this)}
             onCheckAnswer={this.checkAnswer.bind(this)}
             onRemove={this.toggleDeleted.bind(this)}
             onFinallyRemove={this.finallyRemove.bind(this)}
@@ -430,10 +451,13 @@ export class EditableContent extends React.Component {
             }
 
             return (
-                <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
-                    onClick={toggleMode}
-                    dangerouslySetInnerHTML={ {__html: value } }
-                />
+                <Fragment>
+                    <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
+                        onClick={toggleMode}
+                        dangerouslySetInnerHTML={ {__html: value } }
+                    />
+                    { mode === 'FOCUSED' ? PreparedFloatingActions : null }
+                </Fragment>
             )
 
         } else if (type == 'actioncode') {
@@ -454,11 +478,14 @@ export class EditableContent extends React.Component {
 
             const actionCodeLongtext = actionCodes[value].longtext;
             return (
-                <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
-                    onClick={toggleMode}
-                >
-                    {actionCodeLongtext}
-                </div>
+                <Fragment>
+                    <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
+                        onClick={toggleMode}
+                    >
+                        {actionCodeLongtext}
+                    </div>
+                    { mode === 'FOCUSED' ? PreparedFloatingActions : null }
+                </Fragment>
             );
         }
 
