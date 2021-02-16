@@ -40,7 +40,7 @@ export const layouttypesObject = {
         template: `
             <div id="{{_id}}" class="mbac-item-type-question depth-{{depth}}">
                 <div class="mbac-title">
-                    {{parentPosition}}{{position}} {{printTitle}}
+                    {{printParentPosition}}{{printPosition}} {{printTitle}}
                 </div>
                 <div class="mbac-text">
                     {{text}}
