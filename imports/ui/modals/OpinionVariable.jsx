@@ -9,6 +9,7 @@ import Input from 'antd/lib/input';
 import List from 'antd/lib/list';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
+import Switch from 'antd/lib/switch';
 
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
@@ -16,6 +17,7 @@ import EditOutlined from '@ant-design/icons/EditOutlined';
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 
 import { ModalBackground } from '../components/ModalBackground';
+
 
 const { Option } = Select;
 const { useForm } = Form;
@@ -153,13 +155,22 @@ export const ModalOpinionVariable = ( { mode/*NEW|EDIT|DELETE*/, refOpinion, var
                         >
                             <Input autoFocus={mode=='EDIT'} placeholder="Wert"/>
                         </Form.Item>
+
+                        <Form.Item
+                            label="Wert für neues Dokument übernehmen"
+                            name="copyValue"
+                            valuePropName="checked"
+                            initialValue={false}
+                        >
+                            <Switch />
+                        </Form.Item>
                     </Form>
                 </Modal>
             </ModalBackground>
         )
     }
 
-    if (mode == 'NEW'){
+    if (mode == 'NEW') {
         return (
             <Fragment>
                 <AddButton show={canEdit} onClick={e=>setShowModal(true)} />

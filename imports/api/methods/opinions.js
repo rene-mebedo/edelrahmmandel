@@ -59,9 +59,11 @@ Meteor.methods({
                 opinion.userVariables = [];
             } else {
                 opinion.userVariables = template.userVariables.map( v => {
-                    // remove the current value from the var
                     v._id = new Mongo.ObjectID()._str;
-                    v.value = '';
+                    if (!v.copyValue) {
+                        // remove the current value from the var
+                        v.value = '';
+                    }
                     return v;
                 })
             }
@@ -201,6 +203,7 @@ Meteor.methods({
         check(data, Object);
         check(data.name, String);
         check(data.value, String);
+        check(data.copyValue, Boolean);
 
         let currentUser = Meteor.users.findOne(this.userId);
 
@@ -272,11 +275,13 @@ Meteor.methods({
         check(variable._id, String);
         check(variable.name, String);
         check(variable.value, String);
+        check(variable.copyValue, Boolean);
 
         const newVariable = {
             _id: variable._id,
             name: variable.name,
-            value: variable.value
+            value: variable.value,
+            copyValue: variable.copyValue
         }
 
         let currentUser = Meteor.users.findOne(this.userId);

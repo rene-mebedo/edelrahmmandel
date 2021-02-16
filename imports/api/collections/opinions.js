@@ -78,7 +78,8 @@ export const OpinionsSchema = new SimpleSchema({
         type: new SimpleSchema({
             _id: { type: String, label: 'Eindeutige ID' },
             name: { type: String, label: 'Variablenname' },
-            value: { type: String, label: 'Variablenwert', optional: true }
+            value: { type: String, label: 'Variablenwert', optional: true },
+            copyValue: { type: Boolean, label: 'Wert für neues Gutachten übernehmen', optional: true }
         })
     }
 });

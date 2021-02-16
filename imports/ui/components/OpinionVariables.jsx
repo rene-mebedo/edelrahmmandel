@@ -4,6 +4,7 @@ import Table from 'antd/lib/table';
 import Space from 'antd/lib/space';
 
 import { ModalOpinionVariable } from './../modals/OpinionVariable';
+import { Tag } from 'antd';
 
 export const OpinionVariables = ({ refOpinion, data, permissions }) => {
     const { canEdit } = permissions;
@@ -21,6 +22,14 @@ export const OpinionVariables = ({ refOpinion, data, permissions }) => {
                     title: 'Variable',
                     dataIndex: 'name',
                     key: 'name',
+                    render: (name, variable) => {
+                        return (
+                            <Space size="large">
+                                <span>{name}</span>
+                                { variable.copyValue ? <Tag color="geekblue">Wert beibehalten</Tag> : null }
+                            </Space>
+                        )
+                    }
                 }, {
                     title: 'Wert',
                     dataIndex: 'value',
