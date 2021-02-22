@@ -94,7 +94,7 @@ Meteor.methods({
             throw new Meteor.Error('Keine Berechtigung zum Bearbeiten (Erstellen eines PDF) des angegebenen Gutachtens.');
         }
 
-        rePositionDetails(refOpinion);
+        rePositionDetails(refOpinion, { reRenderHtmlContent: true });
 
         const details = OpinionDetails.find({
             refOpinion,
