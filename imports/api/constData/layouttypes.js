@@ -28,7 +28,7 @@ export const layouttypesObject = {
         description: 'Wird als einfacher Textoutput herangezogen und exakt so ausgegeben wie im HTML formatiert.',
         hasChilds: false,
         defaultValues: { title: 'T', text: 'Text' },
-        template: `<div class="mbac-item-type-text depth-{{depth}}">{{text}}</div>`
+        template: `<div id="{{_id}}" class="mbac-item-type-text depth-{{depth}}">{{text}}</div>`
     },
     QUESTION: {
         _id: 'QUESTION',
