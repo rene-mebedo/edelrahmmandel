@@ -128,11 +128,21 @@ Meteor.methods({
      * @param {Object} data Specifies the min Data for a new user
      */
     'users.inviteUser'(refOpinion, data) {
+        check(refOpinion, String);
+        check(data, Object);
+        check(data.email, String);
+        check(data.firstName, String);
+        check(data.lastName, String);
+        check(data.gender, String);
+
         if (!this.userId) {
             throw new Meteor.Error('Not Authorized.');
         }
 
         let currentUser = Meteor.users.findOne(this.userId);
+
+        // always save email in lower case
+        data.email = data.email.toLowerCase();
 
         // check if opinion was sharedWith the current User
         const shared = Opinions.findOne({

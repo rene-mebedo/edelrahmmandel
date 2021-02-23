@@ -29,7 +29,9 @@ const layout = {
 export const LoginForm = () => {
 
   const login = data => {
-    Meteor.loginWithPassword(data.username, data.password, err => {
+    const username = data.username && data.username.toLowerCase();
+
+    Meteor.loginWithPassword(username, data.password, err => {
       if (err) {
         Modal.error({
           title: 'Login fehlgeschlagen',

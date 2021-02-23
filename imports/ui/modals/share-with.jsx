@@ -82,7 +82,6 @@ export const ModalShareWith = ( { refOpinion, currentUser } ) => {
             });
         } else {
             form.validateFields(['email', 'gender', 'firstName', 'lastName', 'roles']).then( values => {
-                
                 Meteor.call('users.inviteUser', refOpinion, values, err => {
                     if (err) {
                         return Modal.error({
@@ -148,7 +147,7 @@ export const ModalShareWith = ( { refOpinion, currentUser } ) => {
                                             message: 'Bitte geben Sie die EMail-Adresse ein.',
                                         }]}
                                     >
-                                        <Input prefix="@" />
+                                        <Input prefix={<MailOutlined />} />
                                     </Form.Item>
 
                                     <Form.Item
