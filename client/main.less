@@ -451,10 +451,16 @@ span.mbac-user-mention {
     .mbac-title:hover,
     .mbac-print-title:hover,
     .mbac-text:hover {
-        //padding: 4px;
-        //margin: -4px;
-        background-color: aliceblue;
-        cursor: pointer;
+        .mbac-could-styled-as-deleted {
+            background-color: aliceblue;
+            cursor: pointer;
+        }
+        .mbac-editable-content {
+            &.mbac-wysiwyg {
+                background-color: inherit;
+                cursor: inherit;
+            }
+        }
     }
 
     .depth-2,

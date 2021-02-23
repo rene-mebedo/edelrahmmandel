@@ -31,6 +31,18 @@ import { AppState, setAppState } from '../../client/AppState';
 const summernoteOptions = { 
     airMode: true, 
     popover: {
+        image: [
+            ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+            ['float', ['floatLeft', 'floatRight', 'floatNone']],
+            ['remove', ['removeMedia']]
+        ],
+        link: [
+            ['link', ['linkDialogShow', 'unlink']]
+        ],
+        table: [
+            ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+            ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+        ],
         air: [
             ['font', ['bold', 'underline', 'italic', 'superscript']],
             ['font1', ['clear']],
@@ -38,6 +50,7 @@ const summernoteOptions = {
             ['para', ['ul', 'ol']],
             ['para1', ['paragraph']],
             ['table', ['table']],
+            ['link', ['linkDialogShow', 'unlink']],
             ['view', ['fullscreen', 'codeview']]
         ]
     }  
