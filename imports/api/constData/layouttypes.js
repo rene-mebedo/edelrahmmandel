@@ -34,7 +34,7 @@ export const layouttypesObject = {
         _id: 'QUESTION',
         active: true,
         title: 'Frage',
-        description: 'Wird als Frage mit handlungsbedarf genutzt.',
+        description: 'Wird als Frage mit Handlungsbedarf genutzt.',
         hasChilds: true,
         defaultValues: { title: 'Q', printTitle:'Frage', text: 'Zusatztext', actionText: 'Maßnahmentext', actionCode: 'unset' },
         template: `
@@ -220,7 +220,7 @@ export const layouttypesObject = {
         _id: 'ATTENTION',
         active: false,
         title: 'Achtung inkl. Bild (deprecated)',
-        description: 'Wird als Wichtiger Hinweistext mit Stopsymbol verwandt.',
+        description: 'Wird als wichtiger Hinweistext mit Stoppsymbol verwandt.',
         hasChilds: false,
         defaultValues: { title: 'AT', printTitle:'Achtungstitel', text: 'Achtungstext' },
         template: `
@@ -291,7 +291,7 @@ export const layouttypesObject = {
         title: 'Aufstellung Maßnahmen',
         description: 'Hier wird die Liste aller Maßnahmen aufgeführt.',
         hasChilds: false,
-        defaultValues: { title: 'TL', text: 'Im nachfolgenden finden Sie eine Auflistung der einzelnen Maßnahmen.' },
+        defaultValues: { title: 'TL', text: 'Im Nachfolgenden finden Sie eine Auflistung der einzelnen Maßnahmen.' },
         template: `
             <div id="{{_id}}" class="mbac-item-type-todolist">
                 <div class="mbac-print-title">
@@ -352,7 +352,7 @@ export const layouttypesObject = {
         description: 'Dieser Typ dient der Aufstellung/Liste einzelner Bilddokumentationen',
         hasChilds: true,
         isPictureable: true,
-        defaultValues: { title: 'BC', printTitle:'Bildcontainer', text: 'Im nachfolgenden finden Sie eine Auflistung der Bildern.' },
+        defaultValues: { title: 'BC', printTitle:'Bildcontainer', text: 'Im Nachfolgenden finden Sie eine Auflistung der Bilder.' },
         template: `<div class="mbac-item-type-picture-container">
             <div class="mbac-text">
                 {{text}}
@@ -377,7 +377,7 @@ export const layouttypesObject = {
         active: true,
         internalUseOnly: true,
         title: 'Bild(er)',
-        description: 'Dieser Typ dient der Bilddokumentation und kann ein oder mehrer Bilder beinhalten',
+        description: 'Dieser Typ dient der Bilddokumentation und kann ein oder mehrere Bilder beinhalten',
         hasChilds: false,
         defaultValues: { printTitle: 'Bildtitel', text: 'Bildtext' },
         template: `<tr class="mbac-item-type-picture">
