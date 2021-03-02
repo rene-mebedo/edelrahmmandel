@@ -179,6 +179,17 @@ Meteor.methods({
             }
         });
 
+        // post a new Aktivity to this opinion that a new user
+        // has acces to this opinion
+        const activity = injectUserData({ currentUser }, {
+            refOpinion,
+            refDetail: null,
+            type: 'SYSTEM-POST',
+            message: `hat das Gutachten mit dem Benutzer <strong>${firstName + ' ' + lastName}</strong> geteilt.`
+        }, { created: true });
+        
+        Activities.insert(activity);
+
         Accounts.sendVerificationEmail(userId, email);
     },
 
@@ -230,6 +241,18 @@ Meteor.methods({
                 }
             }
         });
+
+        // post a new Aktivity to this opinion that a new user
+        // has acces to this opinion
+        const activity = injectUserData({ currentUser }, {
+            refOpinion,
+            refDetail: null,
+            type: 'SYSTEM-POST',
+            message: `hat das Gutachten mit dem Benutzer <strong>${firstName + ' ' + lastName}</strong> geteilt.`
+        }, { created: true });
+        
+        Activities.insert(activity);
+
 
         UserActivities.insert(
             injectUserData({ currentUser }, {
@@ -343,6 +366,7 @@ Accounts.emailTemplates.resetPassword.from = () => {
   // passwords.
   return 'AwesomeSite Password Reset <no-reply@example.com>';
 };
+
 Accounts.emailTemplates.verifyEmail = {
    subject() {
       return "MEBEDO GutachtenPlus - Zugang aktivieren";
