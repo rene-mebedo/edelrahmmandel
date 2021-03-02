@@ -34,6 +34,7 @@ const getUrl = item => {
 
     switch (item.type) {
         case 'MENTIONED':
+        case 'REPLYTO':
             if (refOpinion) {
                 if (refOpinionDetail) {
                     url = `/opinions/${refOpinion}/${refOpinionDetail}`;

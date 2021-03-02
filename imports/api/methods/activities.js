@@ -225,7 +225,23 @@ Meteor.methods({
                 answers: answer
             }
         });
-        
+
+        // tell the autor of the post that someone has answered to his post
+        UserActivities.insert(
+            injectUserData({ currentUser }, {
+                refUser: activity.createdBy.userId,
+                type: 'REPLYTO',
+                refs: { 
+                    refOpinion, 
+                    refActivity,
+                    refOpinionDetail: opinionDetail && opinionDetail._id || null,
+                },
+                message: `${currentUser.userData.firstName} ${currentUser.userData.lastName} hat auf einen Post von Ihnen geantwortet.`,
+                originalContent: message,
+                unread: true
+            }, { created: true })        
+        );
+
         if (opinionDetail) {
             OpinionDetails.update(opinionDetail._id, {
                 $inc: { commentsCount: 1 }
