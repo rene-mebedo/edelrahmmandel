@@ -30,7 +30,8 @@ export const ListOpinions = () => {
                                         }
                                     </Space>
                                 </a>}
-                            description={opinion.description}
+                            //description={opinion.description}
+                            description={('Nr. ' + opinion.opinionNo + ' - ' + opinion.description + ' - ' + opinion.customer.name + ', ' + opinion.customer.city)}
                         />
                     </List.Item>
                 )}

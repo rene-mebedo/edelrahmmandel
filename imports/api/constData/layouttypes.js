@@ -1,4 +1,6 @@
 import { actionCodes } from './actioncodes';
+//import { Images } from '../collections/images';
+import { getMarkedImageSrc } from '../helpers/image';
 
 export const layouttypesObject = {
     HEADING: {
@@ -434,7 +436,7 @@ export const renderTemplate = (item, depth=0) => {
 
     if (item.depth) depth = item.depth;
 
-    const renderedTemplate = template
+    let renderedTemplate = template
         .replace( /\{\{\_id\}\}/g, (item._id || '') + '' )
         .replace( /\{\{printTitle\}\}/g, item.printTitle || '')
         .replace( /\{\{text\}\}/g, item.text || '' )
@@ -444,8 +446,38 @@ export const renderTemplate = (item, depth=0) => {
         .replace( /\{\{actionText\}\}/g, item.actionText || '' )
         .replace( /\{\{parentPosition\}\}/g, (item.parentPosition || '') + '' )
         .replace( /\{\{position\}\}/g, (item.position || '') + '' )
-        .replace( /\{\{depth\}\}/g, depth + '' )
-        
+        .replace( /\{\{depth\}\}/g, depth + '' );
+    
+    // Test für Picture.
+    if ( item.type == 'PICTURE'
+      && item.files 
+      && item.files.length > 0 ) {
+        let imgSrc = '';
+        item.files.forEach( file => {
+            if ( file.path
+              && file.extension
+              && ( file.extension == 'jpg'
+                || file.extension == 'jpeg'
+                || file.extension == 'png' ) ) {
+                // Bilder auf Markierungen prüfen.
+                /*const image = Images.findOne( {_id: file._id} );
+                if ( image
+                  && image.meta
+                  && image.meta.annotState
+                  && image.meta.annotStateImage
+                  && image.meta.annotState.markers
+                  && image.meta.annotState.markers.length ) {
+                    // Es sind Markierungen im Bild vorhanden, also Bild inkl. Markierung setzen.
+                    imgSrc += `<img src=${image.meta.annotStateImage}>`;
+                }*/
+                imgSrc += getMarkedImageSrc( file._id );
+            }
+        });
+        if ( imgSrc != '' ) {
+            renderedTemplate = renderedTemplate
+            .replace( /\{\{\pictures\}\}/g, (imgSrc || '') + '' );
+        }
+    }       
 
     return '<div class="mbac-opinion-detail">' + renderedTemplate + '</div>';
 }
