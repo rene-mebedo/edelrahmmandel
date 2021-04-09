@@ -73,21 +73,29 @@ export class ImageAnnotation extends React.Component {
     }
 
     render() {
-
+        const mystyle1 = {
+            maxWidth: '100%',
+            zIndex: '2'            
+        };
+        const mystyle2 = {
+            visibility: 'hidden',
+            position: 'absolute',
+            zIndex: '1'
+        };
+        
         return (
             <Fragment>
                 <img
                     ref={this.imgRef} 
                     src={this.src}
-                    style={{ maxWidth: '100%' }}
+                    style={mystyle1}
                     onClick={() => this.showMarkerArea()}
                 />
-
                 <img
                     ref={this.imgRefOri} 
-                    src={this.props.src}
-                    style={{ visibility: 'hidden' }}                    
-                />
+                    src={this.props.src}  
+                    style={mystyle2}
+                />                
             </Fragment>
         )
     }

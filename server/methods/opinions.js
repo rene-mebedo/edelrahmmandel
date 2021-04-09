@@ -143,6 +143,7 @@ Meteor.methods({
             });
 
             fs.unlinkSync(filename);
+            //console.log( JSON.stringify( details , null , 4 ) );
         } catch (err) {
             throw new Meteor.Error(err);
         }
