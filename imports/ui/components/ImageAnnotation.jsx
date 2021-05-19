@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import markerjs2 from 'markerjs2';
+import { Images } from '/imports/api/collections/images';
 
 export class ImageAnnotation extends React.Component {
     constructor(props) {
@@ -23,19 +24,46 @@ export class ImageAnnotation extends React.Component {
           
             // attach an event handler to assign annotated image back to our image element
             markerArea.addRenderEventListener((dataUrl, state) => {
-                if (this.imgRef.current) {
+                if (this.imgRef.current)
                     this.imgRef.current.src = dataUrl;
-                }
 
-                Meteor.call( 'images.update.annotState' , this.props.imageId , state , dataUrl , err => {
-                    console.log('Fertig', err);
+                //console.log( dataUrl );
+                const upload = Images.insert({
+                    fileName: `${this.props.imageId}.jpg`,
+                    file: dataUrl,
+                    isBase64: true,
+                    streams: 'dynamic',
+                    chunkSize: 'dynamic',
+                    meta: { refOpinion: this.props.refOpinion }
+                }, false);
+            
+                upload.on('start', function () {
+                    console.log('upload start', this)
                 });
+    
+                upload.on('end', (error, fileObj) => {
+                    //console.log('upload end', error, fileObj)
+                    if (error) {
+                        message.error(`Fehler beim Upload: ${error}`);
+                        //console.log(`Error during upload: ${error}`);
+                    } else {
+                        console.log(`File successfully uploaded`, fileObj);
+                        //console.log( this.props.imageId , ' | ' , state , fileObj._id );
+
+                        Meteor.call( 'images.update.annotState' , this.props.imageId , state , fileObj._id , err => {
+                            console.log( 'Update Image fertig' , err );
+                        });
+                    }
+                });
+    
+                upload.start();
+                
             });
 
             markerArea.settings.displayMode = 'popup';
-            //markerArea.renderAtNaturalSize = true;
+            markerArea.renderAtNaturalSize = true;
             markerArea.renderImageType = 'image/jpeg';
-            markerArea.renderImageQuality = 1; //0.5;
+            markerArea.renderImageQuality = 0.7; //0.5;
 
             // Verfügbare Marker einstellen:
             markerArea.availableMarkerTypes = markerArea.ALL_MARKER_TYPES;
@@ -73,11 +101,11 @@ export class ImageAnnotation extends React.Component {
     }
 
     render() {
-        const mystyle1 = {
+        const styleShownImage = {
             maxWidth: '100%',
             zIndex: '2'            
         };
-        const mystyle2 = {
+        const styleOriginalImage = {
             visibility: 'hidden',
             position: 'absolute',
             zIndex: '1'
@@ -88,13 +116,13 @@ export class ImageAnnotation extends React.Component {
                 <img
                     ref={this.imgRef} 
                     src={this.src}
-                    style={mystyle1}
+                    style={styleShownImage}
                     onClick={() => this.showMarkerArea()}
                 />
                 <img
                     ref={this.imgRefOri} 
                     src={this.props.src}  
-                    style={mystyle2}
+                    style={styleOriginalImage}
                 />                
             </Fragment>
         )

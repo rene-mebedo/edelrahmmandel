@@ -14,7 +14,7 @@ export const ListImages = ( { imageOrImages } ) => {
         <Fragment>
             {
                 //images.map( image => <Image key={image._id} src={image.link} width="100%" /> )
-                images.map( image => <ImageAnnotation key={image._id} src={image.link} src2={image.meta.annotStateImage} imageId={image._id} annotationState={image.meta.annotState} /> )
+                images.map( image => <ImageAnnotation key={image._id} src={image.link} src2={image.link2} refOpinion={image.meta.refOpinion} imageId={image._id} annotationState={image.meta.annotState} /> )
             }
         </Fragment>
     )

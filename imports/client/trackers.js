@@ -287,6 +287,11 @@ export const useImages = refImages => useTracker( () => {
         images.map( file => {
             let link = Images.findOne({_id: file._id}).link();
             file.link = link;
+            if ( file.meta
+              && file.meta.annotStateImageId ) {
+                let link2 = Images.findOne({_id: file.meta.annotStateImageId}).link();
+                file.link2 = link2;
+            }
             return file;
         }),
         false
