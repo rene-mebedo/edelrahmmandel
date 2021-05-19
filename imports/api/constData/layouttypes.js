@@ -434,7 +434,7 @@ export const renderTemplate = (item, depth=0) => {
 
     if (item.depth) depth = item.depth;
 
-    let renderedTemplate = template
+    const renderedTemplate = template
         .replace( /\{\{\_id\}\}/g, (item._id || '') + '' )
         .replace( /\{\{printTitle\}\}/g, item.printTitle || '')
         .replace( /\{\{text\}\}/g, item.text || '' )
