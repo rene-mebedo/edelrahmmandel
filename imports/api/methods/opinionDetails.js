@@ -38,7 +38,7 @@ Meteor.methods({
         });
 
         if (!isShared) {
-            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         // check if we need to push or pop the like
@@ -91,7 +91,7 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
@@ -112,7 +112,7 @@ Meteor.methods({
             action: 'REMOVE',
             message: opinionDetail.deleted ? "hat die Löschmarkierung zurückgenommen" : "hat es als gelöscht markiert.",
             changes: [{
-                message: opinionDetail.deleted ? "Die Löschmarkierung wurde zurückgenommen" : "Das Detail wurde als gelöscht markiert",
+                message: opinionDetail.deleted ? "Die Löschmarkierung wurde zurückgenommen" : "Der Baustein wurde als gelöscht markiert",
                 propName: "deleted",
                 oldValue: opinionDetail.deleted,
                 newValue: !opinionDetail.deleted
@@ -146,25 +146,25 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt und Sie können daher die Antwort nicht als "richtig" einsetzen.');
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt und Sie können daher die Antwort nicht als "richtig" einsetzen.');
         }
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
         if (! hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
-            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten und Sie können daher die Antwort nicht als "richtig" einsetzen.');
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Bausteins zum Gutachten und Sie können daher die Antwort nicht als "richtig" einsetzen.');
         }
 
         // check if we have an Answer
         if (opinionDetail.type !== 'ANSWER') {
-            throw new Meteor.Error('Sie können die Aktion "Check" nur mit Details vom Typ "Antwort" durchführen.');
+            throw new Meteor.Error('Sie können die Aktion "Check" nur mit Bausteinen vom Typ "Antwort" durchführen.');
         }
 
         // save the old parent opinionDetail for the log
         oldParentDetail = OpinionDetails.findOne(opinionDetail.refParentDetail);
 
         if (!oldParentDetail) {
-            throw new Meteor.Error('Der Vorgang CheckAnswer wird abgebrochen. Es konnte das Parent-Element zu diesem Detail nicht gefunde werden. Bitte wenden Sie sich  an Ihren Systemadministrator.');
+            throw new Meteor.Error('Der Vorgang CheckAnswer wird abgebrochen. Es konnte das Parent-Element zu diesem Baustein nicht gefunden werden. Bitte wenden Sie sich an Ihren Systemadministrator.');
         }
 
         // update the parent
@@ -238,7 +238,7 @@ Meteor.methods({
         let currentUser = Meteor.users.findOne(this.userId);
 
         if (!hasPermission({ currentUser }, 'opinion.edit')) {
-            throw new Meteor.Error('Keine Berechtigung zum Erstellen eines neuen Details zu einem Gutachten.');
+            throw new Meteor.Error('Keine Berechtigung zum Erstellen eines neuen Bausteins zu einem Gutachten.');
         }
         
         // the actionPrio will only managed behind the scene
@@ -315,7 +315,7 @@ Meteor.methods({
             refDetail: newId,
             type: 'SYSTEM-LOG',
             action: 'INSERT',
-            message: 'Detail wurde erstellt.'
+            message: 'Baustein wurde erstellt.'// vorher: 'Detail wurde erstellt.'
         }, { created: true });
 
         Activities.insert(activity);
@@ -355,13 +355,13 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
-            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten.');
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Bausteins zum Gutachten.');
         }
 
         // check what has changed
@@ -375,7 +375,7 @@ Meteor.methods({
                 actionCode: { what: 'den Handlungsbedarf', msg: 'Der Handlungsbedarf wurde geändert.' },
                 actionText: { what: 'den Text des Handlungsbedarf', msg: 'Der Text des Handlungsbedarfs wurde geändert.' },
                 deleted: { what: 'die Löschmarkierung', msg: 'Die Löschmarkierung wurde geändert.' },
-                finallyRemoved: { what: 'die endgültige Löschung', msg: 'Das Detail wurde wiederhergestellt.' },
+                finallyRemoved: { what: 'die endgültige Löschung', msg: 'Der Baustein wurde wiederhergestellt.' },
                 showInToC: { what: 'die Kennung "Innhaltsverzeichnis"', msg: 'Die Kennung "Inhaltsverzeichnis" wurde geändert.' },
                 pagebreakBefore: { what: 'die Einstellung "Seitenumbruch vorab"', msg: 'Die Einstellung "Seitenumbruch vorab" wurde geändert.' },
                 pagebreakAfter: { what: 'die Einstellung "Seitenumbruch nachher"', msg: 'Die Einstellung "Seitenumbruch nachher" wurde geändert.' },
@@ -463,13 +463,13 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
-            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten. Sie können es nciht zum Löschen markieren.');
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Bausteins zum Gutachten. Sie können es nicht zum Löschen markieren.');
         }
 
         OpinionDetails.update(id, {
@@ -483,7 +483,7 @@ Meteor.methods({
             action: 'REMOVE',
             message: "hat es als gelöscht markiert.",
             changes: [{
-                message: "Das Detail wurde als gelöscht markiert",
+                message: "Der Baustein wurde als gelöscht markiert",
                 propName: "deleted",
                 oldValue: false,
                 newValue: true
@@ -511,7 +511,7 @@ Meteor.methods({
         const old = OpinionDetails.findOne(id);
 
         if (!old) {
-            throw new Meteor.Error('Das angegebene Detail mit der id ' + id + ' wurde nicht gefunden.');
+            throw new Meteor.Error('Der angegebene Baustein mit der id ' + id + ' wurde nicht gefunden.');
         }
 
         // check if opinion was sharedWith the current User
@@ -521,13 +521,13 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
-            throw new Meteor.Error('Keine Berechtigung zum endgültigen Löschen dieses Details zum Gutachten.');
+            throw new Meteor.Error('Keine Berechtigung zum endgültigen Löschen dieses Bausteins zum Gutachten.');
         }
 
         OpinionDetails.update(id, {
@@ -542,9 +542,9 @@ Meteor.methods({
             refDetailFinallyRemoved: id._str || id,
             type: 'SYSTEM-LOG',
             action: 'FINALLYREMOVE',
-            message: `hat das Detail mit dem Titel <strong>${old.title}</strong> gelöscht.`,
+            message: `hat den Baustein mit dem Titel <strong>${old.title}</strong> gelöscht.`,
             changes: [{
-                message: "Das Detail wurde gelöscht.",
+                message: "Der Baustein wurde gelöscht.",
                 propName: "finallyRemoved",
                 oldValue: false,
                 newValue: true
@@ -577,7 +577,7 @@ Meteor.methods({
         const old = OpinionDetails.findOne(refDetail);
 
         if (!old) {
-            throw new Meteor.Error('Das angegebene Detail wurde nicht gefunden und kann somit nicht verschoben werden.');
+            throw new Meteor.Error('Der angegebene Baustein wurde nicht gefunden und kann somit nicht verschoben werden.');
         }
 
         let currentUser = Meteor.users.findOne(this.userId);
@@ -588,13 +588,13 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Dieses Detail zum Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
-            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Details zum Gutachten.');
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten dieses Bausteins zum Gutachten.');
         }
 
         const syncUpdateDetails = Meteor.wrapAsync(OpinionDetails.update, OpinionDetails);

@@ -23,12 +23,12 @@ export const OpinionsForm = ({currentUser}) => {
                 subTitle="Übersicht der Ihnen zugewiesenen oder von Ihnen erstellten Gutachten."
             />
 
-            <ListOpinions />
-
             <Space>
                 { hasPermission({currentUser}, 'opinion.create') ? <ModalOpinion mode="NEW" /> : null }
                 { hasPermission({currentUser}, 'opinion.manageTemplate') ? <ModalOpinion mode="NEW" createTemplate={true} /> : null }
             </Space>
+
+            <ListOpinions />
         </Fragment>
     );
 }

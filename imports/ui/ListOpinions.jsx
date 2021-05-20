@@ -9,6 +9,14 @@ import { useOpinions } from '../client/trackers';
 export const ListOpinions = () => {
     const [ opinions, isLoading ] = useOpinions();
 
+    // Sortierung absteigend nach Gutachtennummer.
+    if ( opinions
+      && opinions.length > 1 ) {
+        opinions.sort( ( a , b ) => {
+            return b.opinionNo.localeCompare( a.opinionNo );
+        });
+    }
+
     return (
         <Fragment>
             <List
