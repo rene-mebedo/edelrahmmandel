@@ -120,7 +120,7 @@ export const useOpinions = () => useTracker( () => {
         return noDataAvailable;
     }
 
-    const opinions = Opinions.find().fetch();
+    const opinions = Opinions.find({}, { sort: { opinionNo: -1 } }).fetch();
 
     return [opinions, false];
 });

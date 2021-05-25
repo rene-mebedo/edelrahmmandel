@@ -85,9 +85,9 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
     }
 
     const btnType = buttonType || (mode === 'EDIT' ? 'primary' : 'dashed');
-    let btnCaption = buttonCaption || (mode === 'EDIT' ? 'Bearbeiten' : 'Neues Gutachten erstellen');
+    let btnCaption = buttonCaption || (mode === 'EDIT' ? 'Bearbeiten' : 'Gutachten');
 
-    if (createTemplate) btnCaption = 'Neue Vorlage';
+    if (createTemplate) btnCaption = 'Vorlage';
 
     return (
         <Fragment>
