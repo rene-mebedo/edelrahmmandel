@@ -226,21 +226,23 @@ Meteor.methods({
             }
         });
 
-        // tell the autor of the post that someone has answered to his post
-        UserActivities.insert(
-            injectUserData({ currentUser }, {
-                refUser: activity.createdBy.userId,
-                type: 'REPLYTO',
-                refs: { 
-                    refOpinion, 
-                    refActivity,
-                    refOpinionDetail: opinionDetail && opinionDetail._id || null,
-                },
-                message: `${currentUser.userData.firstName} ${currentUser.userData.lastName} hat auf einen Post von Ihnen geantwortet.`,
-                originalContent: message,
-                unread: true
-            }, { created: true })        
-        );
+        // tell the author of the post that someone has answered to his post, if the answer is not from himself
+        if ( this.userId != activity.createdBy.userId ) {
+            UserActivities.insert(
+                injectUserData({ currentUser }, {
+                    refUser: activity.createdBy.userId,
+                    type: 'REPLYTO',
+                    refs: { 
+                        refOpinion, 
+                        refActivity,
+                        refOpinionDetail: opinionDetail && opinionDetail._id || null,
+                    },
+                    message: `${currentUser.userData.firstName} ${currentUser.userData.lastName} hat auf einen Post von Ihnen geantwortet.`,
+                    originalContent: message,
+                    unread: true
+                }, { created: true })        
+            );
+        }
 
         if (opinionDetail) {
             OpinionDetails.update(opinionDetail._id, {

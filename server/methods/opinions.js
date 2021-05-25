@@ -9,6 +9,7 @@ import { escapeRegExp } from '../../imports/api/helpers/basics';
 
 import opinionDocumenter from 'opinion-documenter';
 import { OpinionDetails } from '../../imports/api/collections/opinionDetails';
+import { Images } from '../../imports/api/collections/images';
 import { OpinionPdfs } from '../../imports/api/collections/opinion-pdfs';
 
 import fs from 'fs';
@@ -95,7 +96,6 @@ Meteor.methods({
         }
 
         rePositionDetails(refOpinion, { reRenderHtmlContent: true });
-
         const details = OpinionDetails.find({
             refOpinion,
             deleted: false,
@@ -123,8 +123,12 @@ Meteor.methods({
             }
         }).fetch();
 
+        const images = Images.find({
+            'meta.refOpinion': refOpinion
+        }).fetch();
+        
         try {
-            const filename = await opinionDocumenter.pdfCreate(opinion, details, detailsTodolist, settings.PdfPath);
+            const filename = await opinionDocumenter.pdfCreate(opinion, details, detailsTodolist, images , settings.PdfPath);
 
             const data = readFile(filename);
 
@@ -143,6 +147,7 @@ Meteor.methods({
             });
 
             fs.unlinkSync(filename);
+            //console.log( JSON.stringify( details , null , 4 ) );
         } catch (err) {
             throw new Meteor.Error(err);
         }

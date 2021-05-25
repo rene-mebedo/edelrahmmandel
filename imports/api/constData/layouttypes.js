@@ -444,8 +444,7 @@ export const renderTemplate = (item, depth=0) => {
         .replace( /\{\{actionText\}\}/g, item.actionText || '' )
         .replace( /\{\{parentPosition\}\}/g, (item.parentPosition || '') + '' )
         .replace( /\{\{position\}\}/g, (item.position || '') + '' )
-        .replace( /\{\{depth\}\}/g, depth + '' )
-        
+        .replace( /\{\{depth\}\}/g, depth + '' );
 
     return '<div class="mbac-opinion-detail">' + renderedTemplate + '</div>';
 }
