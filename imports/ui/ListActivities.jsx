@@ -10,7 +10,8 @@ import Modal from 'antd/lib/modal';
 import moment from 'moment';
 import localization from 'moment/locale/de';
 
-import { DiffDrawer } from './components/DiffDrawer';
+//import { DiffDrawer } from './components/DiffDrawer';
+import { DiffDrawer } from './components/Differ';
 import { ReplyTo } from './components/ReplyTo';
 import { MentionsWithEmojis } from './components/MentionsWithEmojis';
 

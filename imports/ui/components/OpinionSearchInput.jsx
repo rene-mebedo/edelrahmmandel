@@ -45,7 +45,7 @@ export class OpinionSearchInput extends React.Component {
             <Select
                 autoFocus={!!this.props.autoFocus}
                 showSearch
-                value={value && value.userId}
+                value={value}
                 placeholder={this.props.placeholder}
                 style={this.props.style || {width:'100%'}}
                 showArrow={true}
