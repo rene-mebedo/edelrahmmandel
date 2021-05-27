@@ -108,15 +108,32 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
                 diffType = 'diffJson';
             }
             
-            oldValue = oldValue.replace(/"data:image\/(png|jpg|jpeg);base64[^"]+/g, '"Bild');
-            newValue = newValue.replace(/"data:image\/(png|jpg|jpeg);base64[^"]+/g, '"Bild');
+            const changeHtmlTags = v => {
+                v = v.replace(/"data:image\/(png|jpg|jpeg);base64[^"]+/g, '"Bild');
+                v = v.replace(/"data:image\/(png|jpg|jpeg);base64[^"]+/g, '"Bild');
+
+                v = v.replace(/<b>/g, '{Fettdruck:ein}');
+                v = v.replace(/<\/b>/g, '{Fettdruck:aus}');
+
+                return v;
+            }
+
+            oldValue = changeHtmlTags(oldValue);
+            newValue = changeHtmlTags(newValue);
 
             const diff = Diff[diffType](oldValue, newValue);
             let diffElements = [];
             
             diff.forEach((part, index) => {
                 let elm;
-
+               
+                /*if (part.added) {
+                    elm = <span className="difference" key={index}><ins dangerouslySetInnerHTML={{__html: part.value}}></ins></span>;
+                } else if (part.removed) {
+                    elm = <span className="difference" key={index}><del>{part.value}</del></span>;
+                } else {
+                    elm = <span className="difference" key={index}>{part.value}</span>;
+                }*/
                 if (part.added) {
                     elm = <span className="difference" key={index}><ins>{part.value}</ins></span>;
                 } else if (part.removed) {

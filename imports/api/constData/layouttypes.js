@@ -90,7 +90,7 @@ export const layouttypesObject = {
         title: 'Hinweis',
         description: 'Hinweistext, der üblicherweise zu einer Antwort folgt',
         hasChilds: false,
-        defaultValues: { title: 'H', printTitle:'Hinweistitel', text: 'Hinweistext' },
+        defaultValues: { title: 'H', /*printTitle:'Hinweistitel',*/ text: 'Hinweistext' },
         template: `
             <div id="{{_id}}" class="mbac-item-type-hint depth-{{depth}}">
                 <div class="mbac-fix-title">
@@ -111,7 +111,7 @@ export const layouttypesObject = {
         title: 'Info',
         description: 'Wird als allgemeine Info mit vorangestelltem Text "Information" verwandt.',
         hasChilds: false,
-        defaultValues: { title: 'I', printTitle:'Infotitel', text: 'Infotext' },
+        defaultValues: { title: 'I', /*printTitle:'Infotitel',*/ text: 'Infotext' },
         template: `
             <div id="{{_id}}" class="mbac-item-type-info depth-{{depth}}">
                 <div class="mbac-fix-title">
@@ -133,7 +133,7 @@ export const layouttypesObject = {
         title: 'Wichtig',
         description: 'Wird als allgemeine Info mit vorangestelltem Text "Wichtig" verwandt.',
         hasChilds: false,
-        defaultValues: { title: 'IM', printTitle:'Titel', text: 'Wichtigtext' },
+        defaultValues: { title: 'IM', /*printTitle:'Titel',*/ text: 'Wichtigtext' },
         template: `
             <div id="{{_id}}" class="mbac-item-type-important depth-{{depth}}">
                 <div class="mbac-fix-title">
@@ -155,7 +155,7 @@ export const layouttypesObject = {
         title: 'Empfehlung',
         description: 'Wird als allgemeine Info mit vorangestelltem Text "Empfehlung" verwandt.',
         hasChilds: false,
-        defaultValues: { title: 'E', printTitle:'Empfehlungstitel', text: 'Empfehlungstext' },
+        defaultValues: { title: 'E', /*printTitle:'Empfehlungstitel',*/ text: 'Empfehlungstext' },
         template: `
             <div id="{{_id}}" class="mbac-item-type-recommendation depth-{{depth}}">
                 <div class="mbac-fix-title">
@@ -177,7 +177,7 @@ export const layouttypesObject = {
         title: 'Hinweis (old NOTE deprecated)',
         description: 'Wird als allgemeine Info mit vorangestelltem Text "Hinweis" verwandt.',
         hasChilds: false,
-        defaultValues: { title: 'N', printTitle:'Hinweistitel', text: 'Hinweistext' },
+        defaultValues: { title: 'N', /*printTitle:'Hinweistitel',*/ text: 'Hinweistext' },
         template: `
             <div class="mbac-item-type-note depth-{{depth}}">
                 <div class="mbac-fix-title">
@@ -199,7 +199,7 @@ export const layouttypesObject = {
         title: 'Anmerkung',
         description: 'Wird als Anmerkung innerhalb einer Frage genutzt.',
         hasChilds: false,
-        defaultValues: { title: 'R', printTitle:'Anmerkungstitel', text: 'Anmerkungstext' },
+        defaultValues: { title: 'R', /*printTitle:'Anmerkungstitel',*/ text: 'Anmerkungstext' },
         template: `
             <div id="{{_id}}" class="mbac-item-type-remark depth-{{depth}}">
                 <div class="mbac-fix-title">
@@ -222,7 +222,7 @@ export const layouttypesObject = {
         title: 'Achtung inkl. Bild (deprecated)',
         description: 'Wird als wichtiger Hinweistext mit Stoppsymbol verwandt.',
         hasChilds: false,
-        defaultValues: { title: 'AT', printTitle:'Achtungstitel', text: 'Achtungstext' },
+        defaultValues: { title: 'AT', /*printTitle:'Achtungstitel',*/ text: 'Achtungstext' },
         template: `
             <div class="mbac-item-type-attention depth-{{depth}}">
                 <div class="mbac-fix-title">
@@ -244,7 +244,7 @@ export const layouttypesObject = {
         title: 'Definition (deprecated)',
         description: 'Wird als Begriffsdefinition verwandt.',
         hasChilds: false,
-        defaultValues: { title: 'D', printTitle:'Definitionstitel', text: 'Definitionstext' },
+        defaultValues: { title: 'D', /*printTitle:'Definitionstitel',*/ text: 'Definitionstext' },
         template: `
             <div class="mbac-item-type-definition depth-{{depth}}">
                 <div class="mbac-fix-title">

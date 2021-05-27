@@ -25,7 +25,7 @@ export const ClassifiedOutput = ( { item, permissions, first, last } ) => {
                     <div className="mbac-fix-title">
                         {header}
                     </div>
-                    <div className="mbac-print-title">
+                    {/*<div className="mbac-print-title">
                         <EditableContent type="span" 
                             value={printTitle}
                             field="printTitle"
@@ -33,7 +33,8 @@ export const ClassifiedOutput = ( { item, permissions, first, last } ) => {
                             item={item}
                             permissions={permissions}
                         />
-                    </div>
+                        </div>*/
+                    }
                     <div className="mbac-text">
                         <EditableContent type="wysiwyg" 
                             value={text}

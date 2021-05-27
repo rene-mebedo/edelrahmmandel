@@ -47,7 +47,6 @@ export const ListOpinions = () => {
         },
     ];
 
-    //if (showMore) {
     if (isDesktop) {
         columns = columns.concat([
             {
@@ -64,7 +63,7 @@ export const ListOpinions = () => {
                 render: (text, row) => row.customer.city,
                 sorter: (a, b) => lower(a.customer.city).localeCompare(lower(b.customer.city)),
             },
-        ])
+        ]);
     }
 
     
@@ -108,46 +107,4 @@ export const ListOpinions = () => {
             </MediaQuery>
         </Fragment>
     );
-
-
-    /*if (isTablet || isDesktop) {
-    //if (showTable) {
-        return (
-            <Table
-                columns={columns} 
-                dataSource={opinions} 
-                loading={isLoading}
-                rowKey="_id"
-                pagination={false}
-                showSorterTooltip={false}
-            />
-        )
-    } else {
-        // isPhone
-        return (
-            <List
-                itemLayout="horizontal"
-                dataSource={opinions}
-                loading={isLoading}
-                renderItem={opinion => (
-                    <List.Item>
-                        <List.Item.Meta
-                            title={
-                                <a href={"/opinions/" + opinion._id}>
-                                    <Space>
-                                        {opinion.title}
-                                        {
-                                            opinion.isTemplate
-                                                ? <Tag color="green">Vorlage</Tag>
-                                                : null
-                                        }
-                                    </Space>
-                                </a>}
-                            description={('Nr. ' + opinion.opinionNo + ' - ' + opinion.description + ' - ' + opinion.customer.name + ', ' + opinion.customer.city)}
-                        />
-                    </List.Item>
-                )}
-            />
-        )
-    }*/
 }
