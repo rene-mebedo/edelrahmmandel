@@ -166,7 +166,23 @@ export class EditableContent extends React.Component {
         this.inputRef = React.createRef();
     }
 
-    componentDidUpdate() {
+    checkAndFocusContentByQueryString() {
+        const activitiesBy = FlowRouter.getQueryParam('activitiesBy');
+        const { refDetail } = this.props;
+        const { mode } = this.state;
+
+        if (activitiesBy === refDetail) {
+            if (mode !== 'EDIT' && mode !== 'FOCUSED') {    
+                this.toggleMode();
+            }
+        }
+    }
+
+    componentDidMount() {
+        this.checkAndFocusContentByQueryString();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
         const { type, value } = this.props;
         const { mode } = this.state;
 

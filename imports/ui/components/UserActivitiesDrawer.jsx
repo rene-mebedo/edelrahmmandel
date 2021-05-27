@@ -29,7 +29,7 @@ import { Link } from './Link';
  * @return {String} URL
  */
 const getUrl = item => {
-    const { refOpinion, refOpinionDetail, refActivity } = item.refs;
+    const { refOpinion, refOpinionDetail, refActivity, refParentDetail, refActivitiesBy } = item.refs;
     let url = '/';
 
     switch (item.type) {
@@ -37,7 +37,11 @@ const getUrl = item => {
         case 'REPLYTO':
             if (refOpinion) {
                 if (refOpinionDetail) {
-                    url = `/opinions/${refOpinion}/${refOpinionDetail}`;
+                    if (refParentDetail && refActivitiesBy) {
+                        url = `/opinions/${refOpinion}/${refParentDetail}?activitiesBy=${refActivitiesBy}`;
+                    } else {
+                        url = `/opinions/${refOpinion}/${refOpinionDetail}`;
+                    }
                 } else {
                     url = `/opinions/${refOpinion}`;
                 }

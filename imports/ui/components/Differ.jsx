@@ -11,10 +11,9 @@ import notification from 'antd/lib/notification';
 import InfoCircleOutlined from '@ant-design/icons/InfoCircleOutlined';
 import RestOutlined from '@ant-design/icons/RestOutlined';
 
-import Diff from 'react-stylable-diff';
-
 import { isObject, isBoolean, isNumeric } from '../../api/helpers/basics';
 
+import Diff from 'diff';
 
 export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) => {
     const [visibleDiffDrawer, setVisibleDiffDrawer] = useState(false);
@@ -76,11 +75,11 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
         if (!changes || changes.length == 0) {
             return <div>Es sind keine Änderungen vorhanden.</div>
         }
-        console.log(action, changes)
+        //console.log(action, changes)
         let i=0;
         return changes.map(item => {
             let { oldValue, newValue } = item;
-            let diffType = 'words';
+            let diffType = 'diffWordsWithSpace';
 
             // check for Boolean Type
             if (isBoolean(oldValue)) {
@@ -98,24 +97,45 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
             }
 
 
+            if (oldValue === null) oldValue = '';
+            if (newValue === null) newValue = '';
+
             if (isObject(oldValue)) {
-                diffType = 'json';
+                diffType = 'diffJson';
             }
 
             if (isObject(newValue)) {
-                diffType = 'json';
+                diffType = 'diffJson';
             }
             
+            oldValue = oldValue.replace(/"data:image\/(png|jpg|jpeg);base64[^"]+/g, '"Bild');
+            newValue = newValue.replace(/"data:image\/(png|jpg|jpeg);base64[^"]+/g, '"Bild');
+
+            const diff = Diff[diffType](oldValue, newValue);
+            let diffElements = [];
+            
+            diff.forEach((part, index) => {
+                let elm;
+
+                if (part.added) {
+                    elm = <span className="difference" key={index}><ins>{part.value}</ins></span>;
+                } else if (part.removed) {
+                    elm = <span className="difference" key={index}><del>{part.value}</del></span>;
+                } else {
+                    elm = <span className="difference" key={index}>{part.value}</span>;
+                }
+
+                diffElements.push(elm);
+            });
+              
             return (
                 <div key={i++} style={{paddingBottom:'36px'}}>                    
                     <Divider orientation="left">{item.message}</Divider>
 
-                    <Diff
-                        type={diffType}
-                        inputA={oldValue}
-                        inputB={newValue}
-                    />
+                    { diffElements }
                     
+                    <div></div>
+
                     { action !== 'UPDATE' ? null :
                         <Button onClick={ e => restoreChange(item.propName, item.oldValue, item.newValue)} 
                             icon={<RestOutlined />}

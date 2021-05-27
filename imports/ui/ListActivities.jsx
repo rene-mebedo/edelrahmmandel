@@ -31,6 +31,7 @@ export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } 
     const [ working, setWorking ] = useState(false);
     const [ canPostMessage, setCanPostMessage ] = useState(false);
 
+    const parentRefDetail = refDetail;
     // We have to use the "wright" refDetail, so that a user-post will be stored to wright detail
     refDetail = FlowRouter.getQueryParam('activitiesBy') || refDetail;
 
@@ -76,7 +77,9 @@ export const ListActivities = ( { refOpinion, refDetail, currentUser, onClose } 
             setWorking(true);
 
             setTimeout( _ => {
-                Meteor.call('activities.postmessage', refOpinion, refDetail, values.message, (err, res) => {
+                const activitiesBy = FlowRouter.getQueryParam('activitiesBy') || null;
+
+                Meteor.call('activities.postmessage', refOpinion, refDetail, parentRefDetail, activitiesBy, values.message, (err, res) => {
                     setWorking(false);
                     
                     if (err) {

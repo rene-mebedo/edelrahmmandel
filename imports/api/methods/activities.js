@@ -116,7 +116,7 @@ Meteor.methods({
      * 
      * @param {String} msg Message that the user posts
      */
-    'activities.postmessage'(refOpinion, refDetail, msg) {
+    'activities.postmessage'(refOpinion, refDetail, refParentDetail, activitiesBy, msg) {
         this.unblock();
 
         if (!this.userId) {
@@ -143,9 +143,15 @@ Meteor.methods({
             throw new Meteor.Error('Keine Berechtigung zum Erstellen eines Kommentars zu einem Gutachten.');
         }
         
+        const detailFromActivitiesBy = OpinionDetails.findOne({
+            _id: activitiesBy
+        });
+
         const message = messageWithMentions({ currentUser, msg, refs: {
             refOpinion: sharedOpinion._id,
             refOpinionDetail: (detail && detail._id) || null,
+            refParentDetail: refParentDetail || detailFromActivitiesBy.refParentDetail,
+            refActivitiesBy: activitiesBy || null,
             refActivity: null
         }});
         
@@ -190,12 +196,6 @@ Meteor.methods({
         const activity = Activities.findOne(refActivity);
         const opinionDetail = OpinionDetails.findOne(activity.refDetail);
 
-        const message = messageWithMentions({ currentUser, msg, refs: {
-            refOpinion: refOpinion,
-            refOpinionDetail: opinionDetail && opinionDetail._id || null,
-            refActivity: refActivity
-        }});
-
         // check if opinion was sharedWith the current User
         const sharedOpinion = Opinions.findOne({
             _id: refOpinion,
@@ -211,7 +211,15 @@ Meteor.methods({
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.canPostMessage')) {
             throw new Meteor.Error('Keine Berechtigung zum Erstellen eines Kommentars zu einem Gutachten.');
         }
-        
+
+        const message = messageWithMentions({ currentUser, msg, refs: {
+            refOpinion: sharedOpinion._id,
+            refOpinionDetail: (opinionDetail && opinionDetail._id) || null,
+            refParentDetail: opinionDetail.refParentDetail,
+            refActivitiesBy: opinionDetail._id,
+            refActivity: refActivity
+        }});
+
         const answer = injectUserData({ currentUser }, { message }, { created: true });
 
         try {
