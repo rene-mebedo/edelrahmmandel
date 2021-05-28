@@ -40,7 +40,12 @@ const getUrl = item => {
                     if (refParentDetail && refActivitiesBy) {
                         url = `/opinions/${refOpinion}/${refParentDetail}?activitiesBy=${refActivitiesBy}`;
                     } else {
-                        url = `/opinions/${refOpinion}/${refOpinionDetail}`;
+                        if (refParentDetail === null && refActivitiesBy) {
+                            // we are on top level of the opinion
+                            url = `/opinions/${refOpinion}?activitiesBy=${refActivitiesBy}`;
+                        } else {
+                            url = `/opinions/${refOpinion}/${refOpinionDetail}`;
+                        }
                     }
                 } else {
                     url = `/opinions/${refOpinion}`;

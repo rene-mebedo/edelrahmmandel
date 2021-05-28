@@ -6,6 +6,7 @@ import { App } from '/imports/ui/App';
 
 
 import { Home } from '../imports/ui/Home';
+import { InfoForm } from '../imports/ui/Info';
 import { ActivitiesForm } from '../imports/ui/ActivitiesForm';
 import { OpinionsForm } from '../imports/ui/OpinionsForm';
 //import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
@@ -116,6 +117,17 @@ FlowRouter.route('/', {
     action() {
         mount(App, {
             content: Home,
+            authenticatedRoute: true
+        });
+    },
+});
+
+FlowRouter.route('/info', {
+    name: 'info.show',
+    action() {
+        mount(App, {
+            content: InfoForm,
+            activeMenuKey: 'INFO',
             authenticatedRoute: true
         });
     },

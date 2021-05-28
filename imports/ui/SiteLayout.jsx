@@ -10,7 +10,7 @@ import MenuUnfoldOutlined from '@ant-design/icons/MenuUnfoldOutlined';
 import MenuFoldOutlined from '@ant-design/icons/MenuFoldOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import VideoCameraOutlined from '@ant-design/icons/VideoCameraOutlined';
-import UploadOutlined from '@ant-design/icons/UploadOutlined';
+import InfoCircleOutlined from '@ant-design/icons/InfoCircleOutlined';
 import ClockCircleOutlined from '@ant-design/icons/ClockCircleOutlined';
 
 import { useUserActivityCount } from '../client/trackers';
@@ -105,8 +105,8 @@ export const SiteLayout = props => {
                     <Menu.Item key="OPINIONS" icon={<VideoCameraOutlined />}>
                         <Link href="/opinions" canCancel>Gutachten</Link>
                     </Menu.Item>
-                    <Menu.Item key="TASKS" icon={<UploadOutlined />}>
-                        <Link href="/tasks" canCancel>Aufgaben</Link>
+                    <Menu.Item key="INFO" icon={<InfoCircleOutlined />}>
+                        <Link href="/info" canCancel>Info</Link>
                     </Menu.Item>
                 </Menu>
             </Sider>

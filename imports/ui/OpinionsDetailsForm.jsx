@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import PageHeader from 'antd/lib/page-header';
 import Layout from 'antd/lib/layout';
@@ -7,11 +8,13 @@ import Space from 'antd/lib/space';
 import Skeleton from 'antd/lib/skeleton';
 import Spin from 'antd/lib/spin';
 import Button from 'antd/lib/button';
+//import Icon from 'antd/lib/icon';
 
 const { Content } = Layout;
 
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
+import CloseOutlined from '@ant-design/icons/CloseOutlined';
 
 
 import { layouttypesObject } from '../api/constData/layouttypes';
@@ -33,6 +36,7 @@ import {
 import { ModalShareWith } from './modals/share-with';
 
 
+
 export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [opinion, opinionIsLoading] = useOpinion(refOpinion);
     const [detail, detailIsLoading] = useOpinionDetail(refOpinion, refDetail);
@@ -45,16 +49,34 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [ pendingPdfCreation, setPendingPdfCreation] = useState(false);
     const [ activeTabPane, setActiveTabPane ] = useState("DOCUMENT");
 
+    const [ visiblePdfPreview, setVisblePdfPreview ] = useState(false);
+    const [ pdfPreviewData, setPdfPreviewData ] = useState(null);
+
     const tabPaneChanged = activeTabPane => {
         setActiveTabPane(activeTabPane);
     }
     
-    const createPDF = () => {
-        setPendingPdfCreation(true);
-        Meteor.call('opinion.createPDF', refOpinion, err => {
-            if (err) console.log(err);
-            setPendingPdfCreation(false);
-        });
+    if (FlowRouter.getQueryParam('pdfPreview') !== 'on' && visiblePdfPreview) {
+        setVisblePdfPreview(false);
+    } else if (FlowRouter.getQueryParam('pdfPreview') == 'on' && !visiblePdfPreview && pdfPreviewData) {
+        setVisblePdfPreview(true);
+    }
+
+    const createPDF = previewOnly => {
+        return () => {
+            setPendingPdfCreation(true);
+
+            Meteor.call('opinion.createPDF', refOpinion, previewOnly, (err, res) => {
+                if (err) console.log(err);
+        
+                if (previewOnly) {
+                    setPdfPreviewData("data:application/pdf;base64, " + res);
+                    FlowRouter.setQueryParams({ pdfPreview: 'on' });
+                    setVisblePdfPreview(true);        
+                }
+                setPendingPdfCreation(false);
+            });
+        }
     }
 
     if (currentUser && !opinionIsLoading && opinion) {
@@ -102,7 +124,12 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                     );
                 } else if (activeTabPane == 'PDF') {
                     pageHeaderButtons.push(
-                        <Button key="pdf" type="dashed" onClick={createPDF} loading={pendingPdfCreation}>
+                        <Button key="pdfPreview" type="dashed" onClick={createPDF(true)} loading={pendingPdfCreation}>
+                            <FilePdfOutlined /> Vorschau
+                        </Button>
+                    );
+                    pageHeaderButtons.push(
+                        <Button key="pdf" type="dashed" onClick={createPDF(false)} loading={pendingPdfCreation}>
                             <FilePdfOutlined /> PDF erstellen
                         </Button>
                     );
@@ -201,6 +228,31 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                 */}
                 </Content>
             </Content>
+
+            { visiblePdfPreview
+                ? <Fragment>
+                    <embed
+                        type="application/pdf"
+                        src={pdfPreviewData}
+                        frameBorder="0"
+                        style={{top:48,left:0,width:'100%',height:'calc(100% - 48px)', position:'fixed', zIndex:100}}
+                    />
+                    <Button
+                        style={{
+                            top:0,
+                            left:0,
+                            width:'100%',
+                            height:48,
+                            position:'fixed',
+                            zIndex:100,
+                            borderRadius:0
+                        }}
+                        onClick={()=>{setVisblePdfPreview(false); FlowRouter.setQueryParams({pdfPreview: null})}}
+                    >
+                        <CloseOutlined /> Vorschau beenden
+                    </Button>
+                </Fragment>
+            : null}
         </Layout>
     );
 }

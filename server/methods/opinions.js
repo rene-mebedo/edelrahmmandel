@@ -70,9 +70,13 @@ Meteor.methods({
      * file in the files collection to get a secure download
      * 
      * @param {String} refOpinion Specifies the ID of the opinion
+     * @param {Boolean} previewOnly Specifies whether the pdf should 
+     *                              be renderd as preview and will not saved 
+     *                              to disk or without preview stored in the system
      */
-    async 'opinion.createPDF'(refOpinion) {
+    async 'opinion.createPDF'(refOpinion, previewOnly = false) {
         check(refOpinion, String);
+        check(previewOnly, Boolean);
 
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
@@ -127,29 +131,36 @@ Meteor.methods({
             'meta.refOpinion': refOpinion
         }).fetch();
         
+        let fileData;
+
         try {
             const filename = await opinionDocumenter.pdfCreate(opinion, details, detailsTodolist, images , settings.PdfPath);
 
-            const data = readFile(filename);
+            fileData = readFile(filename);
 
-            const fileRef = writePdf(data, {
-                fileName: `${refOpinion}.pdf`,
-                type: 'application/pdf',
-                meta: {
-                    refOpinion, 
-                    createdAt: new Date(), 
-                    createdBy: {
-                        userId: currentUser._id,
-                        firstName: currentUser.userData.firstName,
-                        lastName: currentUser.userData.lastName
+            if (!previewOnly) {
+                const fileRef = writePdf(fileData, {
+                    fileName: `${refOpinion}.pdf`,
+                    type: 'application/pdf',
+                    meta: {
+                        refOpinion, 
+                        createdAt: new Date(), 
+                        createdBy: {
+                            userId: currentUser._id,
+                            firstName: currentUser.userData.firstName,
+                            lastName: currentUser.userData.lastName
+                        }
                     }
-                }
-            });
+                });
+            }
 
             fs.unlinkSync(filename);
-            //console.log( JSON.stringify( details , null , 4 ) );
         } catch (err) {
             throw new Meteor.Error(err);
+        }
+
+        if (previewOnly) {
+            return fileData.toString("base64");
         }
     }
 });
