@@ -40,13 +40,20 @@ Meteor.publish('opinionDetailsActionListitems', function publishOpinionDetailsAc
 
     if (!permitted) return null;
 
-    return OpinionDetails.find({ 
+    // Alt:
+    /*return OpinionDetails.find({ 
         refOpinion,
-        type: 'QUESTION', //{ $in: ['QUESTION', 'ANSWER'] },
+        //type: 'QUESTION', //{ $in: ['QUESTION', 'ANSWER'] },
+        type: { $in: ['QUESTION', 'HEADING'] },
         deleted: false,
         finallyRemoved: false,
         actionCode: { $ne: 'okay' },
         actionText: { $ne: null }
+    });*/
+    // Es werden alle Fragen und Überschriften zu dieser Opinion "geladen", damit zu Fragen auch gelöschte ParentDetails (also Überschriften) ermittelt werden können.
+    return OpinionDetails.find({ 
+        refOpinion,
+        type: { $in: ['QUESTION', 'HEADING'] }
     });
 });
 

@@ -106,7 +106,8 @@ Meteor.methods({
             finallyRemoved: false
         }).fetch();
         
-        let detailsTodolist = OpinionDetails.find({
+        // Im 1. Schritt das Array mit allen nicht gelöschten Fragen mit Handlungsempfehlung/Maßnahme ermitteln.
+        const detailsTodolistTmp = OpinionDetails.find({
             refOpinion,
             type: 'QUESTION',
             deleted: false,
@@ -118,7 +119,8 @@ Meteor.methods({
                 _id: 1,
                 actionCode: 1,
                 actionText: 1,
-                actionPrio: 1
+                actionPrio: 1,
+                refParentDetail: 1
             },
             sort: {
                 actionPrio: 1,
@@ -126,6 +128,29 @@ Meteor.methods({
                 position: 1
             }
         }).fetch();
+
+        // Prüfen, ob ein Parent Element vorhanden ist und dies gelöscht (deleted oder finallyRemoved) ist.
+        isParentDeleted = ( parentDetailId ) => {
+            if ( !parentDetailId )
+                return false;
+            const parentDetail = OpinionDetails.findOne({_id: parentDetailId});
+            if ( !parentDetail )
+                return false;
+            else {
+                if ( !parentDetail.deleted
+                  && !parentDetail.finallyRemoved ) {
+                    return isParentDeleted( parentDetail.refParentDetail );
+                }                
+            }
+            return true;// Nur, wenn Parent Element vorhanden und gelöscht ist.
+        }
+        // Es wurde bisher nicht berücksichtigt, dass Parent Elemente der Fragen gelöscht sein können!
+        let detailsTodolist = [];
+        // Für jede Frage die Parent Elemente auf Löschung prüfen.
+        detailsTodolistTmp.forEach( element => {
+            if ( !isParentDeleted( element.refParentDetail ) )
+                detailsTodolist.push( element );
+        })
 
         const images = Images.find({
             'meta.refOpinion': refOpinion

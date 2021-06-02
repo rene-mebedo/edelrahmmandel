@@ -318,7 +318,8 @@ export const useOpinionActionList = refOpinion => useTracker( () => {
         return noDataAvailable;
     }
 
-    let actionListitems = OpinionDetails.find({
+    // Ursprüngliche Version.
+    /*let actionListitems = OpinionDetails.find({
         refOpinion,
         type: 'QUESTION', //{ $in: [ 'QUESTION', 'ANSWER'] },
         deleted: false,
@@ -341,10 +342,62 @@ export const useOpinionActionList = refOpinion => useTracker( () => {
     }).map(item => {
         item.key = item._id;
         return item;
-    });
+    });*/
 
+    // Prüfen, ob ein Parent Element vorhanden ist und dies gelöscht (deleted oder finallyRemoved) ist.
+    isParentDeleted = ( parentDetailId ) => {
+        if ( !parentDetailId )
+            return false;
+        const parentDetail = OpinionDetails.findOne({_id: parentDetailId});
+        if ( !parentDetail )
+            return false;
+        else {
+            if ( !parentDetail.deleted
+              && !parentDetail.finallyRemoved ) {
+                return isParentDeleted( parentDetail.refParentDetail );
+            }                
+        }
+        return true;// Nur, wenn Parent Element vorhanden und gelöscht ist.
+    }
+    // Hier wurde bisher nicht berücksichtigt, dass Parent Elemente gelöscht sein können!
+    // Daher im 1. Schritt das Array mit allen nicht gelöschten Fragen mit Handlungsempfehlung/Maßnahme ermitteln.
+    const actionListitems = OpinionDetails.find({
+        refOpinion,
+        type: 'QUESTION', //{ $in: [ 'QUESTION', 'ANSWER'] },
+        deleted: false,
+        finallyRemoved: false,
+        actionCode: { $ne: 'okay' },
+        actionText: { $ne: null }
+    }, {
+        fields: {
+            _id: 1,
+            refOpinion: 1,
+            actionCode: 1,
+            actionText: 1,
+            refParentDetail: 1
+        },
+        sort: {
+            actionPrio: 1,
+            //orderString: 1,
+            parentPosition: 1,
+            position: 1
+        }
+    }).fetch();
+
+    let actionListitems2 = [];
+    // Für jede Frage die Parent Elemente auf Löschung prüfen.
+    actionListitems.forEach( element => {
+        if ( !isParentDeleted( element.refParentDetail ) )
+            actionListitems2.push( element );
+    })
+
+    // Am Ende noch die Keys setzen.
+    actionListitems2.map(item => {
+        item.key = item._id;
+        return item;
+    });
     
-    return [ actionListitems, false ];
+    return [ actionListitems2, false ];
 }, [refOpinion]);
 
 /**
