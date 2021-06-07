@@ -67,7 +67,7 @@ export class InfoForm extends React.Component {
                                         <Descriptions.Item label="Version">{sysinfo.appVersion && sysinfo.appVersion.version}</Descriptions.Item>
                                         <Descriptions.Item label="Timestamp">{sysinfo.appVersion && sysinfo.appVersion.timestamp}</Descriptions.Item>
 
-                                        <Descriptions.Item label="Benutzername">{currentUser.username}</Descriptions.Item>
+                                        <Descriptions.Item label="Benutzername / E-Mail">{currentUser.username || currentUser.userData.email}</Descriptions.Item>
                                         <Descriptions.Item label="Rollen">{currentUser.userData.roles.join(', ')}</Descriptions.Item>
                                     </Descriptions>
                                 }
