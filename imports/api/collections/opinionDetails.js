@@ -89,10 +89,18 @@ export const OpinionDetailSchema = new SimpleSchema({
         optional: true,
         defaultValue: false
     },
+    deletedByDetail: {
+        type: SimpleSchema.oneOf(String, Boolean),
+        optional: true
+    },
     finallyRemoved: { // detail is finally removed and will be no longer served
         type: Boolean,
         optional: true,
         defaultValue: false
+    },
+    finallyRemovedByDetail: {
+        type: SimpleSchema.oneOf(String, Boolean),
+        optional: true
     },
     likes: {
         type: Array,

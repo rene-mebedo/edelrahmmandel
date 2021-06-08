@@ -101,9 +101,45 @@ Meteor.methods({
         }
 
         OpinionDetails.update(id, {
-            $set:{ deleted: !opinionDetail.deleted },
-            $inc: { activitiesCount: 1 }
+            $set:{ 
+                deleted: !opinionDetail.deleted,
+                deletedByDetail: id
+            },
+            $inc: { activitiesCount: 1 },
         });
+
+        let detailIds2bUpdate = [];
+        // Prüfen ob es untergeordnete Details gibt, die ebenfalls gelöscht werden müssen
+        // hierbei wird die ID vermerkt, welche für die Löschung verantwortlich ist als Kennung,
+        // dass die Löschung automatisiert erfolgte
+        findDetails2bUpdate = refDetail => {
+            OpinionDetails.find({
+                $and: [
+                    { refParentDetail: refDetail },
+                    { deleted: opinionDetail.deleted },
+                    { $or: [
+                        { deletedByDetail: id },
+                        { deletedByDetail: null },
+                        { deletedByDetail: { $exists: false } }
+                    ]}
+                ]
+            }).forEach( detail => {
+                findDetails2bUpdate(detail._id);
+
+                detailIds2bUpdate.push(detail._id);
+            });
+        }
+        findDetails2bUpdate(id);
+
+        // aktualisieren der betroffenen children Details
+        OpinionDetails.update({
+            _id: { $in: detailIds2bUpdate }
+        }, {
+            $set: { 
+                deleted: !opinionDetail.deleted,
+                deletedByDetail: (!opinionDetail.deleted ? id : null),
+            }
+        }, { multi: true });
 
         let activity = injectUserData({ currentUser }, {
             refOpinion: opinionDetail.refOpinion,
@@ -183,7 +219,8 @@ Meteor.methods({
             type: 'ANSWER'
         }, {
             $set: {
-                deleted: true
+                deleted: true,
+                deletedByDetail: 'CheckAnswer from ' + opinionDetail._id
             }
         }, { multi:true });
 
@@ -375,7 +412,7 @@ Meteor.methods({
                 actionCode: { what: 'den Handlungsbedarf', msg: 'Der Handlungsbedarf wurde geändert.' },
                 actionText: { what: 'den Text des Handlungsbedarf', msg: 'Der Text des Handlungsbedarfs wurde geändert.' },
                 deleted: { what: 'die Löschmarkierung', msg: 'Die Löschmarkierung wurde geändert.' },
-                finallyRemoved: { what: 'die endgültige Löschung', msg: 'Der Baustein wurde wiederhergestellt.' },
+                finallyRemoved: { what: 'die endgültige Löschung', msg: 'Die Kennung "endgültige Löschung" wurde geändert.' },
                 showInToC: { what: 'die Kennung "Innhaltsverzeichnis"', msg: 'Die Kennung "Inhaltsverzeichnis" wurde geändert.' },
                 pagebreakBefore: { what: 'die Einstellung "Seitenumbruch vorab"', msg: 'Die Einstellung "Seitenumbruch vorab" wurde geändert.' },
                 pagebreakAfter: { what: 'die Einstellung "Seitenumbruch nachher"', msg: 'Die Einstellung "Seitenumbruch nachher" wurde geändert.' },
@@ -531,8 +568,44 @@ Meteor.methods({
         }
 
         OpinionDetails.update(id, {
-            $set:{ finallyRemoved: true }
+            $set:{ 
+                finallyRemoved: true,
+                finallyRemovedByDetail: id
+            }
         });
+
+        let detailIds2bUpdate = [];
+        // Prüfen ob es untergeordnete Details gibt, die ebenfalls gelöscht werden müssen
+        // hierbei wird die ID vermerkt, welche für die Löschung verantwortlich ist als Kennung,
+        // dass die Löschung automatisiert erfolgte
+        findDetails2bUpdate = refDetail => {
+            OpinionDetails.find({
+                $and: [
+                    { refParentDetail: refDetail },
+                    { finallyRemoved: false },
+                    { $or: [
+                        { finallyRemovedByDetail: id },
+                        { finallyRemovedByDetail: null },
+                        { finallyRemovedByDetail: { $exists: false } }
+                    ]}
+                ]
+            }).forEach( detail => {
+                findDetails2bUpdate(detail._id);
+
+                detailIds2bUpdate.push(detail._id);
+            });
+        }
+        findDetails2bUpdate(id);
+
+        // aktualisieren der betroffenen children Details
+        OpinionDetails.update({
+            _id: { $in: detailIds2bUpdate }
+        }, {
+            $set: { 
+                finallyRemoved: true,
+                finallyRemovedByDetail: id,
+            }
+        }, { multi: true });
 
         let activity = injectUserData({ currentUser }, {
             refOpinion: old.refOpinion,
@@ -548,6 +621,107 @@ Meteor.methods({
                 propName: "finallyRemoved",
                 oldValue: false,
                 newValue: true
+            }]
+        }, { created: true });
+
+        Activities.insert(activity);
+
+        if (Meteor.isServer) rePositionDetails(old.refOpinion);
+    },
+
+    /**
+     * Undo finally mark delete the given opinions detail from the colection
+     * 
+     * @param {String} id Id of the detail to undo finallyRemove
+     */
+    'opinionDetail.undoFinallyRemove'(id) {
+        check(id, String);
+        console.log("id", id);
+        this.unblock();
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+        
+        let currentUser = Meteor.users.findOne(this.userId);
+        const old = OpinionDetails.findOne(id);
+
+        if (!old) {
+            throw new Meteor.Error('Der angegebene Baustein mit der id ' + id + ' wurde nicht gefunden.');
+        }
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: old.refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
+            throw new Meteor.Error('Keine Berechtigung zum wiederherstellen dieses Bausteins zum Gutachten.');
+        }
+
+        OpinionDetails.update(id, {
+            $set:{ 
+                finallyRemoved: false,
+                finallyRemovedByDetail: null
+            }
+        });
+
+        let detailIds2bUpdate = [];
+        // Prüfen ob es untergeordnete Details gibt, die ebenfalls wiederhergestellt werden müssen
+        // hierbei wird die ID vermerkt, welche für die Löschung verantwortlich ist als Kennung,
+        // dass die Löschung automatisiert erfolgte
+        findDetails2bUpdate = refDetail => {
+            OpinionDetails.find({
+                $and: [
+                    { refParentDetail: refDetail },
+                    { finallyRemoved: true },
+                    { $or: [
+                        { finallyRemovedByDetail: id },
+                        { finallyRemovedByDetail: null },
+                        { finallyRemovedByDetail: { $exists: false } }
+                    ]}
+                ]
+            }).forEach( detail => {
+                findDetails2bUpdate(detail._id);
+
+                detailIds2bUpdate.push(detail._id);
+            });
+        }
+        findDetails2bUpdate(id);
+
+        
+        console.log(detailIds2bUpdate);
+        // aktualisieren der betroffenen children Details
+        OpinionDetails.update({
+            _id: { $in: detailIds2bUpdate }
+        }, {
+            $set: { 
+                finallyRemoved: false,
+                finallyRemovedByDetail: null,
+            }
+        }, { multi: true });
+
+        let activity = injectUserData({ currentUser }, {
+            refOpinion: old.refOpinion,
+            // dieser Eintrag wird beim Parent angesiedelt
+            // da der eigentlich betroffene Detailpunkt gelöscht ist
+            refDetail: old.refParentDetail,
+            //refDetailFinallyRemoved: id._str || id,
+            type: 'SYSTEM-LOG',
+            action: 'UNDOFINALLYREMOVE',
+            message: `hat den Baustein mit dem Titel <strong>${old.title}</strong> wiederhergestellt.`,
+            changes: [{
+                message: "Der Baustein wurde wiederhergestellt.",
+                propName: "finallyRemoved",
+                oldValue: true,
+                newValue: false
             }]
         }, { created: true });
 

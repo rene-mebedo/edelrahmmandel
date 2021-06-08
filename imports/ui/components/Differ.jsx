@@ -50,24 +50,28 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
             closeDiffDrawer();
         }
 
-        if (key === 'participants') {
-            if (action === 'INSERT') {
-                Meteor.call('opinion.removeParticipant', refOpinion, newValue, handleResult);
-            } else if (action === 'UPDATE') {
-                Meteor.call('opinion.updateParticipant', refOpinion, oldValue, handleResult);
-            } else if(action === 'REMOVE') {
-                Meteor.call('opinion.addParticipant', refOpinion, oldValue, handleResult);
-            }
+        if (action === 'FINALLYREMOVED') {
+            Meteor.call('opinionDetail.undoFinallyRemove', opinionDetailId, handleResult);
         } else {
-            // undo the current change
-            let opinionDetail = {
-                id: opinionDetailId,
-                data: {
-                    [key]: oldValue
+            if (key === 'participants') {
+                if (action === 'INSERT') {
+                    Meteor.call('opinion.removeParticipant', refOpinion, newValue, handleResult);
+                } else if (action === 'UPDATE') {
+                    Meteor.call('opinion.updateParticipant', refOpinion, oldValue, handleResult);
+                } else if(action === 'REMOVE') {
+                    Meteor.call('opinion.addParticipant', refOpinion, oldValue, handleResult);
                 }
+            } else {
+                // undo the current change
+                let opinionDetail = {
+                    id: opinionDetailId,
+                    data: {
+                        [key]: oldValue
+                    }
+                }
+                
+                Meteor.call('opinionDetail.update', opinionDetail, handleResult);
             }
-            
-            Meteor.call('opinionDetail.update', opinionDetail, handleResult);
         }
     }
 
@@ -153,7 +157,7 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
                     
                     <div></div>
 
-                    { action !== 'UPDATE' ? null :
+                    { action !== 'UPDATE' && action !== 'FINALLYREMOVE' ? null :
                         <Button onClick={ e => restoreChange(item.propName, item.oldValue, item.newValue)} 
                             icon={<RestOutlined />}
                             style={{marginTop:'16px'}}
