@@ -7,6 +7,8 @@ import '../imports/api/methods';
 
 import './datatransfer';
 
+import './datamigration';
+
 import { Accounts } from 'meteor/accounts-base'
 
 Accounts.validateLoginAttempt( loginData => {

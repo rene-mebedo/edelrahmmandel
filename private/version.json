@@ -1,4 +1,11 @@
 {
-    "version": "1.0.2",
-    "timestamp": "2021-06-08"
+    "version": "1.0.3",
+    "timestamp": "2021-06-14",
+    
+    "details": [
+        { 
+            "version": "1.0.3", 
+            "description": "Prüfen von untergeordneten Bausteinen, ob das Elternelement bereits gelöscht wurde. Ist dem so, so wir das betroffene Element ebenfalls als gelöscht markiert." 
+        }
+    ]
 }
