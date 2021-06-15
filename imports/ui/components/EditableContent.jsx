@@ -164,6 +164,7 @@ export class EditableContent extends React.Component {
         const {canEdit, canDelete} = this.props.permissions;
 
         this.inputRef = React.createRef();
+        this.componentValueSetup = true; // will be used in componentDidUpdate to assign the value for the firsttime
     }
 
     checkAndFocusContentByQueryString() {
@@ -180,13 +181,20 @@ export class EditableContent extends React.Component {
 
     componentDidMount() {
         this.checkAndFocusContentByQueryString();
+
+        const { type, value } = this.props;
+        const { mode } = this.state;
     }
 
     componentDidUpdate(prevProps, prevState) {
+        console.log(prevProps, this.props)
         const { type, value } = this.props;
         const { mode } = this.state;
 
         if (mode == 'EDIT') {
+            if (prevProps.value === value && !this.componentValueSetup) return;
+            this.componentValueSetup = false;
+
             if (type == 'wysiwyg') {
                 this.inputRef.current.editor.summernote('code', value);
             } else if (type == 'span') {
@@ -210,6 +218,8 @@ export class EditableContent extends React.Component {
         }
 
         this.setState({ mode: newMode });
+        // reset to true to assign actual value at new EDIT mode
+        this.componentValueSetup = true;
     }
 
     toggleDeleted() {
@@ -318,7 +328,10 @@ export class EditableContent extends React.Component {
                         saveData: this.saveData.bind(this),
                         isDirty: this.isDirty.bind(this)
                     }
-                });        
+                });
+                
+                // reset to true to assign actual value at new EDIT mode
+                this.componentValueSetup = true;
             }
         });
     }
