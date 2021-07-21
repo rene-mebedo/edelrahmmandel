@@ -20,7 +20,7 @@ const { useForm } = Form;
 
 const textualPreface = {
     EDIT: 'Bitte ändern Sie die Daten des angezeigten Teilnehmers und bestätigen Sie Ihre Eingaben mit OK.',
-    NEW: 'Zum Erstellen eines neuen Teilnehmers füllen Sie bitte die nachfolgenden Feler aus und bestätigen mit OK.'
+    NEW: 'Zum Erstellen eines neuen Teilnehmers füllen Sie bitte die nachfolgenden Felder aus und bestätigen mit OK.'
 }
 
 export const ModalOpinionParticipant = ( { mode/*NEW|EDIT*/, refOpinion, participant, canEdit=false }) => {

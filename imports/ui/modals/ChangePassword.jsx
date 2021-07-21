@@ -69,7 +69,7 @@ export const ModalChangePassword = ( { currentUser } ) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Bitte geben Sie das alte Passwort an.',
+                                        message: 'Bitte geben Sie Ihr altes Passwort an.',
                                     },
                                 ]}
                             >
@@ -106,7 +106,7 @@ export const ModalChangePassword = ( { currentUser } ) => {
                                             if (!value || getFieldValue('newPassword') === value) {
                                                 return Promise.resolve();
                                             }
-                                            return Promise.reject('Bitte überprüfen Sie die Bestätigung Ihres Passwort.');
+                                            return Promise.reject('Bitte überprüfen Sie die Bestätigung Ihres Passworts.');
                                         },
                                     }),
                                 ]}

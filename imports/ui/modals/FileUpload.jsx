@@ -132,7 +132,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                 <ModalBackground>
                     <Modal
                         className="mbac-modal-upload-pictures"
-                        title="Bilder Hinzufügen"
+                        title="Bilder hinzufügen"
                         //width="80%"
                         visible={ showModal }
                         onOk={ closeModal }

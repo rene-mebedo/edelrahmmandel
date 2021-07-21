@@ -205,10 +205,10 @@ export class UserProfileForm extends React.Component {
                                     name="email"
                                     rules={[{
                                         type: 'email',
-                                        message: 'Bitte geben Sie eine gültige EMail-Adresse ein!',
+                                        message: 'Bitte geben Sie eine gültige E-Mail Adresse ein!',
                                         },{
                                         required: true,
-                                        message: 'Bitte geben Sie die EMail-Adresse ein.',
+                                        message: 'Bitte geben Sie die E-Mail Adresse ein.',
                                     }]}
                                 >
                                     <Input prefix={<MailOutlined />} />

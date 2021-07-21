@@ -59,7 +59,7 @@ export class InfoForm extends React.Component {
                         title="Systeminformationen"
                         subTitle={
                             <Fragment>
-                                <p>Nachfogend sehen sie die aktuellen Informationen des Systems und Ihrer Anmeldung.</p>
+                                <p>Nachfolgend sehen Sie die aktuellen Informationen des Systems und Ihrer Anmeldung.</p>
                                 
                                 { loading 
                                     ? <Skeleton active />

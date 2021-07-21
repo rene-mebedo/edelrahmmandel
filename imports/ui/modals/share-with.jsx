@@ -135,16 +135,16 @@ export const ModalShareWith = ( { refOpinion, currentUser } ) => {
                                     </Form.Item>
                                 </Panel>
 
-                                <Panel key="INVITE-BYMAIL" header={<span><strong>Benutzer nicht gefunden?</strong> Dann laden Sie hier die entsrechende Person per E-Mail ein.</span>}>
+                                <Panel key="INVITE-BYMAIL" header={<span><strong>Benutzer nicht gefunden?</strong> Dann laden Sie hier die entsprechende Person per E-Mail ein.</span>}>
                                     <Form.Item
                                         label="E-Mail"
                                         name="email"
                                         rules={[{
                                             type: 'email',
-                                            message: 'Bitte geben Sie eine gültige EMail-Adresse ein!',
+                                            message: 'Bitte geben Sie eine gültige E-Mail Adresse ein!',
                                           },{
                                             required: true,
-                                            message: 'Bitte geben Sie die EMail-Adresse ein.',
+                                            message: 'Bitte geben Sie die E-Mail Adresse ein.',
                                         }]}
                                     >
                                         <Input prefix={<MailOutlined />} />

@@ -30,7 +30,28 @@ export const ActionTodoList = ({item, refOpinion, last, permissions}) => {
     
     let groupedItems = [];
     Object.keys(actionCodes).forEach( code => {
-        const filteredItems = actionListitems.filter( item => item.actionCode === code);
+        //const filteredItems = actionListitems.filter( item => item.actionCode === code);
+        // Sortierung der actionListitems numerisch.
+        /* Das (Sortierung des Arrays) ist notwendig, weil leider Funktionalität Mongo collation nicht enthalten ist unter Meteor.
+        Mit collation wäre nur folgendes notwendig in find():        
+        collation: {
+                locale: 'de',
+                numericOrdering: true
+            }
+        https://forums.meteor.com/t/is-there-a-way-to-use-mongodb-3-4-collation/33024/13
+        */
+        let filteredItems = actionListitems.filter( item => item.actionCode === code);
+        filteredItems = filteredItems.sort( (a , b) => {
+            if ( !a
+              || !a.parentPosition
+              || !a.position )
+                return -1;
+            else if ( !b
+                   || !b.parentPosition
+                   || !b.position )
+                return 1;
+            return (a.parentPosition.toString() + a.position.toString()).localeCompare( (b.parentPosition.toString() + b.position.toString()) , undefined , { numeric: true } );
+        });
 
         if (filteredItems.length > 0) {
             groupedItems.push({

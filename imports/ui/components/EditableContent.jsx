@@ -363,7 +363,7 @@ export class EditableContent extends React.Component {
 
         if (AppState.selectedDetail && AppState.selectedDetail.mode == 'EDIT') {
             if (AppState.selectedDetail.isDirty()) {
-                return message.error('Bitte schließen Sie die aktuelle Bearbeitung ab bevor sie eine neue Stelle beginnen zu Bearbeiten.');
+                return message.error('Bitte schließen Sie die aktuelle Bearbeitung ab, bevor Sie mit der Bearbeitung einer neuen Stelle beginnen.');
             }
             AppState.selectedDetail.discardChanges();
         } else if (AppState.selectedDetail && AppState.selectedDetail.mode == 'FOCUSED') {

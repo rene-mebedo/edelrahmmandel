@@ -102,15 +102,15 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
             { !showModal ? null :
                 <ModalBackground>
                     <Modal
-                        title={ mode === 'EDIT' ? 'Gutachten Bearbeiten' : 'Neues Gutachten' }
+                        title={ mode === 'EDIT' ? 'Gutachten bearbeiten' : 'Neues Gutachten' }
                         visible={ showModal }
                         onOk={ handleOk }
                         onCancel={ handleCancel }
                         maskClosable={false}
                     >
                         { mode === 'EDIT'
-                            ? <p>Zum Bearbeiten des Gutachten führen Sie bitte Ihre Änderungen in den jeweiligen Feldern durch und bestätigen Sie den Dialog mit OK.</p>
-                            : <p>Zum Erstellen eines neuen Gutachten füllen Sie bitte die nachfolgenden Felder aus und bestätigen Sie den Dialog mit OK.</p>
+                            ? <p>Zum Bearbeiten des Gutachtens führen Sie bitte Ihre Änderungen in den jeweiligen Feldern durch und bestätigen Sie den Dialog mit OK.</p>
+                            : <p>Zum Erstellen eines neuen Gutachtens füllen Sie bitte die nachfolgenden Felder aus und bestätigen Sie den Dialog mit OK.</p>
                         }
 
                         <Form
@@ -179,7 +179,7 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                                         rules={[
                                             {
                                                 required: true,
-                                                message: 'Bitte geben Sie den Firmenname des Auftraggebers ein.',
+                                                message: 'Bitte geben Sie den Firmennamen des Auftraggebers ein.',
                                             },
                                         ]}
                                     >
