@@ -12,8 +12,9 @@ import { OpinionDetails } from '../../imports/api/collections/opinionDetails';
 import { Images } from '../../imports/api/collections/images';
 import { OpinionPdfs } from '../../imports/api/collections/opinion-pdfs';
 
+import { actionCodes } from '../../imports/api/constData/actioncodes';
+
 import fs from 'fs';
-import path from 'path';
 
 const readFile = Meteor.wrapAsync(fs.readFile, fs);
 const writePdf = Meteor.wrapAsync(OpinionPdfs.write, OpinionPdfs);
@@ -118,7 +119,9 @@ Meteor.methods({
                 _id: 1,
                 actionCode: 1,
                 actionText: 1,
-                actionPrio: 1
+                actionPrio: 1,
+                parentPosition: 1,
+                position: 1
             },
             sort: {
                 actionPrio: 1,
@@ -127,6 +130,35 @@ Meteor.methods({
             }
         }).fetch();
 
+        // Sortierung der detailsTodolist numerisch.
+        /* Das (Sortierung des Arrays) ist notwendig, weil leider Funktionalität Mongo collation nicht enthalten ist unter Meteor.
+        Mit collation wäre nur folgendes notwendig in find():        
+        collation: {
+                locale: 'de',
+                numericOrdering: true
+            }
+        https://forums.meteor.com/t/is-there-a-way-to-use-mongodb-3-4-collation/33024/13
+        */
+        let sortedDetailsTodolist = [];
+        Object.keys( actionCodes ).forEach( code => {
+            let filteredItems = detailsTodolist.filter( item => item.actionCode === code );
+            filteredItems = filteredItems.sort( (a , b) => {
+                if ( !a
+                  || !a.parentPosition
+                  || !a.position )
+                    return -1;
+                else if ( !b
+                       || !b.parentPosition
+                       || !b.position )
+                    return 1;
+                return (a.parentPosition.toString() + a.position.toString()).localeCompare( (b.parentPosition.toString() + b.position.toString()) , undefined , { numeric: true } );
+            });
+
+            filteredItems.forEach( item => {
+                sortedDetailsTodolist.push( item );
+            });
+        });
+
         const images = Images.find({
             'meta.refOpinion': refOpinion
         }).fetch();
@@ -134,7 +166,7 @@ Meteor.methods({
         let fileData;
 
         try {
-            const filename = await opinionDocumenter.pdfCreate(opinion, details, detailsTodolist, images , settings.PdfPath);
+            const filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath);
 
             fileData = readFile(filename);
 

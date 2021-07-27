@@ -51,8 +51,8 @@ const DeleteButton = ({ show, onClick }) => {
 }
 
 const textualPreface = {
-    EDIT: 'Bitte ändern Sie die Daten des angezeigten Teilnehmers und bestätigen Sie Ihre Eingaben mit OK.',
-    NEW: 'Zum Erstellen eines neuen Teilnehmers füllen Sie bitte die nachfolgenden Feler aus und bestätigen mit OK.'
+    EDIT: 'Bitte ändern Sie die Daten der angezeigten Variable und bestätigen Sie Ihre Eingaben mit OK.',
+    NEW: 'Zum Erstellen einer neuen Variable füllen Sie bitte die nachfolgenden Felder aus und bestätigen mit OK.'
 }
 
 export const ModalOpinionVariable = ( { mode/*NEW|EDIT|DELETE*/, refOpinion, variable, canEdit=false }) => {

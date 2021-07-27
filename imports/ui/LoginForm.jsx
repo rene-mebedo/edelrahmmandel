@@ -35,7 +35,7 @@ export const LoginForm = () => {
       if (err) {
         Modal.error({
           title: 'Login fehlgeschlagen',
-          content: 'Bitte überprüfen Sie Ihren Benutzernamen und/oder Passwort und versuchen Sie es erneut.',
+          content: 'Bitte überprüfen Sie Ihren Benutzernamen und/oder Ihr Passwort und versuchen Sie es erneut.',
         });  
       }
     });
@@ -48,11 +48,11 @@ export const LoginForm = () => {
       <Col xs={20} sm={20} md={16} lg={12} xl={8} id="Login">
         <Divider orientation="left">Login</Divider>
         <p>
-          Herzlich Willkommen zum MEBEDO GutachtenPlus!
+          Herzlich Willkommen zu MEBEDO GutachtenPlus!
         </p>
         <p>
           Bitte melden Sie sich mit Ihren Benutzerdaten an oder registrieren Sie 
-          sich falls Sie noch keine Zugangsdaten haben.
+          sich, falls Sie noch keine Zugangsdaten haben.
         </p>
         <Form
           {...layout}

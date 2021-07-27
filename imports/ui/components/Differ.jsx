@@ -43,7 +43,7 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
             } else {
                 notification.info({
                     message: 'Speichern ...',
-                    description: 'Es wurden keine Änderungen durchgeführt da der aktuelle Datensatz identisch ist.'
+                    description: 'Es wurden keine Änderungen durchgeführt, da der aktuelle Datensatz identisch ist.'
                 });
             }
 

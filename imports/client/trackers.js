@@ -330,7 +330,9 @@ export const useOpinionActionList = refOpinion => useTracker( () => {
             _id: 1,
             refOpinion: 1,
             actionCode: 1,
-            actionText: 1
+            actionText: 1,
+            parentPosition: 1,
+            position: 1
         },
         sort: {
             actionPrio: 1,
