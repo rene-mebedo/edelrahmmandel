@@ -1,6 +1,6 @@
 {
-    "version": "1.0.4",
-    "timestamp": "2021-06-15",
+    "version": "1.0.5",
+    "timestamp": "2021-07-27",
     
     "details": [
         { 
@@ -10,6 +10,10 @@
         { 
             "version": "1.0.4", 
             "description": "Bugfix #47 - Der Wert der aktuellen Bearbeitung eines Bausteins geht nicht mehr verloren, wenn ein anderer Benutzer z. B. Variablen aktualisiert." 
+        },
+        { 
+            "version": "1.0.5", 
+            "description": "Bugfix #48 - Sortierung der Elemente innerhalb der Aufstellung Maßnahmen nun numerisch, nicht mehr alphanumerisch (Text). Sowie diverse kleinere textliche Anpassungen."
         }
     ]
 }
