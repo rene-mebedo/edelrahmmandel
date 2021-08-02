@@ -36,7 +36,7 @@ export const layouttypesObject = {
         title: 'Frage',
         description: 'Wird als Frage mit Handlungsbedarf genutzt.',
         hasChilds: true,
-        defaultValues: { title: 'Q', printTitle:'Frage', text: 'Zusatztext', actionText: 'Maßnahmentext', actionCode: 'unset' },
+        defaultValues: { title: 'Q', printTitle:'Frage', text: 'Zusatztext', actionText: '<p>Maßnahmentext</p>', actionCode: 'unset' },
         template: `
             <div id="{{_id}}" class="mbac-item-type-question depth-{{depth}}">
                 <div class="mbac-title">
