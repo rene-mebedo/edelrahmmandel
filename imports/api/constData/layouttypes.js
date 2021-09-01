@@ -353,7 +353,12 @@ export const layouttypesObject = {
         hasChilds: true,
         isPictureable: true,
         defaultValues: { title: 'BC', printTitle:'Bildcontainer', text: 'Im Nachfolgenden finden Sie eine Auflistung der Bilder.' },
-        template: `<div class="mbac-item-type-picture-container">
+        template: `<div class="mbac-item-type-picture-container">            
+            <div class="mbac-title">
+                <span class="mbac-position mbac-media-print">{{XparentPosition}}{{Xposition}}</span>
+                <span class="mbac-position mbac-media-screen">{{parentPosition}}{{position}}</span>
+                <span>{{printTitle}}</span>
+            </div>
             <div class="mbac-text">
                 {{text}}
             </div>
