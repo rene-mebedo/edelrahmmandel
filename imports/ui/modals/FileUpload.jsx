@@ -91,7 +91,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
 
         new Compressor(file, {
             maxWidth: 600,
-            quality: 0.6,
+            quality: 0.75,
             drew(context, canvas) {
                 context.fillStyle = '#fff';
                 context.font = '11pt Arial';
