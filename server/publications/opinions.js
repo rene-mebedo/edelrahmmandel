@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
-import { Opinions } from '/imports/api/collections/opinions';
+import { Opinions } from '../../imports/api/collections/opinions';
 import { OpinionPdfs } from '../../imports/api/collections/opinion-pdfs';
 
 Meteor.publish('opinions', function publishOpinions(id) {

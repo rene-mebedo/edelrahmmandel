@@ -23,6 +23,9 @@ Accounts.validateLoginAttempt( loginData => {
 
         const { user } = loginData.methodArguments[0];
         
+        if (!user)
+            return false;
+            
         // check if we got a user like "admin" that signed in without email
         if (user.username && !user.email && allowed) {
             return true;
