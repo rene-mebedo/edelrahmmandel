@@ -1,5 +1,5 @@
 {
-    "version": "1.0.6",
+    "version": "1.0.7",
     "timestamp": "2021-08-02",
     
     "details": [
@@ -18,6 +18,10 @@
         { 
             "version": "1.0.6", 
             "description": "In Actiontext des Maßnahmentexts im Default <p></p> eingefügt."
+        },
+        { 
+            "version": "1.0.7", 
+            "description": "Aktualisierung des opinion-documenter mit einigen Layoutanassungen, Erhöhung der Bildqualität von 60 auf 75%, Picturecontainer ist nun Bestandteil des Inhaltsverzeichnis."
         }
     ]
 }
