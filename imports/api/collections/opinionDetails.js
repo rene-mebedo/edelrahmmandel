@@ -158,6 +158,15 @@ OpinionDetailSchema.extend(CreationSchema);
 export const OpinionDetails = new Mongo.Collection('opinionDetails');
 OpinionDetails.attachSchema(OpinionDetailSchema);
 
+// Index implementieren um Performance zu steigern
+if (Meteor.isServer) {
+    OpinionDetails.rawCollection().createIndex({
+        refOpinion: -1,
+        refParentDetail: -1,
+        finallyRemoved: -1
+    });
+}
+
 OpinionDetails.allow ({
     insert() { return false; },
     update() { return false; },
