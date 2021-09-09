@@ -1,6 +1,6 @@
 {
-    "version": "1.0.7",
-    "timestamp": "2021-08-02",
+    "version": "1.0.8",
+    "timestamp": "2021-09-08",
     
     "details": [
         { 
@@ -22,6 +22,11 @@
         { 
             "version": "1.0.7", 
             "description": "Aktualisierung des opinion-documenter mit einigen Layoutanassungen, Erhöhung der Bildqualität von 60 auf 75%, Picturecontainer ist nun Bestandteil des Inhaltsverzeichnis."
+        }
+        ,
+        { 
+            "version": "1.0.8", 
+            "description": "Performanceverbesserung für Details. Aktualisierung des Package opinion-documenter (Version 1.0.32) mit einigen Layoutanassungen."
         }
     ]
 }
