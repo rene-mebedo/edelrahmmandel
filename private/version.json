@@ -1,6 +1,6 @@
 {
-    "version": "1.0.8",
-    "timestamp": "2021-09-08",
+    "version": "1.0.9",
+    "timestamp": "2021-09-10",
     
     "details": [
         { 
@@ -26,7 +26,12 @@
         ,
         { 
             "version": "1.0.8", 
-            "description": "Performanceverbesserung für Details. Aktualisierung des Package opinion-documenter (Version 1.0.32) mit einigen Layoutanassungen."
+            "description": "Performanceverbesserung für Details. Aktualisierung des Package opinion-documenter (Version 1.0.32) mit einigen Layoutanpassungen."
+        }
+        ,
+        { 
+            "version": "1.0.9", 
+            "description": "Layoutanpassungen Umbruch bei zu langen Texten und Maximalbreite für Bilder. Aktualisierung des Package opinion-documenter (Version 1.0.33) mit einigen Layoutanpassungen und neuen internen Variablen."
         }
     ]
 }
