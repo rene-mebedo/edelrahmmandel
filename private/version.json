@@ -1,5 +1,5 @@
 {
-    "version": "1.0.9",
+    "version": "1.0.10",
     "timestamp": "2021-09-10",
     
     "details": [
@@ -32,6 +32,11 @@
         { 
             "version": "1.0.9", 
             "description": "Layoutanpassungen Umbruch bei zu langen Texten und Maximalbreite für Bilder. Aktualisierung des Package opinion-documenter (Version 1.0.33) mit einigen Layoutanpassungen und neuen internen Variablen."
+        }
+        ,
+        { 
+            "version": "1.0.10", 
+            "description": "Aktualisierung des Package opinion-documenter (Version 1.0.34) mit Layoutanpassungen."
         }
     ]
 }
