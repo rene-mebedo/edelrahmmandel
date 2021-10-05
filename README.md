@@ -12,16 +12,16 @@ geplanter `Going-Live: KW 3`
 ### Development MT
 - [x] Prüfung anderer PDF-Reader-Tools
 - [x] PDF Erstellung / Ablage des generierten PDFs
-- [ ] HTML/PDF-Formatierung / Rendering gem. Gutachtenvorlagen JK
+- [x] HTML/PDF-Formatierung / Rendering gem. Gutachtenvorlagen JK
 - [x] Result des package sollte der generierte HTML-Code sein
 - [x] Detail `Titel im Druck` immer im Ausdruck verwandt (auch Inhaltsverz.) Ist das Feld leer, so wird kein Titel gedruckt.
 - [x] npm Publish PDF-Erstellung
 - [x] Zeige Detailpunkt im Inhaltsverzeichnis J/N
-- [ ] Variablen handling
+- [x] Variablen handling
   - [x] Interne Variablen ausprogrammieren z.B. `${Druckdatum}`
   > ${Druckdatum}, ${Gutachtennummer}, ${Firma}, ${Gutachtername1}, ${Gutachtername2}
-  - [ ] Auflistung aller verwandten Variablen z.B. "{{Kunde}}"
-  - [ ] Dynamischer Replace von Opinion-Variablen
+  - [x] Auflistung aller verwandten Variablen z.B. "{{Kunde}}"
+  - [x] Dynamischer Replace von Opinion-Variablen
 - [x] `pagebreakBefore` implementieren
 - [x] `pagebreakAfter` implementieren
 
