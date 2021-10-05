@@ -126,6 +126,6 @@ aus Teams/M-Files, so dass dieses Portal der zentrale Ort für den Kunden und un
 
 ## Punkte zum besprechen
 
-- [ ] Nennung der Uhrzeiten Tageweise sinnvoll? Ggf. alternative hierfür
+- [x] Nennung der Uhrzeiten Tageweise sinnvoll? Ggf. alternative hierfür => Beschluss: Uhrzeiten werden im System nicht erfasst/angezeigt.
 - [ ] Auflistung der TN mit oder ohne Anrede? Aktuell ohne Anrede, da ggf. Anrede falsch eingegeben wird der Fehler nicht gezeigt
 - [ ] Darstellung des Abkürzungsverzeichnis als eigene Detailpunkte und manuelle Pflege im Gutachten möglich?
