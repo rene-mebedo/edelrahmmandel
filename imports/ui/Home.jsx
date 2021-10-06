@@ -12,7 +12,7 @@ export const Home = () => {
             <PageHeader
                 className="site-page-header"
                 title="Start"
-                //subTitle=""
+                subTitle="Willkommen bei MEBEDO AC GutachtenPlus"
             />
         </Fragment>
     );

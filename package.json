@@ -18,7 +18,7 @@
     "filesize": "^6.1.0",
     "history": "^5.0.0",
     "jquery": "^3.5.1",
-    "markerjs2": "^2.4.1",
+    "markerjs2": "^2.13.0",
     "meteor-node-stubs": "^1.0.3",
     "opinion-documenter": "^1.0.35",
     "react": "^16.13.1",

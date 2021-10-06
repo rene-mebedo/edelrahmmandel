@@ -1,6 +1,6 @@
 {
-    "version": "1.0.11",
-    "timestamp": "2021-09-20",
+    "version": "1.0.12",
+    "timestamp": "2021-10-06",
     
     "details": [
         { 
@@ -27,21 +27,22 @@
         { 
             "version": "1.0.8", 
             "description": "Performanceverbesserung für Details. Aktualisierung des Package opinion-documenter (Version 1.0.32) mit einigen Layoutanpassungen."
-        }
-        ,
+        },
         { 
             "version": "1.0.9", 
             "description": "Layoutanpassungen Umbruch bei zu langen Texten und Maximalbreite für Bilder. Aktualisierung des Package opinion-documenter (Version 1.0.33) mit einigen Layoutanpassungen und neuen internen Variablen."
-        }
-        ,
+        },
         { 
             "version": "1.0.10", 
             "description": "Aktualisierung des Package opinion-documenter (Version 1.0.34) mit Layoutanpassungen."
-        }
-        ,
+        },
         { 
             "version": "1.0.11", 
             "description": "Aktualisierung des Package opinion-documenter (Version 1.0.35) mit Layoutanpassungen: Schriftgröße 11 auch für Fragen."
+        },
+        { 
+            "version": "1.0.12", 
+            "description": "Fehlerbehebung bzgl. Darstellung von Bildmarkierungen. Willkommenstext eingefügt auf Startseite. Aktualisierung des Package markerjs2 (2.4.1 => 2.13)."
         }
     ]
 }
