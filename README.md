@@ -106,6 +106,7 @@ Weitere Punkte, die ggf. das Leben erleichtern
   - [ ] Einfügefunktion um bereits formulierte Texte (Fragen, Antworten) aus bereits erstellten Gutachten zu übernehmen
 - [x] Sortierung der Detailpunkte via Drag & Drop
 - [ ] Suchfunktion für Inhalte und Titel/Detailpunkte
+- [ ] Filterfunktion in Tabelle der Gutachten
 
 
 ## geplante Punkte für Version 2
