@@ -1,6 +1,6 @@
 {
-    "version": "1.0.12",
-    "timestamp": "2021-10-06",
+    "version": "1.0.13",
+    "timestamp": "2021-10-07",
     
     "details": [
         { 
@@ -43,6 +43,10 @@
         { 
             "version": "1.0.12", 
             "description": "Fehlerbehebung bzgl. Darstellung von Bildmarkierungen. Willkommenstext eingefügt auf Startseite. Aktualisierung des Package markerjs2 (2.4.1 => 2.13)."
+        },
+        { 
+            "version": "1.0.13", 
+            "description": "Links zur Startseite implementiert in Menüs der Dialoge und in MEBEDO Logo"
         }
     ]
 }
