@@ -41,7 +41,9 @@ export class InfoForm extends React.Component {
                 <Content>
                     <Affix className="affix-opiniondetail" offsetTop={0}>
                         <Breadcrumb>
-                            <Breadcrumb.Item>Start</Breadcrumb.Item>
+                            <Breadcrumb.Item>
+                                <a href="/">Start</a>
+                            </Breadcrumb.Item>
                             <Breadcrumb.Item>
                                 <a href="">Info</a>
                             </Breadcrumb.Item>

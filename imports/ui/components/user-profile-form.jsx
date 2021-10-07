@@ -123,7 +123,9 @@ export class UserProfileForm extends React.Component {
             <Fragment>
                 <Affix className="mbac-affix-pageheader" offsetTop={0}>
                     <Breadcrumb>
-                        <Breadcrumb.Item>Start</Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                            <a href="/">Start</a>
+                        </Breadcrumb.Item>
                         <Breadcrumb.Item>
                             <a href="/profile">Mein Profil</a>
                         </Breadcrumb.Item>

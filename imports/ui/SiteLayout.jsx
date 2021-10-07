@@ -90,9 +90,9 @@ export const SiteLayout = props => {
                     left: 0,
                   }}
             >
-                <div className="mbac-logo" >
+                <a href="/"><div className="mbac-logo" >
                     <img className="large" src="/MEBEDO_LOGO_PRINT_RGB-300x88.jpg" />
-                </div>
+                </div></a>
 
                 <Menu 
                     theme="dark" mode="inline"

@@ -6,7 +6,9 @@ export const ActivitiesForm = () => {
     return (
         <Fragment>
             <Breadcrumb>
-                <Breadcrumb.Item>Start</Breadcrumb.Item>
+                <Breadcrumb.Item>
+                    <a href="/">Start</a>
+                </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <a href="">Aktivitäten</a>
                     </Breadcrumb.Item>
