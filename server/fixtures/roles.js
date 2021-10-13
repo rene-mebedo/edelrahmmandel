@@ -51,6 +51,28 @@ import { Roles } from '/imports/api/collections/roles';
     });
 
     Roles.insert({
+        _id: 'READONLY',
+        rolename: 'Nur lesen',
+        score: 150,
+        description: 'Zugriff auf bestimmtes Dokument, welches jedoch nur lesbar ist.',
+        permissions: {
+            opinion: {                
+                create: 0,
+                edit: 0,
+                remove: 0,
+                admin: 0,
+                canPostMessage: 1,
+                manageTemplate: 0
+            },
+            shareWith: 0,
+            cancelSharedWith: 0,
+            cancelOwnSharedWith: 0,
+        },
+        invitableRoles: [],
+        selectable: false
+    });
+
+    Roles.insert({
         _id: 'EMPLOYEE',
         rolename: 'Mitarbeiter',
         score: 200,

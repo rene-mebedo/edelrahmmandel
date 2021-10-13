@@ -61,7 +61,7 @@ export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
             ...defaultValues,
             type
         }, (err, res) => {
-            console.log(err,res);
+            if (err) console.log(err,res);
         })
 
         closeModal();

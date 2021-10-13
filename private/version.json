@@ -1,6 +1,6 @@
 {
-    "version": "1.0.13",
-    "timestamp": "2021-10-07",
+    "version": "1.0.14",
+    "timestamp": "2021-10-12",
     
     "details": [
         { 
@@ -47,6 +47,10 @@
         { 
             "version": "1.0.13", 
             "description": "Links zur Startseite implementiert in Menüs der Dialoge und in MEBEDO Logo"
+        },
+        { 
+            "version": "1.0.14", 
+            "description": "'Passwort vergessen' Funktion implementiert, Option Fotografiererlaubnis implementiert"
         }
     ]
 }

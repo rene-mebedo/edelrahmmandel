@@ -14,7 +14,7 @@ import { Accounts } from 'meteor/accounts-base'
 Accounts.validateLoginAttempt( loginData => {
     const { allowed, methodName } = loginData;
 
-    if (methodName == 'verifyEmail') {
+    if (methodName == 'verifyEmail' || methodName == 'resetPassword') {
         return allowed;
     }
 

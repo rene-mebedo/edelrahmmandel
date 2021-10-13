@@ -81,6 +81,11 @@ export const OpinionsSchema = new SimpleSchema({
             value: { type: String, label: 'Variablenwert', optional: true },
             copyValue: { type: Boolean, label: 'Wert für neues Gutachten übernehmen', optional: true }
         })
+    },
+    disableCopyright: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
     }
 });
 

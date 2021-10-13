@@ -9,6 +9,7 @@ import DatePicker from 'antd/lib/date-picker';
 import ConfigProvider from 'antd/lib/config-provider';
 import locale_deDE from 'antd/es/locale/de_DE';
 import Tabs from 'antd/lib/tabs';
+import Switch from 'antd/lib/switch';
 
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
@@ -48,7 +49,6 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
             // so that these values could be transferd via ddp and
             // stored in the database/document
             Object.keys(values).map(k => values[k] === undefined ? values[k] = null : null);
-            console.log(values);
             
             if (values.dateFromTill) {
                 // transform dateFromTill
@@ -227,6 +227,20 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                                         ]}
                                     >
                                         <Input placeholder="Ort"/>
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        label="Keine Fotografiererlaubnis"
+                                        name="disableCopyright"
+                                        valuePropName="checked"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Bitte geben Sie an ob eine Fotografiererlaubnis vorliegt.',
+                                            },
+                                        ]}
+                                    >
+                                        <Switch />
                                     </Form.Item>
                                 </TabPane>
 

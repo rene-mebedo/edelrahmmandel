@@ -361,11 +361,47 @@ Accounts.emailTemplates.enrollAccount.text = (user, url) => {
     + url;
 };
 
-Accounts.emailTemplates.resetPassword.from = () => {
-  // Overrides the value set in `Accounts.emailTemplates.from` when resetting
-  // passwords.
-  return 'AwesomeSite Password Reset <no-reply@example.com>';
-};
+Accounts.emailTemplates.resetPassword = {
+    subject() {
+       return "MEBEDO GutachtenPlus - Passwort vergessen";
+    },
+    html(user, url) {
+         const { gender, firstName, lastName} = user.userData;
+         const [ host, token ] = url.split('/#/reset-password/');
+ 
+         return `Guten Tag ${gender} ${lastName},<br>
+             <p>
+                 Sie haben Ihr Passwort für <strong>MEBEDO GutachtenPlus</strong> vergessen - kein Problem!
+             </p>
+             <p>
+                 Bitte betätigen Sie den nachfolgenden Link und vergeben Sie sich einfach ein neues Passwort.
+                 <br>
+                 <br>
+                 <a href="https://gutachten.mebedo-ac.de/reset-password/${token}" target="_blank">Neues Passwort festlegen</a>
+             </p>
+             <p>
+                 Nach erfolgreicher Änderung Ihres Passworts werden Sie umgehend angemeldet und können direkt weiterarbeiten.
+             </p>
+             <p>
+                 Haben Sie weiterführende Fragen oder Anregungen, so wenden Sie sich bitte direkt an:
+                 <br>
+                 <br>MEBEDO Consulting GmbH
+                 <br><strong>Herrn Rene Schulte ter Hardt</strong>
+                 <br>Aubachstraße 22
+                 <br>56410 Montabaur
+                 <br>
+                 <br>Telefon: <a href="tel:+49260295081298">+49(0)2602 9508-1298</a>
+                 <br>E-Mail: schulteterhardt@mebedo-ac.de
+             </p>
+             <p>
+                 Beste Grüße
+                 <br>
+                 <br>
+                 <br><strong>Ihre MEBEDO Consulting GmbH</strong>
+             </p>
+         `;
+    }
+ };
 
 Accounts.emailTemplates.verifyEmail = {
    subject() {

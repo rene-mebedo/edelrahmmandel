@@ -29,7 +29,7 @@ import { actionCodes } from '../../api/constData/actioncodes';
 import { AppState, setAppState } from '../../client/AppState';
 
 const summernoteOptions = { 
-    airMode: true, 
+    airMode: false, 
     popover: {
         image: [
             ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
@@ -53,7 +53,17 @@ const summernoteOptions = {
             ['link', ['linkDialogShow', 'unlink']],
             ['view', ['fullscreen', 'codeview']]
         ]
-    }  
+    },
+    toolbar: [
+        ['font', ['bold', 'underline', 'italic', 'superscript']],
+        ['font1', ['clear']],
+        ['color', ['forecolor', 'backcolor']],
+        ['para', ['ul', 'ol']],
+        ['para1', ['paragraph']],
+        ['table', ['table']],
+        ['link', ['linkDialogShow', 'unlink']],
+        ['view', ['fullscreen', 'codeview']]
+    ]
 };
 
 const IconText = ({ icon, text }) => (
@@ -184,10 +194,15 @@ export class EditableContent extends React.Component {
 
         const { type, value } = this.props;
         const { mode } = this.state;
+
+        document.addEventListener('keydown', this.onKeyDown.bind(this));
+    }
+
+    componentWillUnmount(){
+        document.removeEventListener('keydown', this.onKeyDown);
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(prevProps, this.props)
         const { type, value } = this.props;
         const { mode } = this.state;
 
@@ -225,7 +240,13 @@ export class EditableContent extends React.Component {
     toggleDeleted() {
         const { refDetail } = this.props;
 
+        setAppState({appIsBusy: 'Working...'});
+        this.setState({saving:true});
+        
         Meteor.call('opinionDetail.toggleDeleted', refDetail, (err, res) => {
+            setAppState({appIsBusy: false});
+            this.setState({saving:false})
+
             if (err) {
                 return Modal.error({
                     title: 'Fehler',
@@ -249,7 +270,13 @@ export class EditableContent extends React.Component {
             onOk: closeConfirm => {
                 closeConfirm();
 
+                setAppState({appIsBusy: 'Löschen'});
+                this.setState({saving:true});
+
                 Meteor.call('opinionDetail.finallyRemove', refDetail, (err, res) => {
+                    setAppState({appIsBusy: false});
+                    this.setState({saving:false})
+
                     if (err) {
                         return Modal.error({
                             title: 'Fehler',
@@ -266,7 +293,11 @@ export class EditableContent extends React.Component {
     checkAnswer() {
         const { refDetail } = this.props;
 
+        setAppState({appIsBusy: 'Working...'});
+        this.setState({saving:true})
         Meteor.call('opinionDetail.checkAnswer', refDetail, (err, res) => {
+            setAppState({appIsBusy: false});
+            this.setState({saving:false})
             if (err) {
                 return Modal.error({
                     title: 'Fehler',
@@ -280,7 +311,11 @@ export class EditableContent extends React.Component {
     doSocial(action) {
         const { refDetail } = this.props;
 
+        setAppState({appIsBusy: 'Speichern'});
+        this.setState({saving:true})
         Meteor.call('opinionDetail.doSocial', action, refDetail, (err, res) => {
+            setAppState({appIsBusy: false});
+            this.setState({saving:false})
             if (err) {
                 return Modal.error({
                     title: 'Fehler',
@@ -311,7 +346,13 @@ export class EditableContent extends React.Component {
             return message.error('Die Eingabe darf nicht leer sein.');
         }
 
+        setAppState({appIsBusy: 'Speichern'});
+        this.setState({saving:true})
+        
         Meteor.call(method, { id: refDetail, data: { [field]: newValue }}, err => {
+            setAppState({appIsBusy: false});
+            this.setState({saving:false});
+
             if (err) {
                 return Modal.error({
                     title: 'Fehler',
@@ -431,6 +472,26 @@ export class EditableContent extends React.Component {
         document.execCommand('insertText', false, bufferText);
     }
 
+    onKeyDown(e) {
+        if (this.state.saving) {
+            e.preventDefault();
+            return;
+        }
+
+        const {ctrlKey, key, keyCode} = e;
+
+        if (ctrlKey && key == 's') {
+            e.preventDefault();
+
+            const { mode } = this.state;
+            if ( mode == 'EDIT' ) this.saveData();
+        }
+        
+        if (keyCode == 27) {
+            e.preventDefault();
+            this.cancelEditmode();
+        }
+    }
 
     render() {
         const { item, type, value, refDetail, permissions, elementType } = this.props;
@@ -440,6 +501,7 @@ export class EditableContent extends React.Component {
         const toggleMode = this.toggleMode.bind(this);
         const uploadImage = this.uploadImage.bind(this);
         const PasteFromClipboard = this.PasteFromClipboard.bind(this);
+        const onKeyDown = this.onKeyDown.bind(this);
 
         const PreparedFloatingActions = <FloatingActions
             mode={mode}
@@ -462,7 +524,7 @@ export class EditableContent extends React.Component {
                 return (
                     <Fragment>
                         <Space>
-                            <span ref={this.inputRef} className="mbac-editable-content" contentEditable="true" ></span>
+                            <span ref={this.inputRef} className="mbac-editable-content" contentEditable="true" onKeyDown={onKeyDown}></span>
                             { PreparedFloatingActions }
                         </Space>
                     </Fragment>
@@ -484,7 +546,7 @@ export class EditableContent extends React.Component {
                             className="mbac-editable-content mbac-wysiwyg"
                             onImageUpload={uploadImage}
                             onPaste={PasteFromClipboard}
-
+                            onKeyDown={onKeyDown}
                             options={summernoteOptions}
                         />
                         { PreparedFloatingActions }

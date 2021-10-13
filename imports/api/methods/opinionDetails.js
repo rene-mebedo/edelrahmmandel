@@ -636,7 +636,7 @@ Meteor.methods({
      */
     'opinionDetail.undoFinallyRemove'(id) {
         check(id, String);
-        console.log("id", id);
+        
         this.unblock();
 
         if (!this.userId) {
@@ -696,8 +696,6 @@ Meteor.methods({
         }
         findDetails2bUpdate(id);
 
-        
-        console.log(detailIds2bUpdate);
         // aktualisieren der betroffenen children Details
         OpinionDetails.update({
             _id: { $in: detailIds2bUpdate }

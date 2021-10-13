@@ -10,7 +10,7 @@ import PictureOutlined from '@ant-design/icons/PictureOutlined';
 import InboxOutlined from '@ant-design/icons/InboxOutlined';
 
 import { Images } from '/imports/api/collections/images';
-import { useImages } from '../../client/trackers';
+import { useImages, useOpinion } from '../../client/trackers';
 
 import { ModalBackground } from '../components/ModalBackground';
 
@@ -19,6 +19,8 @@ import Compressor from 'compressorjs';
 export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
     const [ images, imagesLoading ] = useImages();
     const [ showModal, setShowModal ] = useState(false);
+
+    const [ opinion, opinionLoading ] = useOpinion(refOpinion);
 
     const closeModal = e => {
         //form.resetFields();
@@ -61,13 +63,10 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                 //console.log('upload start', this)
             });
 
-            upload.on('end', function (error, fileObj) {
-                //console.log('upload end', error, fileObj)
+            upload.on('end', function (error, fileObj) {                
                 if (error) {
                     message.error(`Fehler beim Upload: ${error}`);
-                    //console.log(`Error during upload: ${error}`);
                 } else {
-                    console.log(`File successfully uploaded`, fileObj);
                     const data = {
                         refOpinion,
                         refParentDetail: refDetail, // the new parent is the current detail
@@ -93,6 +92,8 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
             maxWidth: 600,
             quality: 0.75,
             drew(context, canvas) {
+                if (opinion && opinion.disableCopyright) return;
+                
                 context.fillStyle = '#fff';
                 context.font = '11pt Arial';
                 context.fillText('© MEBEDO Consulting GmbH', 20, canvas.height - 20);

@@ -1,4 +1,6 @@
 import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
+
 import React from 'react';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
@@ -27,39 +29,44 @@ const layout = {
     },
 };
 
-export const LoginForm = () => {
+export const ForgotPassword = () => {
 
-  const login = data => {
-    const username = data.username && data.username.toLowerCase();
+    const forgotPassword = data => {
+        const username = data.username && data.username.toLowerCase();
 
-    Meteor.loginWithPassword(username, data.password, err => {
-      if (err) {
-        Modal.error({
-          title: 'Login fehlgeschlagen',
-          content: 'Bitte überprüfen Sie Ihren Benutzernamen und/oder Ihr Passwort und versuchen Sie es erneut.',
-        });  
-      }
-    });
-  };
+        Accounts.forgotPassword({email:username}, err => {
+            if (err) {
+                return Modal.error({
+                    title: 'Das hat nicht funktioniert',
+                    content: 'Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.',
+                });  
+            }
+
+            Modal.success({
+                title: 'EMail versandt',
+                content: 'Wir haben Ihnen einen Link an Ihre EMailadresse gesandt. Bitte betätigen Sie diesen um Ihr Passwort erneut zu vergeben.',
+            });
+        });
+    };
 
   return (
     <Row>
       <Col xs={2} sm={2} md={4} lg={6} xl={8} />
         
       <Col xs={20} sm={20} md={16} lg={12} xl={8} id="Login">
-        <Divider orientation="left">Login</Divider>
+        <Divider orientation="left">Passwort vergessen</Divider>
         <p>
-          Herzlich Willkommen zu MEBEDO GutachtenPlus!
+          HOPLA, nicht schlimm! So etwas kann passieren :)
         </p>
         <p>
-          Bitte melden Sie sich mit Ihren Benutzerdaten an oder registrieren Sie 
-          sich, falls Sie noch keine Zugangsdaten haben.
+          Bitte geben Sie Ihre EMail-Adresse ein. Wir senden Ihnen einen Link per E-Mail über diesen Sie ein
+          neues Passwort vergeben können.
         </p>
         <Form
           {...layout}
           name="LoginForm"
           
-          onFinish={login}
+          onFinish={forgotPassword}
         >
           <Form.Item
               label="Benutzername"
@@ -74,26 +81,11 @@ export const LoginForm = () => {
               <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Benutzer"/>
           </Form.Item>
 
-          <Form.Item
-              label="Passwort"
-              name="password"
-              rules={[
-                  {
-                  required: true,
-                  message: 'Bitte geben Sie Ihr Passwort ein.',
-                  },
-              ]}
-          >
-              <Input.Password prefix={<LockOutlined className="site-form-item-icon" />} placeholder="Passwort"/>
-          </Form.Item>
-
           <Form.Item {...tailLayout}>
               <Space split={<Divider type="vertical" />} size="large">
                   <Button type="primary" htmlType="submit">
-                      Anmelden
+                      Reset Passwort
                   </Button>
-
-                  <a href="/forgotpassword">Passwort vergessen</a>
               </Space>
               
           </Form.Item>

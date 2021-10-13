@@ -14,6 +14,8 @@ import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
 import { AppState } from '../imports/client/AppState';
 import { VerifyEMail } from '../imports/ui/components/VerifyEMail';
 import { UserProfileForm } from '../imports/ui/components/user-profile-form';
+import { ForgotPassword } from '../imports/ui/ForgotPassword';
+import { ResetPassword } from '../imports/ui/ResetPassword';
 
 // https://github.com/kadirahq/flow-router/issues/318
 // Prevent routing when there are unsaved changes
@@ -97,6 +99,27 @@ FlowRouter.route('/verify-email/:token', {
         mount(App, {
             content: VerifyEMail,
             token,
+            authenticatedRoute: false
+        });
+    },
+});
+
+FlowRouter.route('/reset-password/:token', {
+    name: 'resetPassword',
+    action({ token }) {
+        mount(App, {
+            content: ResetPassword,
+            token,
+            authenticatedRoute: false
+        });
+    },
+});
+
+FlowRouter.route('/forgotpassword', {
+    name: 'forgotpassword',
+    action() {
+        mount(App, {
+            content: ForgotPassword,
             authenticatedRoute: false
         });
     },

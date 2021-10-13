@@ -104,6 +104,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                             </Descriptions.Item>
                         </Fragment>
                     }
+                    <Descriptions.Item label="Fotografiererlaubnis vorhanden">{!!!opinion.disableCopyright ? 'Ja, vorhanden' : 'Nein, nicht vorhanden'}</Descriptions.Item>
                 </Descriptions>
             </TabPane>
 

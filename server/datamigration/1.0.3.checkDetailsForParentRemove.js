@@ -1,5 +1,8 @@
 import { OpinionDetails } from '/imports/api/collections/opinionDetails';
 
+//RS,12.10.2021 - wird nicht mehr benötgt 
+return;
+
 const checkChildrenRecursive = (id, by, property, propertyBy) => {
     OpinionDetails.find({
         $and: [
