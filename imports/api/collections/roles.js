@@ -47,6 +47,7 @@ export const RolesSchema = new SimpleSchema({
                     manageTemplate: { type: SimpleSchema.Integer, label: 'Gutachten Vorlage erstellen, bearbeiten', defaultValue: 0 },
                     // zum Löschen einer Vorlage benötigt der benutzer die remove Berechtigung UND manageTemplate Berechtigung
                     canPostMessage: { type: SimpleSchema.Integer, label: 'Darf der Benutzer Nachrichten zu einem Gutachten/-Detail schreiben.', defaultValue: 0 },
+                    spellcheck: { type: SimpleSchema.Integer, label: 'Darf der Benutzer einen Baustein als rechtschreibgeprüft abhaken', defaultValue: 0 },
                 }),
                 label: 'Berechtigungen für Gutachten'
             },

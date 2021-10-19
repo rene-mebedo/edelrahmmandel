@@ -56,6 +56,7 @@ export const hasPermission = ({ userId, currentUser, sharedRole }, permissionNam
 
     let isPermitted = 0;
     assignedRoles = Roles.find({ _id: { $in: roles } }).map( role => {
+        //console.log('role', role, 'isPermitted:', isRolePermitted(permissionName, role))
         if (isRolePermitted(permissionName, role)) isPermitted++;
     });
 

@@ -157,6 +157,59 @@ Meteor.methods({
 
         Activities.insert(activity);
     },
+
+    /**
+     * Toggels the Spellcheck flag of the given opinion detail
+     * 
+     * @param {String} id Id of the opinionDetail to be toggelt
+     */
+     'opinionDetail.toggleSpellcheck'(id) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+        
+        let currentUser = Meteor.users.findOne(this.userId);
+        const opinionDetail = OpinionDetails.findOne(id);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: opinionDetail.refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (! hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.spellcheck')) {
+            throw new Meteor.Error('Keine Berechtigung zum Korrekturlesen des Gutachtens. Somit kann die Rechtschreibprüfung nicht gesetzt werden.');
+        }
+
+        OpinionDetails.update(id, {
+            $set:{ 
+                spellchecked: opinionDetail.spellchecked ? false:true,
+            },
+            $inc: { activitiesCount: 1 },
+        });
+
+        let activity = injectUserData({ currentUser }, {
+            refOpinion: opinionDetail.refOpinion,
+            refDetail: id._str || id,
+            type: 'SYSTEM-LOG',
+            action: 'SPELLCHECKED',
+            message: opinionDetail.spellchecked ? "hat die Rechtschreibprüfung wiederufen": "hat die Rechtschreibprüfung durchgeführt",
+            changes: [{
+                message: opinionDetail.spellchecked ? "hat die Rechtschreibprüfung zurückgenommen": "hat die Rechtschreibprüfung durchgeführt",
+                propName: "spellchecked",
+                oldValue: !!opinionDetail.spellchecked,
+                newValue: !!!opinionDetail.spellchecked
+            }]
+        }, { created: true });
+
+        Activities.insert(activity);
+    },
     
     /**
      * Takes the given OpinionDetail (Answer) and set the actionCode and -text
@@ -264,6 +317,7 @@ Meteor.methods({
         }
         
         detailData.finallyRemoved = false;
+        detailData.spellchecked = false;
 
         // check optional data for likes, dislikes, etc.
         if (!detailData.files) detailData.files = [];
@@ -434,6 +488,9 @@ Meteor.methods({
                 const itemToRender = { ...old, ...opinionDetail.data };
                 opinionDetail.data.htmlContent = renderTemplate(itemToRender);
             }
+
+            // if changes are happend, set spellcheck flag to false
+            opinionDetail.data.spellchecked = false
 
             const result = OpinionDetails.update(opinionDetail.id, { 
                 $set: opinionDetail.data,

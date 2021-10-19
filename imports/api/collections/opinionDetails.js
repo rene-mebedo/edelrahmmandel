@@ -151,6 +151,10 @@ export const OpinionDetailSchema = new SimpleSchema({
         type: String,
         optional: true
     }*/
+    spellchecked: {
+        type: Boolean,
+        defaultValue: false
+    }
 });
 
 OpinionDetailSchema.extend(CreationSchema);

@@ -7,8 +7,11 @@ import Table from 'antd/lib/table';
 import Space from 'antd/lib/space';
 import Tabs from 'antd/lib/tabs';
 
+import Typography from 'antd/lib/typography';
+const { Paragraph, Text } = Typography;
+
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
-import PlusOutlined from '@ant-design/icons/PlusOutlined';
+import FileDoneOutlined from '@ant-design/icons/FileDoneOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import FormOutlined from '@ant-design/icons/FormOutlined';
@@ -16,7 +19,7 @@ import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 import ContactsOutlined from '@ant-design/icons/ContactsOutlined';
 import ImportOutlined from '@ant-design/icons/ImportOutlined';
 
-import { useOpinion, useOpinionPdfs } from '../client/trackers';
+import { useOpinion, useOpinionDetails, useOpinionDetailsSpellcheck, useOpinionPdfs } from '../client/trackers';
 
 import { OpinionParticipants } from './components/OpinionParticipants';
 import { OpinionVariables } from './components/OpinionVariables';
@@ -29,6 +32,60 @@ import { useAppState } from '../client/AppState';
 
 const { TabPane } = Tabs;
 
+export const OpinionSpellcheckList = ({refOpinion, currentUser, canEdit=false, canDelete=false, children, onTabPaneChanged}) => {
+    const [opinionDetailsSpellcheck, spellcheckLoading] = useOpinionDetailsSpellcheck(refOpinion)
+
+    return (
+        <Table
+            //bordered
+            size="small"
+            loading={spellcheckLoading}
+            pagination={false}
+            dataSource={opinionDetailsSpellcheck}
+            rowKey="_id"
+            showHeader={false}
+            columns={[
+                {
+                    title: 'Pos.',
+                    dataIndex: 'pos',
+                    key: 'pos',
+                    render: (text, item) => {
+                        if (item.refParentDetail === null)
+                            return <div style={{width:50}} ><a href={`/opinions/${refOpinion}?activitiesBy=${item._id}`}>
+                                {'' + (item.printParentPosition || '') + item.printPosition}
+                            </a></div>
+
+                        return <div style={{width:50}} ><a href={`/opinions/${refOpinion}/${item.refParentDetail}?activitiesBy=${item._id}`}>
+                            {'' + (item.printParentPosition || '') + item.printPosition}
+                        </a></div>
+                    }
+                }, {
+                    title: 'Text',
+                    dataIndex: 'printTitle',
+                    key: 'printTitle',
+                    render: (printTitle, item) => <Fragment>
+                        {printTitle 
+                            ? <Text 
+                                style={{ width:800 }}
+                                ellipsis={true}>
+                                    { printTitle }
+                              </Text>
+                            : null
+                        }
+                        { printTitle ===  item.text ? null :
+                            <Text
+                                style={{ width:800 }}
+                                ellipsis={true}
+                            >
+                                { item.text && item.text.replace(/(<([^>]+)>)/gi, "") }
+                            </Text>
+                        }
+                    </Fragment>
+                }
+            ]}
+        />
+    )
+}
 
 export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelete=false, children, onTabPaneChanged}) => {
     const [ opinion, isLoading ] = useOpinion(refOpinion);
@@ -167,6 +224,10 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                         }
                     ]}
                 />
+            </TabPane>
+
+            <TabPane tab={<span><FileDoneOutlined />Spellcheck</span>} key="SPELLCHECK" disabled={disableTabPanes} >
+                <OpinionSpellcheckList refOpinion={refOpinion} currentUser={currentUser} />
             </TabPane>
 
             <TabPane tab={<span><ShareAltOutlined />geteilt mit</span>} key="SHARE" disabled={disableTabPanes}>

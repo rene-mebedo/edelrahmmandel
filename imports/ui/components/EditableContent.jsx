@@ -21,6 +21,8 @@ import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import CheckOutlined from '@ant-design/icons/CheckOutlined';
 import CloseSquareOutlined from '@ant-design/icons/CloseSquareOutlined';
+import FileDoneOutlined from '@ant-design/icons/FileDoneOutlined';
+import FileUnknownOutlined from '@ant-design/icons/FileUnknownOutlined';
 
 import { Summernote } from './Summernote';
 import { ActionCodeDropdown } from '../components/ActionCodeDropdown';
@@ -89,7 +91,7 @@ const MbacTooltip = props => {
     )
 }
 
-const FloatingActions = ({mode, onSave, onCancel, onSocialClick, onCheckAnswer, onRemove, onFinallyRemove, isDeleted, isAnswer, likes, dislikes, canEdit = false, canFinallyRemove = false }) => {
+const FloatingActions = ({mode, onSave, onCancel, onSocialClick, onCheckAnswer, onRemove, onFinallyRemove, isSpellchecked, isDeleted, isAnswer, likes, dislikes, canEdit = false, canFinallyRemove = false }) => {
     onSave = onSave || function(){};
     onCancel = onCancel || function(){};
     onCheckAnswer = onCheckAnswer || function(){};
@@ -139,6 +141,11 @@ const FloatingActions = ({mode, onSave, onCancel, onSocialClick, onCheckAnswer, 
                             <span>{dislikes.length}</span>
                         </Space>
                     </MbacTooltip>
+
+                    { isSpellchecked 
+                        ? <FileUnknownOutlined onClick={ e => onSocialClick('spellchecked') } /> 
+                        : <FileDoneOutlined style={{fontSize:28, color:'#47b147'}} onClick={ e => onSocialClick('spellchecked') } /> 
+                    }
 
                     { canEdit && isAnswer ? <CheckOutlined onClick={onCheckAnswer} /> : null }
                     { canEdit ? (isDeleted ? <EyeInvisibleOutlined onClick={onRemove} /> : <EyeOutlined onClick={onRemove} />) : null }
@@ -258,6 +265,26 @@ export class EditableContent extends React.Component {
         });
     }
 
+    toggleSpellcheck() {
+        const { refDetail } = this.props;
+
+        setAppState({appIsBusy: 'Working...'});
+        this.setState({saving:true});
+        
+        Meteor.call('opinionDetail.toggleSpellcheck', refDetail, err => {
+            setAppState({appIsBusy: false});
+            this.setState({saving:false})
+
+            if (err) {
+                return Modal.error({
+                    title: 'Fehler',
+                    content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
+                });
+            }
+        });
+    }
+
+
     finallyRemove() {
         const { refDetail } = this.props;
         
@@ -309,13 +336,17 @@ export class EditableContent extends React.Component {
     }
 
     doSocial(action) {
+        if (action == 'spellchecked') return this.toggleSpellcheck();
+
         const { refDetail } = this.props;
 
         setAppState({appIsBusy: 'Speichern'});
-        this.setState({saving:true})
+        this.setState({saving:true});
+
         Meteor.call('opinionDetail.doSocial', action, refDetail, (err, res) => {
             setAppState({appIsBusy: false});
-            this.setState({saving:false})
+            this.setState({saving:false});
+
             if (err) {
                 return Modal.error({
                     title: 'Fehler',
@@ -511,6 +542,7 @@ export class EditableContent extends React.Component {
             onRemove={this.toggleDeleted.bind(this)}
             onFinallyRemove={this.finallyRemove.bind(this)}
             onSocialClick={this.doSocial.bind(this)}
+            isSpellchecked={!!!item.spellchecked}
             isDeleted={item.deleted}
             isAnswer={item.type == 'ANSWER'}
             likes={item.likes}
@@ -533,6 +565,10 @@ export class EditableContent extends React.Component {
 
             return (
                 <Fragment>
+                    { !!item.spellchecked 
+                        ? <FileDoneOutlined style={{position:'relative', float:'left', left:0, top:6, marginLeft:-16, fontSize:12, color:'#47b147'}} /> 
+                        : null
+                    }
                     <span className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`} onClick={toggleMode}>{value}</span>
                     { mode === 'FOCUSED' ? PreparedFloatingActions : null }
                 </Fragment>
@@ -556,10 +592,17 @@ export class EditableContent extends React.Component {
 
             return (
                 <Fragment>
-                    <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
-                        onClick={toggleMode}
-                        dangerouslySetInnerHTML={ {__html: value } }
-                    />
+                    <div>
+                        
+                        { !!item.spellchecked 
+                            ? <FileDoneOutlined style={{position:'relative', float:'left', left:0, top:6, marginLeft:-16, fontSize:12, color:'#47b147'}} /> 
+                            : null
+                        }
+                        <div className={`mbac-could-styled-as-deleted ${mode=='FOCUSED'?'mbac-detail-focused':''}`}
+                            onClick={toggleMode}
+                            dangerouslySetInnerHTML={ {__html: value } }
+                        />
+                    </div>
                     { mode === 'FOCUSED' ? PreparedFloatingActions : null }
                 </Fragment>
             )

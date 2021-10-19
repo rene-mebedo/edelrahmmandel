@@ -15,7 +15,8 @@ import { Roles } from '/imports/api/collections/roles';
                 remove: 0,
                 admin: 0,
                 canPostMessage: 0,
-                manageTemplate: 0
+                manageTemplate: 0,
+                spellcheck: 0
             },
             shareWith: 0,
             cancelSharedWith: 0,
@@ -37,7 +38,8 @@ import { Roles } from '/imports/api/collections/roles';
                 remove: 0,
                 admin: 0,
                 canPostMessage: 1,
-                manageTemplate: 0
+                manageTemplate: 0,
+                spellcheck: 0
             },
             shareWith: 1,
             cancelSharedWith: 0,
@@ -62,7 +64,8 @@ import { Roles } from '/imports/api/collections/roles';
                 remove: 0,
                 admin: 0,
                 canPostMessage: 1,
-                manageTemplate: 0
+                manageTemplate: 0,
+                spellcheck: 0
             },
             shareWith: 0,
             cancelSharedWith: 0,
@@ -84,7 +87,8 @@ import { Roles } from '/imports/api/collections/roles';
                 remove: 0,
                 admin: 0,
                 canPostMessage: 1,
-                manageTemplate: 0
+                manageTemplate: 0,
+                spellcheck: 0
             },
             shareWith: 1,
             cancelSharedWith: 0,
@@ -96,6 +100,31 @@ import { Roles } from '/imports/api/collections/roles';
             { roleId:'EMPLOYEE', displayName: 'Mitarbeiter' }, 
         ],
         selectable: true
+    });
+
+    Roles.insert({
+        _id: 'SPELLCHECKER',
+        rolename: 'Mitarbeiter ',
+        score: 250,
+        description: 'Zugriff nur für Mitarbeiter',
+        permissions: {
+            opinion: {                
+                create: 0,
+                edit: 1,
+                remove: 0,
+                admin: 0,
+                canPostMessage: 1,
+                manageTemplate: 0,
+                spellcheck: 1
+            },
+            shareWith: 0,
+            cancelSharedWith: 0,
+            cancelOwnSharedWith: 1,
+        },
+        invitableRoles: [
+            { roleId:'EVERYBODY', displayName: 'Jeder' },
+        ],
+        selectable: false
     });
 
     // special role, that permits a user with mostly all permissions on
@@ -112,7 +141,8 @@ import { Roles } from '/imports/api/collections/roles';
                 remove: 1,
                 admin: 0,
                 canPostMessage: 1,
-                manageTemplate: 0
+                manageTemplate: 0,
+                spellcheck: 0
             },
             shareWith: 1,
             cancelSharedWith: 1,
@@ -137,7 +167,8 @@ import { Roles } from '/imports/api/collections/roles';
                 remove: 1,
                 admin: 1,
                 canPostMessage: 1,
-                manageTemplate: 1
+                manageTemplate: 1,
+                spellcheck: 1
             },
             shareWith: 1,
             cancelSharedWith: 1,
@@ -147,6 +178,7 @@ import { Roles } from '/imports/api/collections/roles';
             { roleId:'EVERYBODY', displayName: 'Jeder' }, 
             { roleId:'EXTERNAL', displayName: 'Externer' },
             { roleId:'EMPLOYEE', displayName: 'Mitarbeiter' }, 
+            { roleId:'SPELLCHECKER', displayName: 'Spellchecked' }, 
             { roleId:'ADMIN', displayName: 'Administrator' },
         ],
         selectable: true

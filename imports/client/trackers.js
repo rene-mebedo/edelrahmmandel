@@ -180,6 +180,40 @@ export const useOpinionDetails = (refOpinion, refParentDetail, callback) => useT
     return [opinionDetails, false];
 }, [refOpinion, refParentDetail]);
 
+/**
+ * Load the given OpinionDetail that are not spellchecked yet.
+ * 
+ * @param {String} refOpinion   id of the Opinion
+ */
+ export const useOpinionDetailsSpellcheck = refOpinion => useTracker( () => {
+    const noDataAvailable = [ [] /*opinionDetails*/ , true /*loading*/];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    const handler = Meteor.subscribe('opinionDetailsSpellcheck', { refOpinion });
+
+    if (!handler.ready()) { 
+        return noDataAvailable;
+    }
+
+    const opinionDetails = OpinionDetails.find({ 
+        $and: [
+            { refOpinion }, 
+            { deleted: false },
+            { finallyRemoved: false },
+            { type: { $nin: ['PAGEBREAK', 'TODOLIST', 'TODOITEM', 'TODOITEMACTIONHEAD'] }},
+            { 
+                $or: [
+                    { spellchecked: false },
+                    { spellchecked: { $exists: false } }
+                ]
+            }
+        ]
+    }, { sort: { printParentPosition:1, printPosition:1 }}).fetch();
+
+    return [opinionDetails, false];
+}, [refOpinion]);
 
 /**
  * Load Activities reactivly for a given opinion or opinionDetail
