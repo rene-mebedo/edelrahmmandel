@@ -189,6 +189,8 @@ Meteor.methods({
 
         return shared && shared.sharedWith.map( sw => {
             return sw.user;
+        }).filter(user => {
+            return user.firstName.includes(searchText) || user.lastName.includes(searchText)
         });
     },
 

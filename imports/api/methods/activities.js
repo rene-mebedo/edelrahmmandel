@@ -147,10 +147,12 @@ Meteor.methods({
             _id: activitiesBy
         });
 
+        const parentReference = refParentDetail || (detailFromActivitiesBy && detailFromActivitiesBy.refParentDetail) || null;
+
         const message = messageWithMentions({ currentUser, msg, refs: {
             refOpinion: sharedOpinion._id,
             refOpinionDetail: (detail && detail._id) || null,
-            refParentDetail: refParentDetail || detailFromActivitiesBy.refParentDetail,
+            refParentDetail: parentReference, //refParentDetail || detailFromActivitiesBy.refParentDetail,
             refActivitiesBy: activitiesBy || null,
             refActivity: null
         }});
@@ -215,8 +217,8 @@ Meteor.methods({
         const message = messageWithMentions({ currentUser, msg, refs: {
             refOpinion: sharedOpinion._id,
             refOpinionDetail: (opinionDetail && opinionDetail._id) || null,
-            refParentDetail: opinionDetail.refParentDetail,
-            refActivitiesBy: opinionDetail._id,
+            refParentDetail: (opinionDetail && opinionDetail.refParentDetail) || null,
+            refActivitiesBy: (opinionDetail && opinionDetail._id) || null,
             refActivity: refActivity
         }});
 

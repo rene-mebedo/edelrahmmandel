@@ -55,6 +55,10 @@
         { 
             "version": "1.0.15", 
             "description": "Spellcheck Funktionaltät implementiert."
+        },
+        { 
+            "version": "1.0.16", 
+            "description": "Fehlerbereinigung beim Posten einer Nachricht auf oberster Ebene der Opinion. Filtern der Benutzernamen @xxxx (Mentioned) #67."
         }
     ]
 }
