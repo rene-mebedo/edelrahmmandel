@@ -1,64 +1,67 @@
 {
-    "version": "1.0.16",
-    "timestamp": "2021-11-02",
+    "version": "1.0.17",
+    "timestamp": "2021-11-03",
     
     "details": [
         { 
-            "version": "1.0.3", 
-            "description": "Prüfen von untergeordneten Bausteinen, ob das Elternelement bereits gelöscht wurde. Ist dem so, so wir das betroffene Element ebenfalls als gelöscht markiert." 
+            "version": "1.0.17", 
+            "description": "Beschreibung der Versionierung umgekehrt. Mentioned-Suche case-insensitive."
         },
         { 
-            "version": "1.0.4", 
-            "description": "Bugfix #47 - Der Wert der aktuellen Bearbeitung eines Bausteins geht nicht mehr verloren, wenn ein anderer Benutzer z. B. Variablen aktualisiert." 
+            "version": "1.0.16", 
+            "description": "Fehlerbereinigung beim Posten einer Nachricht auf oberster Ebene der Opinion. Filtern der Benutzernamen @xxxx (Mentioned) #67."
         },
         { 
-            "version": "1.0.5", 
-            "description": "Bugfix #48 - Sortierung der Elemente innerhalb der Aufstellung Maßnahmen nun numerisch, nicht mehr alphanumerisch (Text). Sowie diverse kleinere textliche Anpassungen."
-        },
-        { 
-            "version": "1.0.6", 
-            "description": "In Actiontext des Maßnahmentexts im Default <p></p> eingefügt."
-        },
-        { 
-            "version": "1.0.7", 
-            "description": "Aktualisierung des opinion-documenter mit einigen Layoutanassungen, Erhöhung der Bildqualität von 60 auf 75%, Picturecontainer ist nun Bestandteil des Inhaltsverzeichnis."
-        }
-        ,
-        { 
-            "version": "1.0.8", 
-            "description": "Performanceverbesserung für Details. Aktualisierung des Package opinion-documenter (Version 1.0.32) mit einigen Layoutanpassungen."
-        },
-        { 
-            "version": "1.0.9", 
-            "description": "Layoutanpassungen Umbruch bei zu langen Texten und Maximalbreite für Bilder. Aktualisierung des Package opinion-documenter (Version 1.0.33) mit einigen Layoutanpassungen und neuen internen Variablen."
-        },
-        { 
-            "version": "1.0.10", 
-            "description": "Aktualisierung des Package opinion-documenter (Version 1.0.34) mit Layoutanpassungen."
-        },
-        { 
-            "version": "1.0.11", 
-            "description": "Aktualisierung des Package opinion-documenter (Version 1.0.35) mit Layoutanpassungen: Schriftgröße 11 auch für Fragen."
-        },
-        { 
-            "version": "1.0.12", 
-            "description": "Fehlerbehebung bzgl. Darstellung von Bildmarkierungen. Willkommenstext eingefügt auf Startseite. Aktualisierung des Package markerjs2 (2.4.1 => 2.13)."
-        },
-        { 
-            "version": "1.0.13", 
-            "description": "Links zur Startseite implementiert in Menüs der Dialoge und in MEBEDO Logo"
+            "version": "1.0.15", 
+            "description": "Spellcheck-Funktionaltät implementiert."
         },
         { 
             "version": "1.0.14", 
             "description": "'Passwort vergessen' Funktion implementiert, Option Fotografiererlaubnis implementiert"
         },
         { 
-            "version": "1.0.15", 
-            "description": "Spellcheck Funktionaltät implementiert."
+            "version": "1.0.13", 
+            "description": "Links zur Startseite implementiert in Menüs der Dialoge und in MEBEDO Logo"
         },
         { 
-            "version": "1.0.16", 
-            "description": "Fehlerbereinigung beim Posten einer Nachricht auf oberster Ebene der Opinion. Filtern der Benutzernamen @xxxx (Mentioned) #67."
+            "version": "1.0.12", 
+            "description": "Fehlerbehebung bzgl. Darstellung von Bildmarkierungen. Willkommenstext eingefügt auf Startseite. Aktualisierung des Package markerjs2 (2.4.1 => 2.13)."
+        },
+        { 
+            "version": "1.0.11", 
+            "description": "Aktualisierung des Package opinion-documenter (Version 1.0.35) mit Layoutanpassungen: Schriftgröße 11 auch für Fragen."
+        },
+        { 
+            "version": "1.0.10", 
+            "description": "Aktualisierung des Package opinion-documenter (Version 1.0.34) mit Layoutanpassungen."
+        },
+        { 
+            "version": "1.0.9", 
+            "description": "Layoutanpassungen Umbruch bei zu langen Texten und Maximalbreite für Bilder. Aktualisierung des Package opinion-documenter (Version 1.0.33) mit einigen Layoutanpassungen und neuen internen Variablen."
+        },
+        { 
+            "version": "1.0.8", 
+            "description": "Performanceverbesserung für Details. Aktualisierung des Package opinion-documenter (Version 1.0.32) mit einigen Layoutanpassungen."
+        },
+        { 
+            "version": "1.0.7", 
+            "description": "Aktualisierung des opinion-documenter mit einigen Layoutanassungen, Erhöhung der Bildqualität von 60 auf 75%, Picturecontainer ist nun Bestandteil des Inhaltsverzeichnis."
+        },
+        { 
+            "version": "1.0.6", 
+            "description": "In Actiontext des Maßnahmentexts im Default <p></p> eingefügt."
+        },
+        { 
+            "version": "1.0.5", 
+            "description": "Bugfix #48 - Sortierung der Elemente innerhalb der Aufstellung Maßnahmen nun numerisch, nicht mehr alphanumerisch (Text). Sowie diverse kleinere textliche Anpassungen."
+        },
+        { 
+            "version": "1.0.4", 
+            "description": "Bugfix #47 - Der Wert der aktuellen Bearbeitung eines Bausteins geht nicht mehr verloren, wenn ein anderer Benutzer z. B. Variablen aktualisiert." 
+        },
+        { 
+            "version": "1.0.3", 
+            "description": "Prüfen von untergeordneten Bausteinen, ob das Elternelement bereits gelöscht wurde. Ist dem so, so wir das betroffene Element ebenfalls als gelöscht markiert." 
         }
     ]
 }

@@ -187,10 +187,13 @@ Meteor.methods({
             throw new Meteor.Error('Keine Berechtigung zum Schreiben von Nachrichten des angegebenen Gutachtens. Sie können das Benutzerverzeichnis nicht einsehen.');
         }
 
+        const lowerSearchtext = (searchText || '').toLowerCase();
         return shared && shared.sharedWith.map( sw => {
             return sw.user;
         }).filter(user => {
-            return user.firstName.includes(searchText) || user.lastName.includes(searchText)
+            const fn = (user.firstName || '').toLowerCase();
+            const ln = (user.lastName || '').toLowerCase();
+            return fn.includes(lowerSearchtext) || ln.includes(lowerSearchtext);
         });
     },
 
