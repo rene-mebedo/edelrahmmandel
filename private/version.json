@@ -1,8 +1,12 @@
 {
-    "version": "1.0.17",
-    "timestamp": "2021-11-03",
+    "version": "1.0.18",
+    "timestamp": "2021-11-04",
     
     "details": [
+        { 
+            "version": "1.0.18", 
+            "description": "Korrektur (server/datamigration) implementiert für noch aus der Vergangenheit enthaltene opinionDetails mit Text im printTitle."
+        },
         { 
             "version": "1.0.17", 
             "description": "Beschreibung der Versionierung umgekehrt. Mentioned-Suche case-insensitive."
