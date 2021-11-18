@@ -6,6 +6,9 @@ import Tag from 'antd/lib/tag';
 import Table from 'antd/lib/table';
 import Space from 'antd/lib/space';
 import Tabs from 'antd/lib/tabs';
+import Result from 'antd/lib/result';
+import Button from 'antd/lib/button';
+import Modal from 'antd/lib/modal';
 
 import Typography from 'antd/lib/typography';
 const { Paragraph, Text } = Typography;
@@ -18,6 +21,7 @@ import FormOutlined from '@ant-design/icons/FormOutlined';
 import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 import ContactsOutlined from '@ant-design/icons/ContactsOutlined';
 import ImportOutlined from '@ant-design/icons/ImportOutlined';
+import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 
 import { useOpinion, useOpinionDetails, useOpinionDetailsSpellcheck, useOpinionPdfs } from '../client/trackers';
 
@@ -29,6 +33,7 @@ import { Expert } from './components/Expert';
 import filesize from 'filesize';
 import moment from 'moment';
 import { useAppState } from '../client/AppState';
+
 
 const { TabPane } = Tabs;
 
@@ -87,7 +92,7 @@ export const OpinionSpellcheckList = ({refOpinion, currentUser, canEdit=false, c
     )
 }
 
-export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelete=false, children, onTabPaneChanged}) => {
+export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelete=false, canCancelShareWith=false, children, onTabPaneChanged}) => {
     const [ opinion, isLoading ] = useOpinion(refOpinion);
     const [ pdfs, isPdfLoading ] = useOpinionPdfs(refOpinion);
 
@@ -95,13 +100,40 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
 
     const [ selectedDetail ] = useAppState('selectedDetail');
     
+    
     if (isLoading) {
         return (
             <Skeleton paragraph={{ rows: 4 }} />
         );
+    } else if (!opinion) {
+        return <Result
+            status="403"
+            title="Zugriff verweigert"
+            subTitle="Das Gutachten kann nicht angezeigt werden, da Sie nicht berechtigt sind."
+            extra={<Button type="primary" onClick={() => history.back()}>Zurück</Button>}
+        />;
     }
 
     const disableTabPanes = (selectedDetail && selectedDetail.mode == 'EDIT');
+
+    const cancelSharedWith = shd => {
+        Modal.confirm({
+            title: 'Löschen',
+            icon: <ExclamationCircleOutlined />,
+            content: <span>Soll der Benutzer <strong>{shd.user.firstName} {shd.user.lastName}</strong> für dieses Dokument "entfernt" werden?</span>,
+            okText: 'OK',
+            cancelText: 'Abbruch',
+            onOk: closeConfirm => {
+                closeConfirm();
+
+                Meteor.call('users.cancelShareWith', refOpinion, shd.user.userId, (err, result) => {
+                    if (err) {
+                        console.log('Fehler beim remove des Benutzers', err);
+                    }
+                });
+            }
+        });
+    }
 
     return (
         <Tabs onChange={onTabPaneChanged} size="large" tabPosition={window.innerWidth > 800 ? 'left':'top'}>
@@ -218,7 +250,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                             key: '_id',
                             align:"center",
                             render: (_id, item, index) => <Space>
-                                <Tag color={index==0?"green":"orange"}>{index == 0 ? 'Aktuell':'Entwurf'}</Tag>
+                                <Tag color={item.meta.preview ? "red" : (index==0?"green":"orange")}>{item.meta.preview ? 'temp. Vorschau' : (index == 0 ? 'Aktuell':'Entwurf')}</Tag>
                                 <Tag color="blue">v{pdfs.length - index}</Tag>
                             </Space>
                         }
@@ -257,10 +289,15 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                             dataIndex: 'role',
                             key: 'role',
                             align: 'right',
-                            render: (text, shd) => {
+                            render: (text, shw) => {
+                                const { userId, firstName, lastName } = shw.user;
+
                                 return <Space size='large'>
-                                    <EditOutlined key="edit" />
-                                    <DeleteOutlined key="ellipsis" />
+                                    {//<EditOutlined key="edit" />
+                                    }
+                                    { !canCancelShareWith || Meteor.userId() === userId ? null :
+                                        <DeleteOutlined key="remove" onClick={_=>cancelSharedWith(shw)} />
+                                    }
                                 </Space>
                             }
                         }

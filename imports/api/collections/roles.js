@@ -56,6 +56,26 @@ export const RolesSchema = new SimpleSchema({
                 label: 'Darf Dinge teilen',
                 defaultValue: 0
             },
+            shareWithExplicitRole: {
+                type: SimpleSchema.Integer,
+                label: 'Darf Dinge mit spezieller Rollenzuweisung teilen',
+                defaultValue: 0
+            },
+            shareWithExplicitRoleInvitables: {
+                type: Array,
+                optional: true
+            },
+            'shareWithExplicitRoleInvitables.$': {
+                label: 'Einladbare spezielle Rollen für Berechtigung shareWithExplicitRole',
+                type: new SimpleSchema({
+                    roleId: {
+                        type: String
+                    },
+                    displayName: {
+                        type: String
+                    }
+                })
+            },
             cancelSharedWith: {
                 type: SimpleSchema.Integer,
                 label: 'Darf Teilen rückgängig machen bzw. eine Person "entfernen"',

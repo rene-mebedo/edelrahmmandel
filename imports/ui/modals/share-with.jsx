@@ -9,7 +9,9 @@ import Space from 'antd/lib/space';
 import message from 'antd/lib/message';
 import Collapse from 'antd/lib/collapse';
 import Select from 'antd/lib/select';
-import Table from 'antd/lib/table';
+import Typography from 'antd/lib/typography';
+
+const { Text } = Typography;
 
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import UserAddOutlined from '@ant-design/icons/UserAddOutlined';
@@ -18,6 +20,8 @@ import MailOutlined from '@ant-design/icons/MailOutlined';
 import { ModalBackground } from '../components/ModalBackground';
 import { UserSearchInput } from '../components/UserSearchInput';
 import { InvitableRoles } from '../components/invitable-roles';
+import { hasPermission } from '../../api/helpers/roles';
+import { useOpinionDetailsSpellcheck } from '../../client/trackers';
 
 const { useForm } = Form;
 const { Option } = Select;
@@ -26,8 +30,6 @@ const { Panel } = Collapse;
 
 const ShareWithForm = ({ validateFields, resetFields }) => {
     const [ form ] = useForm();
-
-
 
     return (
         <Form
@@ -48,9 +50,13 @@ const ShareWithForm = ({ validateFields, resetFields }) => {
     );
 }
 
-export const ModalShareWith = ( { refOpinion, currentUser } ) => {
+export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } ) => {
     const [ showModal, setShowModal ] = useState(false);
     const [ activePanel, setActivePanel ] = useState('INVITE-USER');
+
+    const [ explicitInvitableRoles, setExplicitInvitableRoles ] = useState([]);
+    const [ explicitInvitableRolesLoading, setExplicitInvitableRolesLoading ] = useState(true);
+
     const [ form ] = useForm();
 
     const closeDialog = e => {
@@ -65,12 +71,28 @@ export const ModalShareWith = ( { refOpinion, currentUser } ) => {
         setShowModal(true);
     }
 
+    useEffect( () => {
+        if (canShareWithExplicitRole) {
+            Meteor.call('users.getExplicitInvitableRoles', refOpinion, (err, roles) => {
+                if (!err) {
+                    setExplicitInvitableRoles(roles);
+                    setExplicitInvitableRolesLoading(false);
+                } else {
+                    setExplicitInvitableRolesLoading(false);
+                    console.log(err)
+                }
+            });
+        } else {
+            setExplicitInvitableRolesLoading(false);
+        }
+    }, []);
+
     const handleOk = e => {
         if (activePanel == 'INVITE-USER') {
-            form.validateFields(['user']).then( values => {
-                const { user } = values;
+            form.validateFields(['user', 'explicitRole']).then( values => {
+                const { user, explicitRole } = values;
 
-                Meteor.call('users.shareWith', refOpinion, user, err => {
+                Meteor.call('users.shareWith', refOpinion, {user, explicitRole}, err => {
                     if (err) {
                         return Modal.error({
                             title: 'Fehler',
@@ -133,6 +155,24 @@ export const ModalShareWith = ( { refOpinion, currentUser } ) => {
                                     >
                                         <UserSearchInput refOpinion={'notsupported'} searchMethod="getAll" />
                                     </Form.Item>
+                                    { !canShareWithExplicitRole ? null :
+                                        <div style={{marginLeft: 32, marginTop:8, marginBottom:8}}>
+                                            <Form.Item
+                                                label="Explizite Rolle"
+                                                name="explicitRole"
+                                                rules={[{ required: false }]}
+                                                style={{marginBottom:0}}
+                                            >
+                                                <Select allowClear>
+                                                    {explicitInvitableRoles.map( r => <Option key={r.roleId}>{r.displayName}</Option>)}
+                                                </Select>
+                                            </Form.Item>
+                                            <Text type="secondary" style={{fontSize:10}}>
+                                                Sie können auch mit erweiterter Berechtigung dieses Dokument teilen. Wählen Sie hierzu eine entsprechende Rolle aus
+                                                und berechtigen Sie damit den Benutzer im Besonderen.
+                                            </Text>
+                                        </div>
+                                    }
                                 </Panel>
 
                                 <Panel key="INVITE-BYMAIL" header={<span><strong>Benutzer nicht gefunden?</strong> Dann laden Sie hier die entsprechende Person per E-Mail ein.</span>}>

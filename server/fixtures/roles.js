@@ -19,6 +19,8 @@ import { Roles } from '/imports/api/collections/roles';
                 spellcheck: 0
             },
             shareWith: 0,
+            shareWithExplicitRole: 0,
+            shareWithExplicitRoleInvitables: [ ],
             cancelSharedWith: 0,
             cancelOwnSharedWith: 0,
         },
@@ -42,6 +44,8 @@ import { Roles } from '/imports/api/collections/roles';
                 spellcheck: 0
             },
             shareWith: 1,
+            shareWithExplicitRole: 0,
+            shareWithExplicitRoleInvitables: [ ],
             cancelSharedWith: 0,
             cancelOwnSharedWith: 0,
         },
@@ -68,6 +72,8 @@ import { Roles } from '/imports/api/collections/roles';
                 spellcheck: 0
             },
             shareWith: 0,
+            shareWithExplicitRole: 0,
+            shareWithExplicitRoleInvitables: [ ],
             cancelSharedWith: 0,
             cancelOwnSharedWith: 0,
         },
@@ -91,6 +97,8 @@ import { Roles } from '/imports/api/collections/roles';
                 spellcheck: 0
             },
             shareWith: 1,
+            shareWithExplicitRole: 0,
+            shareWithExplicitRoleInvitables: [ ],
             cancelSharedWith: 0,
             cancelOwnSharedWith: 1,
         },
@@ -118,6 +126,8 @@ import { Roles } from '/imports/api/collections/roles';
                 spellcheck: 1
             },
             shareWith: 0,
+            shareWithExplicitRole: 0,
+            shareWithExplicitRoleInvitables: [ ],
             cancelSharedWith: 0,
             cancelOwnSharedWith: 1,
         },
@@ -142,9 +152,48 @@ import { Roles } from '/imports/api/collections/roles';
                 admin: 0,
                 canPostMessage: 1,
                 manageTemplate: 0,
-                spellcheck: 0
+                spellcheck: 0,
             },
             shareWith: 1,
+            shareWithExplicitRole: 1,
+            shareWithExplicitRoleInvitables: [
+                { roleId:'OWNER', displayName: 'Besitzer' },
+                { roleId:'EXPERT', displayName: 'Experte' },
+                { roleId:'READONLY', displayName: 'nur lesender Zugriff' },
+            ],
+            cancelSharedWith: 1,
+            cancelOwnSharedWith: 1,
+        },
+        invitableRoles: [
+            { roleId:'EVERYBODY', displayName: 'Jeder' }, 
+            { roleId:'EXTERNAL', displayName: 'Externer' },
+        ],
+        selectable: false
+    });
+
+    // special role, that permits a user with mostly all permissions on
+    // the created item, that he creates
+    Roles.insert({
+        _id: 'EXPERT',
+        rolename: 'Experte',
+        score: 700,
+        description: 'Rolle für den zweiten gutachter, der der eigentliche Experte ist',
+        permissions: {
+            opinion: {
+                create: 0,
+                edit: 1,
+                remove: 1,
+                admin: 0,
+                canPostMessage: 1,
+                manageTemplate: 0,
+                spellcheck: 0,
+            },
+            shareWith: 1,
+            shareWithExplicitRole: 0,
+            shareWithExplicitRoleInvitables: [
+                { roleId:'OWNER', displayName: 'Besitzer' },
+                { roleId:'EXPERT', displayName: 'Experte' },
+            ],
             cancelSharedWith: 1,
             cancelOwnSharedWith: 1,
         },
@@ -171,6 +220,13 @@ import { Roles } from '/imports/api/collections/roles';
                 spellcheck: 1
             },
             shareWith: 1,
+            shareWithExplicitRole: 1,
+            shareWithExplicitRoleInvitables: [
+                { roleId:'ADMIN', displayName: 'Administrator' },
+                { roleId:'READONLY', displayName: 'nur lesender Zugriff' },
+                { roleId:'OWNER', displayName: 'Besitzer' },
+                { roleId:'EXPERT', displayName: 'Experte' },
+            ],
             cancelSharedWith: 1,
             cancelOwnSharedWith: 1,
         },

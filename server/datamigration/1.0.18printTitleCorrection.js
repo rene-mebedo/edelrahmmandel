@@ -21,6 +21,10 @@ Es geht um opinionDetails der folgenden Typen:
 - DEFINITION
 */
 
+// RS, MT 16.11.2021
+// Diese funktion wurde im Produktvsystem einmal ausgeführt und wird fortan nicht mehr benötigt
+return; 
+
 const changeOpinionDetail = ( id , iText , iPrintTitle ) => {
     iText = iPrintTitle + iText;
     OpinionDetails.update({

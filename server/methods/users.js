@@ -123,6 +123,57 @@ Meteor.methods({
     },
 
     /**
+     * Return all Roles, that could be used by the current User
+     * to assign as explicit role to a User
+     */
+    'users.getExplicitInvitableRoles'(refOpinion) {
+        check(refOpinion, String);
+
+        if (!this.userId) {
+            throw new Meteor.Error('Sie sind nicht angemeldet.');
+        }
+
+        let explicitInviteableRoles = {};
+        const currentUser = Meteor.users.findOne(this.userId);
+
+        // check if opinion is shared with the current user and check if
+        // the user has an explicit role-assignement
+        const opinion = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!opinion) {
+            throw new Meteor.Error('Das gutachten existiert nicht oder wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithExplicitRole = opinion.sharedWith.find( s => s.user.userId == this.userId );
+        
+
+        let userRoles;
+        // check if document was shared with explicit role?
+        if (sharedWithExplicitRole.role) {
+            userRoles = [sharedWithExplicitRole.role]
+        } else {
+            userRoles = currentUser.userData.roles;
+        }
+        
+        Roles.find({
+            _id: { $in:  userRoles }
+        }, { fields: { _id: 1, 'permissions.shareWithExplicitRoleInvitables': 1 } }).fetch().map( role => {
+            const roles = role.permissions.shareWithExplicitRoleInvitables;
+        
+            roles && roles.forEach( ir => {
+                explicitInviteableRoles[ir.roleId] = `${ir.displayName} (${ir.roleId})`
+            })
+        });
+        
+        return Object.keys(explicitInviteableRoles).map( k => {
+            return { roleId: k, displayName: explicitInviteableRoles[k] }
+        });
+    },
+
+    /**
      * Invite a new user to the system
      * 
      * @param {Object} data Specifies the min Data for a new user
@@ -220,9 +271,10 @@ Meteor.methods({
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWith')) {
             throw new Meteor.Error('Sie besitzen keine Berechtigung zum Teilen des Gutachtens mit anderen Benutzern.');
         }
-
-        const { userId, firstName, lastName } = data;
-
+        if (data.explicitRole && !hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWithExplicitRole')) {
+            throw new Meteor.Error('Sie besitzen keine Berechtigung zum Teilen des Gutachtens mit anderen Benutzern unter Verwendung einer expliziten Rollenzuweisung.');
+        }
+        const { userId, firstName, lastName } = data.user;
 
         const alreadyShared = Opinions.findOne({
             _id: refOpinion,
@@ -234,11 +286,15 @@ Meteor.methods({
 
         const opinion = Opinions.findOne(refOpinion);
 
+        let shW = { 
+            user: { userId, firstName, lastName }
+        };
+        if (data.explicitRole) {
+            shW.role = data.explicitRole;
+        }
         Opinions.update(refOpinion, {
             $push: { 
-                sharedWith: { 
-                    user: { userId, firstName, lastName }
-                }
+                sharedWith: shW
             }
         });
 
@@ -264,6 +320,63 @@ Meteor.methods({
                 unread: true
             }, { created: true })
         );
+    },
+
+    /**
+     * Remove ShareWith the specified opinion/user
+     * 
+     * @param {String} refOpinion Specifies the opinion
+     * @param {String} userId Specifies the user
+     */
+     'users.cancelShareWith'(refOpinion, userId) {
+        check(refOpinion, String);
+        check(userId, String);
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        let currentUser = Meteor.users.findOne(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'cancelSharedWith')) {
+            throw new Meteor.Error('Sie besitzen keine Berechtigung für das Löschen des Benutzers zu diesem Dokument.');
+        }
+        
+        const opinionUserToRemove = Opinions.findOne({
+            _id: refOpinion,
+            "sharedWith.user.userId": userId
+        });
+        const shW = opinionUserToRemove.sharedWith.find(s => s.user.userId == userId);
+        const { firstName, lastName} = shW.user;
+
+        Opinions.update(refOpinion, {
+            $pull: { 
+                sharedWith: shW
+            }
+        });
+
+        // post a new Aktivity to this opinion that a new user
+        // has acces to this opinion
+        const activity = injectUserData({ currentUser }, {
+            refOpinion,
+            refDetail: null,
+            type: 'SYSTEM-POST',
+            message: `hat den Benutzer <strong>${firstName + ' ' + lastName}</strong> für dieses Dokument entfernt.`
+        }, { created: true });
+        
+        Activities.insert(activity);
     },
 
     /**

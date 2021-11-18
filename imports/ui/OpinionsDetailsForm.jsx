@@ -45,6 +45,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [ canDelete, setCanDelete ] = useState(false);
     const [ canShare, setCanShare ] = useState(false);
     const [ canCancelShare, setCanCancelShare ] = useState(false);
+    const [ canShareWithExplicitRole, setCanShareWithExplicitRole ] = useState(false);
 
     const [ pendingPdfCreation, setPendingPdfCreation] = useState(false);
     const [ activeTabPane, setActiveTabPane ] = useState("DOCUMENT");
@@ -67,12 +68,37 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
             setPendingPdfCreation(true);
 
             Meteor.call('opinion.createPDF', refOpinion, previewOnly, (err, res) => {
+                console.log(res);
                 if (err) console.log(err);
         
                 if (previewOnly) {
-                    setPdfPreviewData("data:application/pdf;base64, " + res);
+                    //return window.open(res);
+
+                    /*let content = `data:application/pdf;base64, ${res}`;
+                    let pdfSrc = content;
+            
+                    let html = `<object data="${pdfSrc}" type="application/pdf" width="100%" height="100%">
+                                    <iframe width="100%" height="100%" src="${pdfSrc}">
+                                    </iframe>
+                                </object>`;
+                    
+                    let html = `<embed
+                    type="application/pdf"
+                    src="${pdfSrc}"
+                    frameBorder="0"
+                    width="100%"
+                    height="100%"
+                    />`;
+
+                    let newPdfWindow = window.open("new window");
+                    newPdfWindow.document.write(html);*/
+
+                    //this.loadingCF.next(false);
+
+
+                    setPdfPreviewData(res);
                     FlowRouter.setQueryParams({ pdfPreview: 'on' });
-                    setVisblePdfPreview(true);        
+                    setVisblePdfPreview(true);
                 }
                 setPendingPdfCreation(false);
             });
@@ -91,12 +117,14 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
         let edit = hasPermission(perm, 'opinion.edit'),
             del = hasPermission(perm, 'opinion.remove'),
             share = hasPermission(perm, 'shareWith'),
-            cancelShare = hasPermission(perm, 'cancelSharedWith');
+            cancelShare = hasPermission(perm, 'cancelSharedWith'),
+            shareWithExplicitRole = hasPermission(perm, 'shareWithExplicitRole');
 
         if (edit != canEdit) setCanEdit(edit);
         if (del != canDelete) setCanDelete(del);
         if (share != canShare) setCanShare(share);
         if (cancelShare != canCancelShare) setCanCancelShare(cancelShare);
+        if (shareWithExplicitRole != canShareWithExplicitRole) setCanShareWithExplicitRole(shareWithExplicitRole);
     }
 
     let pageHeaderButtons = [];
@@ -134,7 +162,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                         </Button>
                     );
                 } else if (activeTabPane == 'SHARE' && canShare) {
-                    pageHeaderButtons.push(<ModalShareWith key="share" refOpinion={refOpinion} />);
+                    pageHeaderButtons.push(<ModalShareWith key="share" refOpinion={refOpinion} canShareWithExplicitRole={canShareWithExplicitRole}/>);
                         /*<Button type="dashed" onClick={null}>
                             <ShareAltOutlined /> Dokument teilen
                         </Button>*/
@@ -192,7 +220,10 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
 
                 <Content>
                     { refDetail === null
-                        ? <OpinionContent refOpinion={refOpinion} currentUser={currentUser} canEdit={canEdit} canDelete={canDelete} onTabPaneChanged={tabPaneChanged} >
+                        ? <OpinionContent 
+                            refOpinion={refOpinion} currentUser={currentUser} 
+                            canEdit={canEdit} canDelete={canDelete} canCancelShareWith={canCancelShare}
+                            onTabPaneChanged={tabPaneChanged} >
                                 <ListOpinionDetails
                                     refOpinion={refOpinion} 
                                     refParentDetail={refDetail}
@@ -229,14 +260,17 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                 </Content>
             </Content>
 
-            { visiblePdfPreview
+            { visiblePdfPreview && pdfPreviewData
                 ? <Fragment>
-                    <embed
+                    <iframe src={pdfPreviewData}
+                        frameBorder="0"
+                        style={{border:'none',top:48,left:0,width:'100%',height:'calc(100% - 48px)', position:'fixed', zIndex:100}}></iframe>
+                    {/*<embed
                         type="application/pdf"
                         src={pdfPreviewData}
                         frameBorder="0"
                         style={{top:48,left:0,width:'100%',height:'calc(100% - 48px)', position:'fixed', zIndex:100}}
-                    />
+                    />*/}
                     <Button
                         style={{
                             top:0,
@@ -252,7 +286,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                         <CloseOutlined /> Vorschau beenden
                     </Button>
                 </Fragment>
-            : null}
+            : visiblePdfPreview ? <Skeleton loading/> : null }
         </Layout>
     );
 }

@@ -12,7 +12,7 @@ import { OpinionDetails } from '../../imports/api/collections/opinionDetails';
 import { Images } from '../../imports/api/collections/images';
 import { OpinionPdfs } from '../../imports/api/collections/opinion-pdfs';
 
-import { actionCodes } from '../../imports/api/constData/actioncodes';
+import { actionCodes } from '../../imports/api/constData/actioncodes'; 
 
 import fs from 'fs';
 
@@ -163,27 +163,33 @@ Meteor.methods({
             'meta.refOpinion': refOpinion
         }).fetch();
         
-        let fileData;
+        let fileData, fileRef;
 
         try {
             const filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath);
 
             fileData = readFile(filename);
 
-            if (!previewOnly) {
-                const fileRef = writePdf(fileData, {
-                    fileName: `${refOpinion}.pdf`,
-                    type: 'application/pdf',
-                    meta: {
-                        refOpinion, 
-                        createdAt: new Date(), 
-                        createdBy: {
-                            userId: currentUser._id,
-                            firstName: currentUser.userData.firstName,
-                            lastName: currentUser.userData.lastName
-                        }
+            fileRef = writePdf(fileData, {
+                fileName: `${refOpinion}.pdf`,
+                type: 'application/pdf',
+                meta: {
+                    refOpinion, 
+                    preview: !!previewOnly,
+                    createdAt: new Date(), 
+                    createdBy: {
+                        userId: currentUser._id,
+                        firstName: currentUser.userData.firstName,
+                        lastName: currentUser.userData.lastName
                     }
-                });
+                }
+            });
+
+            if (previewOnly) {
+                // löschen der Previewversion
+                Meteor.setTimeout(() => {
+                    OpinionPdfs.remove({_id: fileRef._id});
+                }, 1000 * 60 * 5 /* 5 Minuten */)
             }
 
             fs.unlinkSync(filename);
@@ -191,8 +197,9 @@ Meteor.methods({
             throw new Meteor.Error(err);
         }
 
+        const result = OpinionPdfs.findOne({_id:fileRef._id}).link(); 
         if (previewOnly) {
-            return fileData.toString("base64");
+            return result;
         }
     }
 });

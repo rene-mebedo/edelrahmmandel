@@ -1,8 +1,15 @@
 {
-    "version": "1.0.18",
-    "timestamp": "2021-11-04",
+    "version": "1.0.19",
+    "timestamp": "2021-11-18",
     
     "details": [
+        { 
+            "version": "1.0.19", 
+            "description": [
+                "neue Funktion ShareWithExplicitRole und löschen von Benutzern zu einem Dokument",
+                "BugFix #70 Anzeigeprobleme PDF-Vorschau"
+            ]
+        },
         { 
             "version": "1.0.18", 
             "description": "Korrektur (server/datamigration) implementiert für noch aus der Vergangenheit enthaltene opinionDetails mit Text im printTitle."

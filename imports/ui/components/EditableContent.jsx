@@ -547,7 +547,8 @@ export class EditableContent extends React.Component {
             isAnswer={item.type == 'ANSWER'}
             likes={item.likes}
             dislikes={item.dislikes}
-            canEdit={elementType !== "Pagebreak" && canEdit}
+            //canEdit={elementType !== "Pagebreak" && canEdit}
+            canEdit={canEdit}
             canFinallyRemove={canDelete}
         />;
 
