@@ -1,8 +1,15 @@
 {
-    "version": "1.0.19",
+    "version": "1.0.20",
     "timestamp": "2021-11-18",
     
     "details": [
+        { 
+            "version": "1.0.20", 
+            "description": [
+                "Update opinion-documenter auf 1.0.37 Page-break bug",
+                "update meteor auf 2.5.0"
+            ]
+        },
         { 
             "version": "1.0.19", 
             "description": [
