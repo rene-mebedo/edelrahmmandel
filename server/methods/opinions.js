@@ -189,7 +189,7 @@ Meteor.methods({
                 // löschen der Previewversion
                 Meteor.setTimeout(() => {
                     OpinionPdfs.remove({_id: fileRef._id});
-                }, 1000 * 60 * 5 /* 5 Minuten */)
+                }, 1000 * 60 /* 1 Minute */)
             }
 
             fs.unlinkSync(filename);

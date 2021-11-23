@@ -1,8 +1,15 @@
 {
-    "version": "1.0.20",
-    "timestamp": "2021-11-18",
+    "version": "1.0.21",
+    "timestamp": "2021-11-23",
     
     "details": [
+        { 
+            "version": "1.0.21", 
+            "description": [
+                "Update opinion-documenter auf 1.0.38 Page-break Optimierung (schnellere PDF Erstellung) und Layout Anpassungen in Aufstellung der Maßnahmen",
+                "Timeout bei temporärer PDF Erstellung (Vorschau) verkürzt von 5 auf 1 Minute"
+            ]
+        },
         { 
             "version": "1.0.20", 
             "description": [
