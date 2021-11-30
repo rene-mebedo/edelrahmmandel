@@ -30,6 +30,12 @@ export const UserActivitySchema = new SimpleSchema({
         type: Boolean,
         defaultValue: true,
         label: 'Ungelesen'
+    },
+    mailsent: {
+        type: Boolean,
+        defaultValue: false,
+        optional: true,
+        label: 'Erinnerungsmail gesandt'
     }
 });
 

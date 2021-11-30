@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 
 import { Opinions } from '../../imports/api/collections/opinions';
 
@@ -77,7 +77,7 @@ Meteor.methods({
      */
     async 'opinion.createPDF'(refOpinion, previewOnly = false) {
         check(refOpinion, String);
-        check(previewOnly, Boolean);
+        check(previewOnly, Match.OneOf(String, Boolean));
 
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
@@ -166,7 +166,13 @@ Meteor.methods({
         let fileData, fileRef;
 
         try {
-            const filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath);
+            let filename;
+            // async pdfCreate ( opinion , opinionDetails , detailsTodoList , images , path , hasAbbreviationsPage = true , hasToC = true , print = false , ToCPageNos = true )
+            if (previewOnly === 'livepreview') {
+                filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath, true, false, true, false);
+            } else {
+                filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath);
+            }
 
             fileData = readFile(filename);
 
@@ -198,8 +204,8 @@ Meteor.methods({
         }
 
         const result = OpinionPdfs.findOne({_id:fileRef._id}).link(); 
-        if (previewOnly) {
+        //if (previewOnly) {
             return result;
-        }
+        //}
     }
 });

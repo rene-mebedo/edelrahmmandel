@@ -9,6 +9,10 @@ import Tabs from 'antd/lib/tabs';
 import Result from 'antd/lib/result';
 import Button from 'antd/lib/button';
 import Modal from 'antd/lib/modal';
+import Row from 'antd/lib/row';
+import Col from 'antd/lib/col';
+import Spin from 'antd/lib/spin';
+import Affix from 'antd/lib/affix';
 
 import Typography from 'antd/lib/typography';
 const { Paragraph, Text } = Typography;
@@ -34,6 +38,10 @@ import filesize from 'filesize';
 import moment from 'moment';
 import { useAppState } from '../client/AppState';
 
+import { pdfjs, Document, Page } from 'react-pdf';
+
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const { TabPane } = Tabs;
 
@@ -99,8 +107,18 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
     onTabPaneChanged = onTabPaneChanged || function(){};
 
     const [ selectedDetail ] = useAppState('selectedDetail');
+
+    const [ livePdfPreview ] = useAppState('livePdfPreview');
+    const [ previewUrl ] = useAppState('previewUrl');
+    const [ previewUrlBusy ] = useAppState('previewUrlBusy');
     
-    
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(2);
+
+    function onDocumentLoadSuccess({ numPages }) {
+        setNumPages(numPages);
+    }
+
     if (isLoading) {
         return (
             <Skeleton paragraph={{ rows: 4 }} />
@@ -135,10 +153,68 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
         });
     }
 
+    console.log('PreviewUrl update:', previewUrl);
+
+    function onItemClick({ pageNumber: itemPageNumber }) {
+        setPageNumber(itemPageNumber);
+      }
+
     return (
         <Tabs onChange={onTabPaneChanged} size="large" tabPosition={window.innerWidth > 800 ? 'left':'top'}>
             <TabPane tab={<span><FormOutlined />Dokument</span>} key="DOCUMENT">
-                {children}
+                { !livePdfPreview ? children :
+                    <Row gutter={8}>
+                        <Col key="firstCol" span={12}>
+                            {children}
+                        </Col>
+                        <Col key="secondCol" span={12}>
+                            <Affix offsetTop={120}>
+                                <div key="pager"
+                                    style={{marginBottom:16, textAlign:'center'}}
+                                >
+                                    <Space>
+                                        <Button key="pageBack" onClick={ () => {setPageNumber(pageNumber-1)} }>vorherige Seite</Button>
+                                        <span>Seite {pageNumber} von {numPages}</span>
+                                        <Button key="pageForward" onClick={ () => {setPageNumber(pageNumber+1)} }>nächste Seite</Button>
+                                    </Space>
+                                </div>
+                                <div key="content"
+                                    //style={{position:'fixed', marginTop:32}}
+                                    //style={{border:'1px solid #eee'}}
+                                >
+                                    { previewUrlBusy ? <Spin /> : 
+                                        <Document
+                                            file={previewUrl}
+                                            onLoadSuccess={onDocumentLoadSuccess}
+                                            onItemClick={onItemClick}
+                                        >
+                                            <Page key={'p'+pageNumber} pageNumber={pageNumber} />
+                                        </Document>
+                                    }
+                                </div>
+                            </Affix>
+                            {/*
+                            <div style={{position:'fixed', marginBottom:16}}>
+                                <Space>
+                                    <Button onClick={ () => {setPageNumber(pageNumber-1)} }>vorherige Seite</Button>
+                                    <span>Seite {pageNumber} von {numPages}</span>
+                                    <Button onClick={ () => {setPageNumber(pageNumber+1)} }>nächste Seite</Button>
+                                </Space>
+                            </div>
+                            <div style={{position:'fixed', marginTop:32}}>
+                                <Document
+                                    file={previewUrl}
+                                    onLoadSuccess={onDocumentLoadSuccess}
+                                    onItemClick={onItemClick}
+                                >
+                                    { previewUrlBusy ? <Spin /> : <Page pageNumber={pageNumber} />}
+                                </Document>
+                            </div>*/
+                            }
+                        </Col>
+                    </Row>
+                }
+                {/*children*/}
             </TabPane>
 
             <TabPane disabled={disableTabPanes} tab={<span><ContactsOutlined />Allgemein</span>} key="GENERAL">

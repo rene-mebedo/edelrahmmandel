@@ -1,8 +1,15 @@
 {
-    "version": "1.0.21",
-    "timestamp": "2021-11-23",
+    "version": "1.0.22",
+    "timestamp": "2021-11-30",
     
     "details": [
+        { 
+            "version": "1.0.22", 
+            "description": [
+                "Neues Feature: PDF-Live-Preview - eine atomatisch aktualisierene Direkt-PDF-Ansicht",
+                "Neues Feature: E-Mail-Benachrichtigungen, wenn Dokumente geteilt, ein Post mit Erwähnung des Users, ein Antwort auf eine Aktivität erstellt wird"
+            ]
+        },
         { 
             "version": "1.0.21", 
             "description": [

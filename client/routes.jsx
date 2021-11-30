@@ -11,7 +11,7 @@ import { ActivitiesForm } from '../imports/ui/ActivitiesForm';
 import { OpinionsForm } from '../imports/ui/OpinionsForm';
 //import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
 import { OpinionsDetailsForm } from '../imports/ui/OpinionsDetailsForm';
-import { AppState } from '../imports/client/AppState';
+import { AppState, setAppState } from '../imports/client/AppState';
 import { VerifyEMail } from '../imports/ui/components/VerifyEMail';
 import { UserProfileForm } from '../imports/ui/components/user-profile-form';
 import { ForgotPassword } from '../imports/ui/ForgotPassword';
@@ -128,6 +128,8 @@ FlowRouter.route('/forgotpassword', {
 FlowRouter.route('/profile', {
     name: 'userprofile',
     action() {
+        setAppState({livePdfPreview:false});
+
         mount(App, {
             content: UserProfileForm,
             authenticatedRoute: true
@@ -138,6 +140,8 @@ FlowRouter.route('/profile', {
 FlowRouter.route('/', {
     name: 'root',
     action() {
+        setAppState({livePdfPreview:false});
+
         mount(App, {
             content: Home,
             authenticatedRoute: true
@@ -148,6 +152,8 @@ FlowRouter.route('/', {
 FlowRouter.route('/info', {
     name: 'info.show',
     action() {
+        setAppState({livePdfPreview:false});
+
         mount(App, {
             content: InfoForm,
             activeMenuKey: 'INFO',
@@ -159,6 +165,8 @@ FlowRouter.route('/info', {
 FlowRouter.route('/activities', {
     name: 'activities.show',
     action() {
+        setAppState({livePdfPreview:false});
+
         mount(App, {
             content: ActivitiesForm,
             authenticatedRoute: true
@@ -169,6 +177,8 @@ FlowRouter.route('/activities', {
 FlowRouter.route('/opinions', {
     name: 'opinions.show',
     action() {
+        setAppState({livePdfPreview:false});
+        
         mount(App, {
             content: OpinionsForm,
             activeMenuKey: 'OPINIONS',

@@ -8,6 +8,7 @@ import Space from 'antd/lib/space';
 import Skeleton from 'antd/lib/skeleton';
 import Spin from 'antd/lib/spin';
 import Button from 'antd/lib/button';
+import Switch from 'antd/lib/switch';
 //import Icon from 'antd/lib/icon';
 
 const { Content } = Layout;
@@ -34,6 +35,7 @@ import {
 } from '../client/trackers';
 
 import { ModalShareWith } from './modals/share-with';
+import { useAppState } from '../client/AppState';
 
 
 
@@ -53,6 +55,10 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [ visiblePdfPreview, setVisblePdfPreview ] = useState(false);
     const [ pdfPreviewData, setPdfPreviewData ] = useState(null);
 
+    const [ livePdfPreview, setLivePdfPreview ] = useAppState('livePdfPreview');
+    const [ previewUrl, setPreviewUrl ] = useAppState('previewUrl');
+    const [ previewUrlBusy, setPreviewUrlBusy ] = useAppState('previewUrlBusy');
+
     const tabPaneChanged = activeTabPane => {
         setActiveTabPane(activeTabPane);
     }
@@ -62,6 +68,8 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     } else if (FlowRouter.getQueryParam('pdfPreview') == 'on' && !visiblePdfPreview && pdfPreviewData) {
         setVisblePdfPreview(true);
     }
+
+
 
     const createPDF = previewOnly => {
         return () => {
@@ -105,6 +113,21 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
         }
     }
 
+    const createLivePdfPreview = () => {
+        setPreviewUrlBusy(true);
+        Meteor.call('opinion.createPDF', refOpinion, 'livepreview', (err, url) => {
+            setPreviewUrlBusy(false);
+            if (!err) setPreviewUrl(url);
+        });
+}
+
+    const toggleLivePdfPreview = () => (checked) => {
+        setLivePdfPreview(checked);
+        if (checked) {
+            createLivePdfPreview();
+        }
+    }
+
     if (currentUser && !opinionIsLoading && opinion) {
         let perm = { currentUser };
 
@@ -142,7 +165,12 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
         if (!detail && refDetail === null) {
             if (canEdit) {
                 if (activeTabPane == 'DOCUMENT') {
-
+/*<Button key="livePdfPreview" type="dashed" onClick={toggleLivePdfPreview()} loading={!!previewUrlBusy}>
+                            <FilePdfOutlined /> Live-PDF-Vorschau
+                        </Button>*/
+                    pageHeaderButtons.push(
+                        <Switch key="livePdfPreview" defaultChecked={livePdfPreview} checkedChildren="PDF Vorschau" unCheckedChildren="PDF Vorschau" onChange={toggleLivePdfPreview()} />
+                    );
                 } else if(activeTabPane == 'GENERAL'){
                     pageHeaderButtons.push(
                         <ModalOpinion key="general"

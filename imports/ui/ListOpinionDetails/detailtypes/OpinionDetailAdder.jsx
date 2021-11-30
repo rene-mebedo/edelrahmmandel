@@ -7,7 +7,7 @@ import Menu from 'antd/lib/menu';
 
 import PlusCircleOutlined from '@ant-design/icons/PlusCircleOutlined';
 
-import { useAppState } from '../../../client/AppState';
+import { getAppState, useAppState } from '../../../client/AppState';
 import { layouttypesObject, selectableLayouttypes } from '../../../api/constData/layouttypes';
 
 export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
@@ -17,6 +17,9 @@ export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
 
     const [ newPosition, setNewPositon ] = useState(null);
     const [ selectedDetail ] = useAppState('selectedDetail');
+
+    const [ previewUrl, setPreviewUrl ] = useAppState('previewUrl');
+    const [ previewUrlBusy, setPreviewUrlBusy ] = useAppState('previewUrlBusy');
 
     const data = pseudoItem || item;
 
@@ -61,7 +64,17 @@ export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
             ...defaultValues,
             type
         }, (err, res) => {
-            if (err) console.log(err,res);
+            if (err) console.log(err,res)
+
+            if (!err) {
+                if (getAppState('livePdfPreview')) {
+                    setPreviewUrlBusy(true);
+                    Meteor.call('opinion.createPDF', data.refOpinion, 'livepreview', (err, url) => {
+                        setPreviewUrlBusy(false);
+                        if (!err) setPreviewUrl(url);
+                    });
+                }
+            }
         })
 
         closeModal();

@@ -28,7 +28,7 @@ import { Summernote } from './Summernote';
 import { ActionCodeDropdown } from '../components/ActionCodeDropdown';
 import { actionCodes } from '../../api/constData/actioncodes';
 
-import { AppState, setAppState } from '../../client/AppState';
+import { AppState, getAppState, setAppState } from '../../client/AppState';
 
 const summernoteOptions = { 
     airMode: false, 
@@ -261,6 +261,8 @@ export class EditableContent extends React.Component {
                 });
             } else {
                 this.exitEditmode();
+
+                this.recreatePdfPreview();
             }
         });
     }
@@ -311,6 +313,8 @@ export class EditableContent extends React.Component {
                         });
                     } else {
                         this.exitEditmode();
+
+                        this.recreatePdfPreview();
                     }
                 });
             }
@@ -390,6 +394,8 @@ export class EditableContent extends React.Component {
                     content: 'Es ist ein interner Fehler aufgetreten. ' + err.message
                 });
             } else {
+                this.recreatePdfPreview();
+
                 this.setState({ mode: 'FOCUSED' });
 
                 setAppState({
@@ -521,6 +527,19 @@ export class EditableContent extends React.Component {
         if (keyCode == 27) {
             e.preventDefault();
             this.cancelEditmode();
+        }
+    }
+
+    recreatePdfPreview() {
+        if (getAppState('livePdfPreview')) {
+            const refOpinion = FlowRouter.getParam("id");
+
+            setAppState({previewUrlBusy:true})
+            Meteor.call('opinion.createPDF', refOpinion, 'livepreview', (err, url) => {
+                setAppState({previewUrlBusy:false})
+                
+                if (!err) setAppState({previewUrl:url});
+            });
         }
     }
 

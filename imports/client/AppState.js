@@ -15,6 +15,10 @@ export const setAppState = newState => {
     });
 }
 
+export const getAppState = propName => {
+    return AppState[propName];
+}
+
 export const useAppState = (propName, dependencies) => {
     // revision-counter
     const [ revison, setRevision ] = useState(0);
