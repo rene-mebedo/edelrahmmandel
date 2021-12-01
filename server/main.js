@@ -86,7 +86,7 @@ const sendUnreadMessages = () => {
 
             try {
                 Email.send({
-                    to: 'schulteterhardt@mebedo-ac.de', //targetEmailAddress,
+                    to: toAddress,
                     /*from: {
                         name: `${senderFirstName} ${senderLastName} (GutachtenPlus)`,
                         address: 'gutachtenplus@mebedo-ac.de'
