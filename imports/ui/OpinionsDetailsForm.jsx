@@ -59,6 +59,8 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [ previewUrl, setPreviewUrl ] = useAppState('previewUrl');
     const [ previewUrlBusy, setPreviewUrlBusy ] = useAppState('previewUrlBusy');
 
+    const [ selectedDetail ] = useAppState('selectedDetail');
+
     const tabPaneChanged = activeTabPane => {
         setActiveTabPane(activeTabPane);
     }
@@ -119,7 +121,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
             setPreviewUrlBusy(false);
             if (!err) setPreviewUrl(url);
         });
-}
+    }
 
     const toggleLivePdfPreview = () => (checked) => {
         setLivePdfPreview(checked);
@@ -165,11 +167,12 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
         if (!detail && refDetail === null) {
             if (canEdit) {
                 if (activeTabPane == 'DOCUMENT') {
-/*<Button key="livePdfPreview" type="dashed" onClick={toggleLivePdfPreview()} loading={!!previewUrlBusy}>
-                            <FilePdfOutlined /> Live-PDF-Vorschau
-                        </Button>*/
                     pageHeaderButtons.push(
-                        <Switch key="livePdfPreview" defaultChecked={livePdfPreview} checkedChildren="PDF Vorschau" unCheckedChildren="PDF Vorschau" onChange={toggleLivePdfPreview()} />
+                        <Switch key="livePdfPreview" 
+                            defaultChecked={livePdfPreview} checkedChildren="PDF Vorschau" unCheckedChildren="PDF Vorschau" 
+                            disabled={!!selectedDetail} 
+                            onChange={toggleLivePdfPreview()} 
+                        />
                     );
                 } else if(activeTabPane == 'GENERAL'){
                     pageHeaderButtons.push(
