@@ -21,7 +21,7 @@
     "jquery": "^3.5.1",
     "markerjs2": "^2.13.0",
     "meteor-node-stubs": "^1.0.3",
-    "opinion-documenter": "^1.0.39",
+    "opinion-documenter": "^1.0.40",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-lines-ellipsis": "^0.14.1",

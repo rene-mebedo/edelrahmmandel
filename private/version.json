@@ -1,12 +1,19 @@
 {
-    "version": "1.0.22",
-    "timestamp": "2021-11-30",
+    "version": "1.0.23",
+    "timestamp": "2021-12-14",
     
     "details": [
         { 
+            "version": "1.0.23", 
+            "description": [
+                "Bugfix PDF-Live-Preview",
+                "Update Opinion-Documenter auf 1.0.40 - Layout Anpassungen bzgl. Antworten und Handlungsempfehlungen: border-bottom, break-inside and padding-bottom"
+            ]
+        },
+        { 
             "version": "1.0.22", 
             "description": [
-                "Neues Feature: PDF-Live-Preview - eine atomatisch aktualisierene Direkt-PDF-Ansicht",
+                "Neues Feature: PDF-Live-Preview - eine automatisch aktualisierende Direkt-PDF-Ansicht",
                 "Neues Feature: E-Mail-Benachrichtigungen, wenn Dokumente geteilt, ein Post mit Erwähnung des Users, ein Antwort auf eine Aktivität erstellt wird",
                 "Update Opinion-Documenter auf 1.0.39 - Farbänderung orangeton für dringender handlungsbedarf",
                 "Update meteor auf 2.5.1"
