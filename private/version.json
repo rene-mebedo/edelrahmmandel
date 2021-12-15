@@ -1,13 +1,13 @@
 {
     "version": "1.0.23",
-    "timestamp": "2021-12-14",
+    "timestamp": "2021-12-15",
     
     "details": [
         { 
             "version": "1.0.23", 
             "description": [
                 "Bugfix PDF-Live-Preview",
-                "Update Opinion-Documenter auf 1.0.40 - Layout Anpassungen bzgl. Antworten und Handlungsempfehlungen: border-bottom, break-inside and padding-bottom"
+                "Update Opinion-Documenter auf 1.0.41 - Layout Anpassungen bzgl. Antworten und Handlungsempfehlungen: border-bottom and padding-bottom"
             ]
         },
         { 
