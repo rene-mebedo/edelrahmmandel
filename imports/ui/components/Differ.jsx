@@ -100,6 +100,9 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
                 oldValue = ''+oldValue; // convert numeric value to text
             }
 
+            // fix for #74
+            if (oldValue === undefined) oldValue = '';
+            if (newValue === undefined) newValue = '';
 
             if (oldValue === null) oldValue = '';
             if (newValue === null) newValue = '';
