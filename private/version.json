@@ -1,8 +1,15 @@
 {
-    "version": "1.0.23",
-    "timestamp": "2021-12-15",
+    "version": "1.0.24",
+    "timestamp": "2022-03-03",
     
     "details": [
+        { 
+            "version": "1.0.24", 
+            "description": [
+                "Layout Änderung Inhaltsverzeichnis",
+                "Update Opinion-Documenter auf 1.0.42 - Schwarze Schrift ohne Unterstrich im Inhaltsverzeichnis"
+            ]
+        },
         { 
             "version": "1.0.23", 
             "description": [
