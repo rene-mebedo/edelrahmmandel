@@ -21,6 +21,9 @@ import { useOpinion } from '../../client/trackers';
 import { ModalBackground } from '../components/ModalBackground';
 import { OpinionSearchInput } from '../components/OpinionSearchInput';
 
+import Select from 'antd/lib/select';
+const { Option } = Select;
+
 const { useForm } = Form;
 const { TabPane } = Tabs;
 
@@ -170,6 +173,22 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                                             <OpinionSearchInput />
                                         </Form.Item>
                                     }
+
+                                    <Form.Item
+                                        label="Ausgabeformat"
+                                        name="outputTemplate"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Bitte geben Sie das Ausgabeformat an.',
+                                            },
+                                        ]}
+                                    >
+                                        <Select allowClear={true} showArrow={true}>
+                                            <Option key="mebedo-gutachten">MEBEDO Gutachtliche Stellungnahme/Assessment</Option>
+                                            <Option key="ensmann-gutachten">ENSMANN Gutachtliche Stellungnahme/Assessment</Option>
+                                        </Select>
+                                    </Form.Item>
                                 </TabPane>
 
                                 <TabPane tab="Kunde" key="Kunde">

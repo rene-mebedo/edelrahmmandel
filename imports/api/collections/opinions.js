@@ -37,6 +37,10 @@ export const OpinionsSchema = new SimpleSchema({
         label: 'Referenz auf verwendete Vorlage',
         optional: true
     },
+    outputTemplate: {
+        type: String,
+        label: 'Ausgabeformat/Vorlage',
+    },
     customer: {
         type: AddressSchema,
         label: 'Auftraggeber'

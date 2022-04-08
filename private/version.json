@@ -1,8 +1,16 @@
 {
-    "version": "1.0.24",
-    "timestamp": "2022-03-03",
+    "version": "1.0.25",
+    "timestamp": "2022-04-08",
     
     "details": [
+        { 
+            "version": "1.0.25", 
+            "description": [
+                "Neue Eigenschaft beim Gutachten zur Steuerung des Ausgabeformats um unterschiedliche Gutachtenformate zu produzieren.",
+                "Bugfix #78 beim Speichern, Bearbeiten eines Bildes TypeError: Cannot read properties of undefined (reading 'link')",
+                "Update meteor to 2.7.1"
+            ]
+        },
         { 
             "version": "1.0.24", 
             "description": [

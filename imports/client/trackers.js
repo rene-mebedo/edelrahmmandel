@@ -319,12 +319,14 @@ export const useImages = refImages => useTracker( () => {
     }
     return [
         images.map( file => {
-            let link = Images.findOne({_id: file._id}).link();
+            const imgs = Images.findOne({_id: file._id});
+            let link = imgs && imgs.link();
             file.link = link;
             if ( file.meta
               && file.meta.annotStateImageId ) {
-                let link2 = Images.findOne({_id: file.meta.annotStateImageId}).link();
-                file.link2 = link2;
+                  const imgs2 = Images.findOne({_id: file.meta.annotStateImageId});
+                  let link2 = imgs2 && imgs2.link();
+                  file.link2 = link2;
             }
             return file;
         }),
@@ -404,7 +406,8 @@ export const useOpinionPdfs = refOpinion => useTracker( () => {
 
     return [
         data.map( file => {
-            let link = OpinionPdfs.findOne({_id: file._id}).link();
+            const pdfs = OpinionPdfs.findOne({_id: file._id});
+            let link = pdfs && pdfs.link();
             file.link = link;
             return file;
         }), 
