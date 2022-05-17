@@ -51,20 +51,20 @@ export const Expert = ({ user, showFull = true, onlyAvatar }) => {
                 </Col>
                 <Col flex="auto">
                     <div className="user-data">
-                        { position && showFull
-                            ? <div className="position" style={{color:'#999'}}>{position}</div>
+                        { advancedQualification && showFull
+                            ? <div className="advanced-qualification" style={{color:'#999'}}>{advancedQualification}</div>
                             : null
                         }
                         { company && showFull
                             ? <div className="company" style={{color:'#666', fontWeight: 600}}>{company}</div>
                             : null
                         }
-                        { qualification && showFull
-                            ? <div className="qualification" style={{color:'#999'}}>{qualification}</div>
+                        { position && showFull
+                            ? <div className="position" style={{color:'#999'}}>{position}</div>
                             : null
                         }
-                        { advancedQualification && showFull
-                            ? <div className="advanced-qualification" style={{color:'#999'}}>{advancedQualification}</div>
+                        { qualification && showFull
+                            ? <div className="qualification" style={{color:'#999'}}>{qualification}</div>
                             : null
                         }
                     </div>

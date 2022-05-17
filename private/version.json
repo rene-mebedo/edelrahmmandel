@@ -1,14 +1,22 @@
 {
-    "version": "1.0.25",
-    "timestamp": "2022-04-08",
+    "version": "1.0.26",
+    "timestamp": "2022-05-17",
     
     "details": [
+        { 
+            "version": "1.0.26", 
+            "description": [
+                "Bugfix: Durch Meteor/Mongo Update konnten keine neuen Gutachten angelegt werden",
+                "Fix #72: Anzeige Gutachter in Bearbeitung/Eingabe und Ausgabe angeglichen"
+            ]
+        },
         { 
             "version": "1.0.25", 
             "description": [
                 "Neue Eigenschaft beim Gutachten zur Steuerung des Ausgabeformats um unterschiedliche Gutachtenformate zu produzieren.",
                 "Bugfix #78 beim Speichern, Bearbeiten eines Bildes TypeError: Cannot read properties of undefined (reading 'link')",
-                "Update meteor to 2.7.1"
+                "Update meteor to 2.7.1",
+                "Update Opinion-Documenter auf 1.0.43 - Möglichkeit der Erstellung von ENSMANN Assessments/Gutachten. Fix #79: Ausgabe ist angepasst, wenn Zeitraum des Gutachtens 1 Tag ist"
             ]
         },
         { 

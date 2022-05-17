@@ -9,7 +9,8 @@ var SequencesRawCollection,
 if (Meteor.isServer) {
     // rawCollection only server-side supported!
     SequencesRawCollection = Sequences.rawCollection();
-    SequencesFindAndModify = Meteor.wrapAsync(SequencesRawCollection.findAndModify, SequencesRawCollection);
+    //SequencesFindAndModify = Meteor.wrapAsync(SequencesRawCollection.findAndModify, SequencesRawCollection);
+    SequencesFindOneAndUpdate = Meteor.wrapAsync(SequencesRawCollection.findOneAndUpdate, SequencesRawCollection);
 }
 
 /**
@@ -41,6 +42,6 @@ export const sequenceNextValue = (seqName, startValue = 1) => {
         }
     }
 
-    const result = SequencesFindAndModify({ _id: seqName }, [['_id','asc']], { $inc: { value: 1 } } );
+    const result = SequencesFindOneAndUpdate({ _id: seqName }, { $inc: { value: 1 } } );
     return result.value.value;
 }
