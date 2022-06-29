@@ -64,6 +64,8 @@ export class UserProfileForm extends React.Component {
         form.validateFields().then(values => {
             Meteor.call('users.updateProfile', values, err => {
                 console.log(err);
+                if ( !err )
+                    message.warning('Speichern erfolgreich.');
             });
         });
     }
@@ -160,7 +162,6 @@ export class UserProfileForm extends React.Component {
                                     </ImgCrop>
                                 ]}
                             >
-                                <span>Foo bar</span>
                             </Card>
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={10} xl={10}>

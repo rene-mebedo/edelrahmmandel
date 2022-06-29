@@ -322,6 +322,8 @@ export class EditableContent extends React.Component {
     }
 
     checkAnswer() {
+        const { mode } = this.state;
+            if ( mode == 'EDIT' ) this.saveData();
         const { refDetail } = this.props;
 
         setAppState({appIsBusy: 'Working...'});

@@ -13,6 +13,7 @@ import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import Spin from 'antd/lib/spin';
 import Affix from 'antd/lib/affix';
+import InputNumber from 'antd/lib/input-number';
 
 import Typography from 'antd/lib/typography';
 const { Paragraph, Text } = Typography;
@@ -172,11 +173,11 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                 <div key="pager"
                                     style={{marginBottom:16, textAlign:'center'}}
                                 >
-                                    <Space>
-                                        <Button key="pageBack" onClick={ () => {setPageNumber(pageNumber-1)} }>vorherige Seite</Button>
-                                        <span>Seite {pageNumber} von {numPages}</span>
-                                        <Button key="pageForward" onClick={ () => {setPageNumber(pageNumber+1)} }>nächste Seite</Button>
-                                    </Space>
+                                    { previewUrlBusy ? <Space /> :
+                                        <Space>
+                                            <span>Seite <InputNumber min={1} defaultValue={pageNumber} value={pageNumber} max={numPages} onChange={value => { setPageNumber( value )}} /> von {numPages}</span>
+                                        </Space>
+                                    }
                                 </div>
                                 <div key="content"
                                     //style={{position:'fixed', marginTop:32}}

@@ -1,8 +1,19 @@
 {
-    "version": "1.0.26",
-    "timestamp": "2022-05-17",
+    "version": "1.0.27",
+    "timestamp": "2022-06-29",
     
     "details": [
+        { 
+            "version": "1.0.27", 
+            "description": [
+                "Fix #75: PDF-Vorschau optimiert",
+                "Fix #77: Breite von Bildern in der Handlungsempfehlung begrenzt",
+                "enhancement #80: Antworten: Bei Klick auf Haken wird zunächst gespeichert",
+                "enhancement #81: Im Benutzerprofil Text 'Foo bar' unter dem Bild entfernt",
+                "enhancement #82: Rückmeldung bei Speicherung Benutzerprofil",
+                "Update Opinion-Documenter auf 1.0.44 - Bugfix in Tabelle der 'Gesichteten Dokumente' mit Spaltenbreite"
+            ]
+        },
         { 
             "version": "1.0.26", 
             "description": [
