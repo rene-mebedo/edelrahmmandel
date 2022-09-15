@@ -252,6 +252,7 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                                         label="Keine Fotografiererlaubnis"
                                         name="disableCopyright"
                                         valuePropName="checked"
+                                        initialValue={false}
                                         rules={[
                                             {
                                                 required: true,
@@ -260,6 +261,21 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                                         ]}
                                     >
                                         <Switch />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        label="Ausgabe mit Abkürzungsverzeichnis"
+                                        name="hasAbbreviationsPage"
+                                        valuePropName="checked"
+                                        initialValue={true}
+                                        rules={[
+                                            {
+                                                required: false,
+                                                message: 'Abkürzungsverzeichnis ist in der Ausgabe (PDF) Enthalten.',
+                                            },
+                                        ]}
+                                    >
+                                        <Switch defaultChecked/>
                                     </Form.Item>
                                 </TabPane>
 

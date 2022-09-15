@@ -1,8 +1,16 @@
 {
-    "version": "1.0.27",
-    "timestamp": "2022-06-29",
+    "version": "1.0.28",
+    "timestamp": "2022-09-15",
     
     "details": [
+        { 
+            "version": "1.0.28", 
+            "description": [
+                "Opinion Option disableCopyright ist jetzt initial mit Wert (falase) belegt",
+                "Neue Opinion Option hasAbbreviationsPage, um Abkürzungsverzeichnis ein-(default) bzw. auszublenden",
+                "Update Opinion-Documenter auf 1.0.45 - Zeilenabstände im Inhaltsverzeichnis minimal vergrößert (für MEBEDO und ENSMANN). Anpassungen bzgl. Seitenumbruch, wenn kein Abkürzungsverzeichnis enthalten sein soll"
+            ]
+        },
         { 
             "version": "1.0.27", 
             "description": [

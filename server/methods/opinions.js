@@ -169,9 +169,9 @@ Meteor.methods({
             let filename;
             // async pdfCreate ( opinion , opinionDetails , detailsTodoList , images , path , hasAbbreviationsPage = true , hasToC = true , print = false , ToCPageNos = true )
             if (previewOnly === 'livepreview') {
-                filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath, true, false, true, false);
+                filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath, opinion.hasAbbreviationsPage, false, true, false);
             } else {
-                filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath);
+                filename = await opinionDocumenter.pdfCreate(opinion, details, sortedDetailsTodolist, images , settings.PdfPath, opinion.hasAbbreviationsPage);
             }
 
             fileData = readFile(filename);

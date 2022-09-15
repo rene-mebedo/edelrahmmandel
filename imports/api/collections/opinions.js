@@ -90,6 +90,11 @@ export const OpinionsSchema = new SimpleSchema({
         type: Boolean,
         optional: true,
         defaultValue: false
+    },
+    hasAbbreviationsPage: {
+        type: Boolean,
+        optional: true,
+        defaultValue: true
     }
 });
 
