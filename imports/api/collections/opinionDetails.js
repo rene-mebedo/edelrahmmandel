@@ -84,7 +84,7 @@ export const OpinionDetailSchema = new SimpleSchema({
         type: Object,
         blackbox: true
     },
-    deleted: { // marked the deetail that ist could be deleted
+    deleted: { // marked the detail that could be deleted
         type: Boolean,
         optional: true,
         defaultValue: false

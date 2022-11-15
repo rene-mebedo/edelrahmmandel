@@ -40,6 +40,11 @@ export const UserSchema = new SimpleSchema({
         label: 'Weiterführende Qualifikation',
         optional: true
     },
+    active: {
+        type: Boolean,
+        optional: true,
+        defaultValue: true
+    },
 });
 
 export const UserWithRoleSchema = new SimpleSchema({

@@ -1,12 +1,20 @@
 {
-    "version": "1.0.28",
-    "timestamp": "2022-09-15",
+    "version": "1.0.29",
+    "timestamp": "2022-11-15",
     
     "details": [
         { 
+            "version": "1.0.29", 
+            "description": [
+                "User collection enthält zusätzliches Feld 'active'. Nur aktivierte Benutzer werden in Auswahllisten (Teilen oder Gutachter) gefunden",
+                "E-Mail Texte bzgl. Benutzer Neuanlage und 'Passwort vergessen' angepasst: RSTH als Ansprechpartner rausgenommen",
+                "Kleinere Korrekturen durchgeführt"
+            ]
+        },
+        { 
             "version": "1.0.28", 
             "description": [
-                "Opinion Option disableCopyright ist jetzt initial mit Wert (falase) belegt",
+                "Opinion Option disableCopyright ist jetzt initial mit Wert (false) belegt",
                 "Neue Opinion Option hasAbbreviationsPage, um Abkürzungsverzeichnis ein-(default) bzw. auszublenden",
                 "Update Opinion-Documenter auf 1.0.45 - Zeilenabstände im Inhaltsverzeichnis minimal vergrößert (für MEBEDO und ENSMANN). Anpassungen bzgl. Seitenumbruch, wenn kein Abkürzungsverzeichnis enthalten sein soll"
             ]

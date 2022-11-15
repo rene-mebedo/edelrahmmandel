@@ -34,7 +34,6 @@ Meteor.methods({
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
             throw new Meteor.Error('Keine Berechtigung zum Bearbeiten des Gutachtens. Sie können keinen Gutachter auswählen.');
         }
-
         
         const opinionOwners = Opinions.findOne({
             _id: refOpinion
@@ -51,6 +50,7 @@ Meteor.methods({
         */
         const users =  Meteor.users.find({
             $and: [
+                { 'active': true },// nur aktive Benutzer
                 {'userData.roles': { $in: ['EMPLOYEE', 'ADMIN', 'OWNER'] }},
                 { 
                     $or: [
@@ -71,7 +71,7 @@ Meteor.methods({
     },
 
     /**
-     * Lists all users that a currently in the system
+     * Lists all users that are currently in the system
      * 
      * @param {*} refOpinion 
      * @param {*} searchText 
@@ -83,10 +83,15 @@ Meteor.methods({
         const escapedText = escapeRegExp(searchText);
 
         const users =  Meteor.users.find({
-            $or: [
-                { 'username': { $regex : escapedText, $options:"i" } },
-                { 'userData.firstName': { $regex : escapedText, $options:"i" } },
-                { 'userData.lastName': { $regex : escapedText, $options:"i" } }
+            $and: [
+                { 'active': true },// nur aktive Benutzer
+                {
+                    $or: [
+                        { 'username': { $regex : escapedText, $options:"i" } },
+                        { 'userData.firstName': { $regex : escapedText, $options:"i" } },
+                        { 'userData.lastName': { $regex : escapedText, $options:"i" } }
+                    ]
+                }
             ]
         }, { fields: { 'userData.roles': 0 }, limit: 10 }).fetch().map( user => {
             const { _id, username, userData } = user;
@@ -219,7 +224,10 @@ Meteor.methods({
         });
 
         Meteor.users.update(userId, {
-            $set: { userData: data }
+            $set: {
+                userData: data,
+                active: true// Benutzer aktivieren.
+            }
         });
 
         Opinions.update(refOpinion, {
@@ -499,12 +507,11 @@ Accounts.emailTemplates.resetPassword = {
                  Haben Sie weiterführende Fragen oder Anregungen, so wenden Sie sich bitte direkt an:
                  <br>
                  <br>MEBEDO Consulting GmbH
-                 <br><strong>Herrn Rene Schulte ter Hardt</strong>
+                 <br><strong>Marc Tomaschoff</strong>
                  <br>Aubachstraße 22
                  <br>56410 Montabaur
                  <br>
-                 <br>Telefon: <a href="tel:+49260295081298">+49(0)2602 9508-1298</a>
-                 <br>E-Mail: schulteterhardt@mebedo-ac.de
+                 <br>E-Mail: marc.tomaschoff@mebedo-ac.de
              </p>
              <p>
                  Beste Grüße
@@ -529,11 +536,11 @@ Accounts.emailTemplates.verifyEmail = {
                 Sie sind eingeladen im System <strong>MEBEDO GutachtenPlus</strong> mitzuwirken!
             </p>
             <p>
-                Hierfür wurde ein Benutzer mit Ihrer E-Mailadresse angelegt.
+                Hierfür wurde ein Benutzer mit Ihrer E-Mail Adresse angelegt.
                 <br>
-                Wir bitten Sie um Bestätigung dieses Benutzerzugangs indem Sie den nachfolgenden Link anwählen.
+                Wir bitten Sie um Bestätigung dieses Benutzerzugangs, in dem Sie den nachfolgenden Link anwählen.
                 <br>
-                Mit der Bestätigung werden Sie automatisch aufgefordert Ihr Kennwort zu vergeben.
+                Mit der Bestätigung werden Sie automatisch aufgefordert, Ihr Kennwort zu vergeben.
                 <br>
                 <br>
                 <a href="https://gutachten.mebedo-ac.de/verify-email/${token}" target="_blank">Jetzt Zugang bestätigen</a>
@@ -545,12 +552,11 @@ Accounts.emailTemplates.verifyEmail = {
                 Sollten Sie Fragen haben, so wenden Sie sich bitte direkt an:
                 <br>
                 <br>MEBEDO Consulting GmbH
-                <br><strong>Herrn Rene Schulte ter Hardt</strong>
+                <br><strong>Marc Tomaschoff</strong>
                 <br>Aubachstraße 22
                 <br>56410 Montabaur
                 <br>
-                <br>Telefon: <a href="tel:+49260295081298">+49(0)2602 9508-1298</a>
-                <br>E-Mail: schulteterhardt@mebedo-ac.de
+                <br>E-Mail: marc.tomaschoff@mebedo-ac.de
             </p>
             <p>
                 Beste Grüße
