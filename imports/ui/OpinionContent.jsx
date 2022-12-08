@@ -15,18 +15,23 @@ import Spin from 'antd/lib/spin';
 import Affix from 'antd/lib/affix';
 import InputNumber from 'antd/lib/input-number';
 
+import Divider from 'antd/lib/divider';
+
 import Typography from 'antd/lib/typography';
 const { Paragraph, Text } = Typography;
 
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import FileDoneOutlined from '@ant-design/icons/FileDoneOutlined';
-import EditOutlined from '@ant-design/icons/EditOutlined';
+//import EditOutlined from '@ant-design/icons/EditOutlined';
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import FormOutlined from '@ant-design/icons/FormOutlined';
 import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 import ContactsOutlined from '@ant-design/icons/ContactsOutlined';
 import ImportOutlined from '@ant-design/icons/ImportOutlined';
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
+import ClearOutlined from '@ant-design/icons/ClearOutlined';
+//import CaretUpOutlined from '@ant-design/icons/CaretUpOutlined';
+import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
 
 import { useOpinion, useOpinionDetails, useOpinionDetailsSpellcheck, useOpinionPdfs } from '../client/trackers';
 
@@ -104,6 +109,7 @@ export const OpinionSpellcheckList = ({refOpinion, currentUser, canEdit=false, c
 export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelete=false, canCancelShareWith=false, children, onTabPaneChanged}) => {
     const [ opinion, isLoading ] = useOpinion(refOpinion);
     const [ pdfs, isPdfLoading ] = useOpinionPdfs(refOpinion);
+    const [ pdfs_archive, isPdfLoading_archive ] = useOpinionPdfs( refOpinion , true );
 
     onTabPaneChanged = onTabPaneChanged || function(){};
 
@@ -148,6 +154,61 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                 Meteor.call('users.cancelShareWith', refOpinion, shd.user.userId, (err, result) => {
                     if (err) {
                         console.log('Fehler beim remove des Benutzers', err);
+                    }
+                });
+            }
+        });
+    }
+
+    const archivePDF = id => {
+        Modal.confirm({
+            title: 'Archivierung',
+            icon: <ExclamationCircleOutlined />,
+            content: <span>Soll dieses PDF archiviert werden?</span>,
+            okText: 'OK',
+            cancelText: 'Abbruch',
+            onOk: closeConfirm => {
+                closeConfirm();
+                Meteor.call('opinions.archivePDF', refOpinion, id, (err) => {
+                    if (err) {
+                        console.log(`Fehler bei der Archivierung des PDFs mit ID ${id}`, err);
+                    }
+                });
+            }
+        });
+    }
+
+    const dearchivePDF = id => {
+        Modal.confirm({
+            title: 'Archivierung zurücknehmen',
+            icon: <ExclamationCircleOutlined />,
+            content: <span>Soll die Archivierung dieses PDFs zurückgenommen werden?</span>,
+            okText: 'OK',
+            cancelText: 'Abbruch',
+            onOk: closeConfirm => {
+                closeConfirm();
+                Meteor.call('opinions.dearchivePDF', refOpinion, id, (err) => {
+                    if (err) {
+                        console.log(`Fehler bei der Rücknahme der Archivierung des PDFs mit ID ${id}`, err);
+                    }
+                });
+            }
+        });
+    }
+
+    const deletePDF = id => {
+        Modal.confirm({
+            title: 'L Ö S C HE N',
+            icon: <ExclamationCircleOutlined />,
+            content: <span>Soll dieses PDF wirklich gelöscht werden?</span>,
+            okText: 'OK',
+            okType: 'danger',
+            cancelText: 'Abbruch',
+            onOk: closeConfirm => {
+                closeConfirm();
+                Meteor.call('opinions.deletePDF', refOpinion, id, (err) => {
+                    if (err) {
+                        console.log(`Fehler beim Löschen des PDFs mit ID ${id}`, err);
                     }
                 });
             }
@@ -331,6 +392,101 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                 <Tag color={item.meta.preview ? "red" : (index==0?"green":"orange")}>{item.meta.preview ? 'temp. Vorschau' : (index == 0 ? 'Aktuell':'Entwurf')}</Tag>
                                 <Tag color="blue">v{pdfs.length - index}</Tag>
                             </Space>
+                        }, {
+                            title: 'Delete',
+                            dataIndex: 'deletePDF',
+                            key: 'deletePDF',
+                            align:"right",
+                            render: (_id, item, index) => {
+                                return <Space size='small'>
+                                {                                  
+                                    <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)} />
+                                }
+                                </Space>
+                            }
+                        }, {
+                            title: 'Archivieren',
+                            dataIndex: 'archive',
+                            key: 'archive',
+                            align:"right",
+                            render: (_id, item, index) => {
+                                return <Space size='small'>
+                                {
+                                    <ClearOutlined key="archive" onClick={_=>archivePDF(item._id)}/>
+                                }
+                                </Space>
+                            }
+                        }
+                    ]}
+                />
+                <Divider dashed>Archivierte PDFs</Divider>
+                <Table
+                    //bordered
+                    size="small"
+                    loading={isPdfLoading_archive}
+                    pagination={false}
+                    dataSource={pdfs_archive}
+                    rowKey="_id"
+                    showHeader={false}
+                    columns={[
+                        {
+                            
+                            title: 'Titel',
+                            dataIndex: 'title',
+                            key: 'title',
+                            render: (text, item) => <Space><FilePdfOutlined /><span>Gutachtliche Stellungnahme (Archivdatei)</span></Space>
+                        }, {
+                            title: 'Erstellt am',
+                            dataIndex: 'meta.createdAt',
+                            key: 'createdAt',
+                            render: (text, item) => moment(item.meta.createdAt).format('DD.MM.YYYY HH:mm:ss')
+                        }, {
+                            title: 'Erstellt von',
+                            dataIndex: 'meta.createdBy',
+                            key: 'createdBy',
+                            render: (text, item) => {
+                                if (!item.meta.createdBy) return 'Unbekannt';
+                                
+                                const { firstName, lastName } = item.meta.createdBy;
+                                
+                                return `${firstName} ${lastName}`
+                            }
+                        }, {
+                            title: 'Größe',
+                            dataIndex: 'size',
+                            key: 'size',
+                            align:"right",
+                            render: size => filesize(size)
+                        }, {
+                            title: 'Status',
+                            dataIndex: '_id',
+                            key: '_id',
+                            align:"center",
+                            render: (_id, item, index) => null
+                        }, {
+                            title: 'Delete',
+                            dataIndex: 'deletePDF',
+                            key: 'deletePDF',
+                            align:"right",
+                            render: (_id, item, index) => {
+                                return <Space size='small'>
+                                {                                  
+                                    <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)}/>
+                                }
+                                </Space>
+                            }
+                        }, {
+                            title: 'Dearchivieren',
+                            dataIndex: 'dearchive',
+                            key: 'dearchive',
+                            align:"right",
+                            render: (_id, item, index) => {
+                                return <Space size='small'>
+                                {
+                                    <ArrowUpOutlined key="dearchive" onClick={_=>dearchivePDF(item._id)}/>
+                                }
+                                </Space>
+                            }
                         }
                     ]}
                 />

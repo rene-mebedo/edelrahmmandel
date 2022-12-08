@@ -4,6 +4,10 @@ import List from 'antd/lib/list';
 import Space from 'antd/lib/space';
 import Tag from 'antd/lib/tag';
 import Table from 'antd/lib/table';
+import Modal from 'antd/lib/modal';
+import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
+
+import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 
 import { useOpinions } from '../client/trackers';
 import { MediaQuery, useMediaQueries } from '../client/mediaQueries';
@@ -18,6 +22,26 @@ export const ListOpinions = () => {
     const [ opinions, isLoading ] = useOpinions();
 
     const { isPhone, isTablet, isDesktop } = useMediaQueries();
+
+    const deleteOpinion = id => {
+        Modal.confirm({
+            title: 'L Ö S C HE N',
+            icon: <ExclamationCircleOutlined />,
+            content: <span>Soll dieses Gutachten wirklich (für dich!) gelöscht werden?</span>,
+            okText: 'OK',
+            okType: 'danger',
+            cancelText: 'Abbruch',
+            onOk: closeConfirm => {
+                closeConfirm();
+                console.log( id );
+                Meteor.call('opinions.unshareOpinionUser' , id , ( err ) => {
+                    if ( err ) {
+                        console.log( `Fehler beim Löschen des Gutachtens mit ID ${id}`, err );
+                    }
+                });
+            }
+        });
+    }
 
     let columns = [
         {
@@ -66,6 +90,21 @@ export const ListOpinions = () => {
         ]);
     }
 
+    columns = columns.concat([
+        {
+            title: ' ',
+            dataIndex: 'delete',
+            key: 'delete',
+            align:"right",
+            render: (text, row) => {
+                return <Space size='small'>
+                {                                  
+                    <DeleteOutlined key="delete" onClick={_=>deleteOpinion( row._id )} />
+                }
+                </Space>
+            }
+        }
+    ]);
     
     return (
         <Fragment>

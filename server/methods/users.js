@@ -466,7 +466,6 @@ Meteor.methods({
         }, { multiple: true });
 
     }
-
 });
 
 Accounts.emailTemplates.siteName = 'MEBEDO GutachtenPlus';

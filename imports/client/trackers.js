@@ -390,7 +390,7 @@ export const useOpinionActionList = refOpinion => useTracker( () => {
  * 
  * @param {String} refOpinion   id of the Opinion
  */
-export const useOpinionPdfs = refOpinion => useTracker( () => {
+export const useOpinionPdfs = ( refOpinion , archive = false ) => useTracker( () => {
     const noDataAvailable = [ [] /*opinionPdfs*/ , true /*loading*/];
 
     if (!Meteor.user()) {
@@ -402,7 +402,16 @@ export const useOpinionPdfs = refOpinion => useTracker( () => {
         return noDataAvailable;
     }
 
-    const data = OpinionPdfs.find({ "meta.refOpinion": refOpinion }, { sort: { 'meta.createdAt': -1 }}).fetch();
+    const data = archive
+                    ? OpinionPdfs.find({ "meta.refOpinion": refOpinion , "meta.archive": true }, { sort: { 'meta.createdAt': -1 }}).fetch()
+                    : OpinionPdfs.find({
+                        $and:[
+                            { "meta.refOpinion": refOpinion } , 
+                            { $or:[
+                                { "meta.archive": null },
+                                { "meta.archive": false }
+                            ]}]},
+                            { sort: { 'meta.createdAt': -1 }}).fetch();
 
     return [
         data.map( file => {

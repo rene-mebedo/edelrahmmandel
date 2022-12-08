@@ -1,8 +1,16 @@
 {
-    "version": "1.0.29",
-    "timestamp": "2022-11-15",
+    "version": "1.1.0",
+    "timestamp": "2022-12-08",
     
     "details": [
+        { 
+            "version": "1.1.00", 
+            "description": [
+                "Für PDFs Archivbereich hinzugefügt und neue Funktionen Archivieren bzw. Zurücknahme der Archivierung implementiert",
+                "Löschen von PDFs ist jetzt möglich",
+                "Löschen (= nicht mehr teilen mit diesem Benutzer) von Gutachten ist jetzt möglich"
+            ]
+        },
         { 
             "version": "1.0.29", 
             "description": [
