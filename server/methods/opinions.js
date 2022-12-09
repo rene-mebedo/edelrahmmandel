@@ -29,7 +29,6 @@ const settings = JSON.parse(process.env.MGP_SETTINGS);
 
 import { rePositionDetails } from '../../imports/api/helpers/opinionDetails';
 
-
 Meteor.methods({
     /**
      * Returns all Opinions that are shared with the current user
@@ -93,7 +92,7 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieses Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         //console.log( shared.sharedWith );
@@ -148,14 +147,14 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieses Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
         // Die Berechtigung shareWithExplicitRole wird hier verwendet.
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWithExplicitRole')) {
-            throw new Meteor.Error('Sie besitzen keine Berechtigung für die Archivierung von PDFs.');
+            throw new Meteor.Error('Sie besitzen keine Berechtigung für die Archivierung von PDFs in diesem Gutachten.');
         }
 
         /* 
@@ -231,14 +230,14 @@ Meteor.methods({
         });
 
         if (!shared) {
-            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+            throw new Meteor.Error('Dieses Gutachten wurde nicht mit Ihnen geteilt.');
         }
 
         const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
         
         // Die Berechtigung shareWithExplicitRole wird hier verwendet.
         if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWithExplicitRole')) {
-            throw new Meteor.Error('Sie besitzen keine Berechtigung für das Zurücknehmen der Archivierung von PDFs.');
+            throw new Meteor.Error('Sie besitzen keine Berechtigung für das Zurücknehmen der Archivierung von PDFs in diesem Gutachten.');
         }
 
         /* 

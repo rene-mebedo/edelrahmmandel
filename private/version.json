@@ -1,6 +1,6 @@
 {
     "version": "1.1.0",
-    "timestamp": "2022-12-08",
+    "timestamp": "2022-12-09",
     
     "details": [
         { 
@@ -8,7 +8,8 @@
             "description": [
                 "Für PDFs Archivbereich hinzugefügt und neue Funktionen Archivieren bzw. Zurücknahme der Archivierung implementiert",
                 "Löschen von PDFs ist jetzt möglich",
-                "Löschen (= nicht mehr teilen mit diesem Benutzer) von Gutachten ist jetzt möglich"
+                "Löschen (= nicht mehr teilen mit diesem Benutzer) von Gutachten ist jetzt möglich",
+                "Bei Programmstart einmaliges Archivieren und Dearchivieren der PDFs implementiert, um diese im richtigen Unterverzeichnis anzulegen"
             ]
         },
         { 

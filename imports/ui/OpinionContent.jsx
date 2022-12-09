@@ -29,8 +29,7 @@ import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 import ContactsOutlined from '@ant-design/icons/ContactsOutlined';
 import ImportOutlined from '@ant-design/icons/ImportOutlined';
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
-import ClearOutlined from '@ant-design/icons/ClearOutlined';
-//import CaretUpOutlined from '@ant-design/icons/CaretUpOutlined';
+import ClockCircleOutlined from '@ant-design/icons/ClockCircleOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
 
 import { useOpinion, useOpinionDetails, useOpinionDetailsSpellcheck, useOpinionPdfs } from '../client/trackers';
@@ -106,7 +105,7 @@ export const OpinionSpellcheckList = ({refOpinion, currentUser, canEdit=false, c
     )
 }
 
-export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelete=false, canCancelShareWith=false, children, onTabPaneChanged}) => {
+export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelete=false, canCancelShareWith=false, canShareWithExplicitRole=false, children, onTabPaneChanged}) => {
     const [ opinion, isLoading ] = useOpinion(refOpinion);
     const [ pdfs, isPdfLoading ] = useOpinionPdfs(refOpinion);
     const [ pdfs_archive, isPdfLoading_archive ] = useOpinionPdfs( refOpinion , true );
@@ -399,7 +398,8 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                             align:"right",
                             render: (_id, item, index) => {
                                 return <Space size='small'>
-                                {                                  
+                                {
+                                    !canShareWithExplicitRole ? null :
                                     <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)} />
                                 }
                                 </Space>
@@ -412,7 +412,8 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                             render: (_id, item, index) => {
                                 return <Space size='small'>
                                 {
-                                    <ClearOutlined key="archive" onClick={_=>archivePDF(item._id)}/>
+                                    !canShareWithExplicitRole ? null :
+                                    <ClockCircleOutlined key="archive" onClick={_=>archivePDF(item._id)}/>
                                 }
                                 </Space>
                             }

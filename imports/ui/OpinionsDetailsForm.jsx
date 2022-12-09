@@ -253,7 +253,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                     { refDetail === null
                         ? <OpinionContent 
                             refOpinion={refOpinion} currentUser={currentUser} 
-                            canEdit={canEdit} canDelete={canDelete} canCancelShareWith={canCancelShare}
+                            canEdit={canEdit} canDelete={canDelete} canCancelShareWith={canCancelShare} canShareWithExplicitRole={canShareWithExplicitRole}
                             onTabPaneChanged={tabPaneChanged} >
                                 <ListOpinionDetails
                                     refOpinion={refOpinion} 

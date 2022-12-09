@@ -4,6 +4,9 @@ import { Meteor } from 'meteor/meteor';
     Da dieses Feld neu ist muss es initialisiert werden.
 */
 
+// MT 08.12.2022
+// Diese Funktion wurde im Produktvsystem einmal ausgeführt und wird deshalb nicht mehr benötigt.
+return; 
 console.log( 'start init user.active' );
 
 const res = Meteor.users.update({

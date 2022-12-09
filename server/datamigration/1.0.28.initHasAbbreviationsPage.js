@@ -4,6 +4,9 @@ import { Opinions } from '/imports/api/collections/opinions';
     Da dieses Feld neu ist muss es initialisiert werden, so dass das bisherige Verfahren sichergestellt ist.
 */
 
+// MT 08.12.2022
+// Diese Funktion wurde im Produktvsystem einmal ausgeführt und wird deshalb nicht mehr benötigt.
+return; 
 console.log( 'start init opinion.hasAbbreviationsPage' );
 
 const res = Opinions.update({

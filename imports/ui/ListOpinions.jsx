@@ -7,7 +7,7 @@ import Table from 'antd/lib/table';
 import Modal from 'antd/lib/modal';
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 
-import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
+import ClearOutlined from '@ant-design/icons/ClearOutlined';
 
 import { useOpinions } from '../client/trackers';
 import { MediaQuery, useMediaQueries } from '../client/mediaQueries';
@@ -99,7 +99,7 @@ export const ListOpinions = () => {
             render: (text, row) => {
                 return <Space size='small'>
                 {                                  
-                    <DeleteOutlined key="delete" onClick={_=>deleteOpinion( row._id )} />
+                    <ClearOutlined key="delete" onClick={_=>deleteOpinion( row._id )} />
                 }
                 </Space>
             }
