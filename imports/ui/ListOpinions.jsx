@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import React, { Fragment, useEffect, useState } from 'react';
 import List from 'antd/lib/list';
 import Space from 'antd/lib/space';
+import Progress from 'antd/lib/progress';
 import Tag from 'antd/lib/tag';
 import Table from 'antd/lib/table';
 import Modal from 'antd/lib/modal';
@@ -45,6 +46,15 @@ export const ListOpinions = () => {
 
     let columns = [
         {
+            title: ' ',
+            dataIndex: 'statusProgress',
+            key: 'statusProgress',
+            render: (text, row) => 
+                <Space>
+                    <Progress type="circle" percent={row.status == 'Angelegt' ? 2 : row.status == 'Bearbeitung' ? 25 : row.status == 'Korrektur' ? 50 : row.status == 'Vorabversion' ? 75 : row.status == 'Fertig' ? 100 : row.status == 'Ungültig' ? 100 : "?"}  width={35} status={row.status == 'Ungültig' ? "exception" : ""} />
+                </Space>
+        },
+        {
             title: 'Titel',
             dataIndex: 'title',
             key: 'title',
@@ -69,6 +79,12 @@ export const ListOpinions = () => {
             sorter: (a, b) => lower(a.opinionNo).localeCompare(lower(b.opinionNo)),
             defaultSortOrder: 'descend'
         },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            sorter: (a, b) => lower(a.status).localeCompare(lower(b.status))
+        }
     ];
 
     if (isDesktop) {

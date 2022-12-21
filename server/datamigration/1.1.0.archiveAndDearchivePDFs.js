@@ -43,6 +43,17 @@ opinionPdfs.forEach( opinionPdf => {
                 'versions.original.path': dest
             }
         });
+
+        /*
+        Dearchivieren:
+        1. Datei auf Speicher/FS verschieben.
+        2. Pfade in Collection anpassen.
+            Zur Sicherheit werden folgende Eigenschaften aktualisiert:
+            - path (Pfad inkl. Dateiname)
+            - _storagePath (nur Pfad!)
+            - versions.original.path (Pfad inkl. Dateiname)
+        3. meta.archive auf false setzen.
+        */
         src = dest;
         //settings = JSON.parse( process.env.MGP_SETTINGS );
         origPath = `${settings.PdfPath}/${moment(opinionPdf.meta.createdAt).format('YYYY')}`;
@@ -68,41 +79,6 @@ opinionPdfs.forEach( opinionPdf => {
     .catch( err => {
         console.error( err )
     })
-
-    /*
-    Dearchivieren:
-    1. Datei auf Speicher/FS verschieben.
-    2. Pfade in Collection anpassen.
-        Zur Sicherheit werden folgende Eigenschaften aktualisiert:
-        - path (Pfad inkl. Dateiname)
-        - _storagePath (nur Pfad!)
-        - versions.original.path (Pfad inkl. Dateiname)
-    3. meta.archive auf false setzen.
-    */
-    // Aktuellen Dateipfad im Archiv auslesen.
-    //src = opinionPdf.versions.original.path;
-    /*src = dest;
-    //settings = JSON.parse( process.env.MGP_SETTINGS );
-    origPath = `${settings.PdfPath}/${moment(opinionPdf.meta.createdAt).format('YYYY')}`;
-    dest = `${origPath}/${opinionPdf._id}.pdf`;
-
-    // Datei auf Speicher/FS verschieben
-    fs_extra.move( src , dest )
-    .then(() => {
-        console.log( `2. Dearchive: File move successfull to ${dest}` );
-        // Pfade in Collection anpassen und meta.archive auf false setzen.
-        OpinionPdfs.update({ _id: opinionPdf._id , 'meta.refOpinion': opinionPdf.meta.refOpinion }, {
-            $set: {
-                'meta.archive': false,
-                'path': dest,
-                '_storagePath': origPath,
-                'versions.original.path': dest
-            }
-        });
-    })
-    .catch( err => {
-        console.error( err )
-    })*/
 });
 
 console.log( 'done archive and dearchive all opinionPDFs' );

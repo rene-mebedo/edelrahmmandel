@@ -165,7 +165,22 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                                         </Form.Item>
                                     </ConfigProvider>
 
-                                    { mode === 'EDIT' ? null :
+                                    { mode === 'EDIT'
+                                        ?
+                                        <Form.Item
+                                            label="Status"
+                                            name="status"
+                                        >
+                                            <Select allowClear={true} showArrow={true}>
+                                            <Option key="Ungültig">Ungültig</Option>
+                                            <Option key="Angelegt">Angelegt</Option>
+                                            <Option key="Bearbeitung">Bearbeitung</Option>
+                                            <Option key="Korrektur">Korrektur</Option>
+                                            <Option key="Vorabversion">Vorabversion</Option>
+                                            <Option key="Fertig">Fertig</Option>
+                                        </Select>
+                                        </Form.Item>
+                                        :
                                         <Form.Item
                                             label="Vorlage"
                                             name="refTemplate"

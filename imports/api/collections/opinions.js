@@ -95,6 +95,12 @@ export const OpinionsSchema = new SimpleSchema({
         type: Boolean,
         optional: true,
         defaultValue: true
+    },
+    status: {
+        type: String,
+        label: 'Status',
+        optional: true,
+        defaultValue: 'Angelegt'
     }
 });
 

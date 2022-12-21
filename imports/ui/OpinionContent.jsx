@@ -292,12 +292,14 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                     <Descriptions.Item label="Titel">{opinion.title} Nr. {opinion.opinionNo}</Descriptions.Item>
                     <Descriptions.Item label="Beschreibung">{opinion.description}</Descriptions.Item>
                     
-                    <Descriptions.Item label="Kunde" span={2}>
+                    
+                    <Descriptions.Item label="Kunde">
                         <div>{opinion.customer.name}</div>
                         <div>{opinion.customer.street}</div>
                         <div>{opinion.customer.postalCode + ' ' + opinion.customer.city}</div>
                     </Descriptions.Item>
-                    
+                    <Descriptions.Item label="Status">{opinion.status}</Descriptions.Item>
+
                     <Descriptions.Item label="Datum von">{moment(opinion.dateFrom).format('DD. MMMM YYYY')}</Descriptions.Item>
                     <Descriptions.Item label="Datum bis">{moment(opinion.dateTill).format('DD. MMMM YYYY')}</Descriptions.Item>
 
