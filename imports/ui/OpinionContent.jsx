@@ -32,6 +32,8 @@ import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlin
 import ClockCircleOutlined from '@ant-design/icons/ClockCircleOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
 
+import Tooltip from 'antd/lib/tooltip';
+
 import { useOpinion, useOpinionDetails, useOpinionDetailsSpellcheck, useOpinionPdfs } from '../client/trackers';
 
 import { OpinionParticipants } from './components/OpinionParticipants';
@@ -197,7 +199,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
 
     const deletePDF = id => {
         Modal.confirm({
-            title: 'L Ö S C HE N',
+            title: 'L Ö S C H E N',
             icon: <ExclamationCircleOutlined />,
             content: <span>Soll dieses PDF wirklich gelöscht werden?</span>,
             okText: 'OK',
@@ -360,7 +362,9 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                             dataIndex: 'title',
                             key: 'title',
                             render: (text, item) => <a href={item.link} target="_blank">
-                                <Space><FilePdfOutlined /><span>Gutachtliche Stellungnahme</span></Space>
+                                <Tooltip title="PDF öffnen">
+                                    <Space><FilePdfOutlined /><span>Gutachtliche Stellungnahme</span></Space>
+                                </Tooltip>
                             </a>
                         }, {
                             title: 'Erstellt am',
@@ -402,7 +406,9 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                 return <Space size='small'>
                                 {
                                     !canShareWithExplicitRole ? null :
-                                    <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)} />
+                                    <Tooltip title="PDF löschen">
+                                        <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)} />
+                                    </Tooltip>
                                 }
                                 </Space>
                             }
@@ -415,7 +421,9 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                 return <Space size='small'>
                                 {
                                     !canShareWithExplicitRole ? null :
-                                    <ClockCircleOutlined key="archive" onClick={_=>archivePDF(item._id)}/>
+                                    <Tooltip title="PDF archivieren">
+                                        <ClockCircleOutlined key="archive" onClick={_=>archivePDF(item._id)}/>
+                                    </Tooltip>
                                 }
                                 </Space>
                             }
@@ -473,8 +481,10 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                             align:"right",
                             render: (_id, item, index) => {
                                 return <Space size='small'>
-                                {                                  
-                                    <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)}/>
+                                {   
+                                    <Tooltip title="PDF löschen">
+                                        <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)}/>
+                                    </Tooltip>
                                 }
                                 </Space>
                             }
@@ -486,7 +496,9 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                             render: (_id, item, index) => {
                                 return <Space size='small'>
                                 {
-                                    <ArrowUpOutlined key="dearchive" onClick={_=>dearchivePDF(item._id)}/>
+                                    <Tooltip title="PDF Archivierung zurücknehmen">
+                                        <ArrowUpOutlined key="dearchive" onClick={_=>dearchivePDF(item._id)}/>
+                                    </Tooltip>
                                 }
                                 </Space>
                             }

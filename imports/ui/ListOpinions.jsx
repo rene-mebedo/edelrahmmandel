@@ -9,6 +9,7 @@ import Modal from 'antd/lib/modal';
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 
 import ClearOutlined from '@ant-design/icons/ClearOutlined';
+import Tooltip from 'antd/lib/tooltip';
 
 import { useOpinions } from '../client/trackers';
 import { MediaQuery, useMediaQueries } from '../client/mediaQueries';
@@ -26,7 +27,7 @@ export const ListOpinions = () => {
 
     const deleteOpinion = id => {
         Modal.confirm({
-            title: 'L Ö S C HE N',
+            title: 'L Ö S C H E N',
             icon: <ExclamationCircleOutlined />,
             content: <span>Soll dieses Gutachten wirklich (für dich!) gelöscht werden?</span>,
             okText: 'OK',
@@ -59,10 +60,12 @@ export const ListOpinions = () => {
             dataIndex: 'title',
             key: 'title',
             render: (text, row) => <a href={"/opinions/" + row._id}>
-                <Space>
-                    {text}
-                    {row.isTemplate ? <Tag color="green">Vorlage</Tag> : null}
-                </Space>
+                <Tooltip title="Gutachten öffnen">
+                    <Space>
+                        {text}
+                        {row.isTemplate ? <Tag color="green">Vorlage</Tag> : null}
+                    </Space>
+                </Tooltip>
             </a>,
             sorter: (a, b) => lower(a.title).localeCompare(lower(b.title)),
         },
@@ -114,8 +117,10 @@ export const ListOpinions = () => {
             align:"right",
             render: (text, row) => {
                 return <Space size='small'>
-                {                                  
-                    <ClearOutlined key="delete" onClick={_=>deleteOpinion( row._id )} />
+                {     
+                    <Tooltip title="Gutachten (nur für dich!) löschen">
+                        <ClearOutlined key="delete" onClick={_=>deleteOpinion( row._id )} />
+                    </Tooltip>                             
                 }
                 </Space>
             }

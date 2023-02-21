@@ -6,7 +6,6 @@ import Select from 'antd/lib/select';
 import Modal from 'antd/lib/modal';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
-import List from 'antd/lib/list';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import Switch from 'antd/lib/switch';
