@@ -30,40 +30,14 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
         coordinateGetter: sortableKeyboardCoordinates
         })
     );
-    
-    return (
-        <DndContext 
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragMove={handleDragMove}
-        >
-            <SortableContext 
-                items={items}
-                strategy={verticalListSortingStrategy}
-            >
-                <Fragment>
-                <div id={detail._id}>
-                    { items.map( (detail) =>
-                        <PictureSortable id={detail._id} detail={detail} />
-                    )}
-                </div>
-                </Fragment>
-            </SortableContext>
-            <DragOverlay>
-                {activeId ? <PictureSortable id={activeId} detail={items.find( ( elem ) => { return elem._id == activeId } )} /> : null}
-            </DragOverlay>
-        </DndContext>
-    )
 
-    function handleDragStart( event ) {
+    const handleDragStart = ( event ) => {
         const {active} = event;
         
         setActiveId(active.id);
     }
 
-    function handleDragEnd( event ) {
+    const handleDragEnd = ( event ) => {
         const {active, over} = event;
         if ( active.id !== over.id ) {
             setItems( ( items ) => {
@@ -91,7 +65,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
         setActiveId(null);
     }
 
-    function handleDragMove( event ) {
+    const handleDragMove = ( event ) => {
         const {active, over} = event;
         if ( active.id !== over.id ) {
             setItems( ( items ) => {
@@ -117,4 +91,30 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
             });
         }
     }
+    
+    return (
+        <DndContext 
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragMove={handleDragMove}
+        >
+            <SortableContext 
+                items={items}
+                strategy={verticalListSortingStrategy}
+            >
+                <Fragment>
+                <div id={detail._id}>
+                    { items.map( (detail) =>
+                        <PictureSortable id={detail._id} detail={detail} />
+                    )}
+                </div>
+                </Fragment>
+            </SortableContext>
+            <DragOverlay>
+                {activeId ? <PictureSortable id={activeId} detail={items.find( ( elem ) => { return elem._id == activeId } )} /> : null}
+            </DragOverlay>
+        </DndContext>
+    )
 };
