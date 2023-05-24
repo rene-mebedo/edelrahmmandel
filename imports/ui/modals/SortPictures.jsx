@@ -30,14 +30,17 @@ export const ModalSortPictures = ( { refOpinion, refParentDetail, refDetail }) =
     }
     
     const ActionButton = () => {
-        return (
+        if ( pictureArray.length < 2 )
+            return null;
+        else
+            return (
             <Button type="dashed" onClick={ showModalVisible }>
                 <Space>
                     <PictureOutlined />
                     Sortieren
                 </Space>
             </Button>
-        );
+        )
     }
 
     return (
