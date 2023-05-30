@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor';
 import React, { Fragment, useState } from 'react';
 import Button from 'antd/lib/button';
 import Modal from 'antd/lib/modal';

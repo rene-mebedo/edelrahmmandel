@@ -13,7 +13,7 @@ import Switch from 'antd/lib/switch';
 
 const { Content } = Layout;
 
-import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
+//import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 
