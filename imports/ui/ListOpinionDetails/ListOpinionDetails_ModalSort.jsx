@@ -1,7 +1,7 @@
 import React, { Fragment , useState } from 'react';
 
 //import { PictureSortable } from './PictureSortable';
-import {
+/*import {
     DndContext,
     DragOverlay,
     closestCenter,
@@ -15,7 +15,7 @@ import {
     SortableContext,
     sortableKeyboardCoordinates,
     verticalListSortingStrategy
-} from '@dnd-kit/sortable';
+} from '@dnd-kit/sortable';*/
 
 //import {Draggable} from './Draggable';
 
@@ -24,12 +24,12 @@ import Modal from 'antd/lib/modal';
 export const ListOpinionDetails_ModalSort = ({ pictures }) => {
     const [activeId, setActiveId] = useState(null);
     const [items, setItems] = useState( pictures );
-    const sensors = useSensors(
+    /*const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
         coordinateGetter: sortableKeyboardCoordinates
         })
-    );
+    );*/
 
     const handleDragStart = ( event ) => {
         const {active} = event;
@@ -93,7 +93,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
     }
     
     return (
-        <DndContext 
+        /*<DndContext 
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}
@@ -115,7 +115,8 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
             <DragOverlay>
                 
             </DragOverlay>
-        </DndContext>
+        </DndContext>*/
+        123
     )
 };
 
