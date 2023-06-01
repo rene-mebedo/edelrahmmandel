@@ -47,7 +47,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
                 const oldIndex = items.indexOf(oldElem);
                 const newIndex = items.indexOf(newElem);
 
-                pictures = arrayMove( items , oldIndex , newIndex );
+                //pictures = arrayMove( items , oldIndex , newIndex );
 
                 // Hier auch DB Änderungen durchführen?!
                 Meteor.call( 'opinionDetails.rePosition', active.id, newIndex+1 , (err, res) => {
@@ -75,7 +75,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
                 const oldIndex = items.indexOf(oldElem);
                 const newIndex = items.indexOf(newElem);
 
-                pictures = arrayMove( items , oldIndex , newIndex );
+                //pictures = arrayMove( items , oldIndex , newIndex );
 
                 // Hier auch DB Änderungen durchführen?!
                 Meteor.call( 'opinionDetails.rePosition', active.id, newIndex+1 , (err, res) => {
