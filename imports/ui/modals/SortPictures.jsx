@@ -7,7 +7,7 @@ import PictureOutlined from '@ant-design/icons/PictureOutlined';
 import { useOpinionDetails } from '../../client/trackers';
 
 import { ModalBackground } from '../components/ModalBackground';
-import { ListOpinionDetails_ModalSort } from '../ListOpinionDetails/ListOpinionDetails_ModalSort';
+//import { ListOpinionDetails_ModalSort } from '../ListOpinionDetails/ListOpinionDetails_ModalSort';
 
 export const ModalSortPictures = ( { refOpinion, refParentDetail, refDetail }) => {
     const [ showModal, setShowModal ] = useState(false);
@@ -58,10 +58,11 @@ export const ModalSortPictures = ( { refOpinion, refParentDetail, refDetail }) =
                         okText="Schließen"
                         maskClosable={false}
                     >
-                    <ListOpinionDetails_ModalSort pictures={pictureArray} />
+                    
                     </Modal>
                 </ModalBackground>
             }
         </Fragment>
     );
 }
+//<ListOpinionDetails_ModalSort pictures={pictureArray} />

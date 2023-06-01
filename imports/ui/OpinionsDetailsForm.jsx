@@ -13,7 +13,7 @@ import Switch from 'antd/lib/switch';
 
 const { Content } = Layout;
 
-import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
+//import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 
@@ -26,6 +26,8 @@ import { ActionTodoList } from './components/ActionTodoList';
 import { OpinionBreadcrumb } from './components/OpinionBreadcrumb';
 import { OpinionContent } from './OpinionContent';
 
+import { ModalSortPictures } from './modals/SortPictures';
+
 import { ListOpinionDetails } from './ListOpinionDetails/ListOpinionDetails';
 import { hasPermission } from '../api/helpers/roles';
 
@@ -36,8 +38,6 @@ import {
 
 import { ModalShareWith } from './modals/share-with';
 import { useAppState } from '../client/AppState';
-
-
 
 export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [opinion, opinionIsLoading] = useOpinion(refOpinion);
@@ -200,9 +200,16 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                 }
             }
         } else {
-            // place possibility to upload pictures
-            // if the detail could have children
             if (canEdit && detail && layouttypesObject[detail.type].isPictureable) {
+                pageHeaderButtons.push(
+                    <ModalSortPictures key="sortpicture"
+                        refOpinion={refOpinion}
+                        refParentDetail={detail.refParentDetail}
+                        refDetail={detail._id}
+                    />
+                );
+                // place possibility to upload pictures
+                // if the detail could have children
                 pageHeaderButtons.push(
                     <ModalFileUpload key="fileupload"
                         mode="EDIT"
