@@ -1,6 +1,6 @@
 import React, { Fragment , useState } from 'react';
 
-import { PictureSortable } from './PictureSortable';
+//import { PictureSortable } from './PictureSortable';
 import {
     DndContext,
     DragOverlay,
@@ -107,14 +107,18 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
                 <Fragment>
                 <div id={detail._id}>
                     { items.map( (detail) =>
-                        <PictureSortable id={detail._id} detail={detail} />
+                        123
                     )}
                 </div>
                 </Fragment>
             </SortableContext>
             <DragOverlay>
-                {activeId ? <PictureSortable id={activeId} detail={items.find( ( elem ) => { return elem._id == activeId } )} /> : null}
+                
             </DragOverlay>
         </DndContext>
     )
 };
+
+//<PictureSortable id={detail._id} detail={detail} />
+
+//{activeId ? <PictureSortable id={activeId} detail={items.find( ( elem ) => { return elem._id == activeId } )} /> : null}
