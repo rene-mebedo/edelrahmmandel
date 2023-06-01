@@ -2,10 +2,11 @@ import React, { Fragment } from 'react';
 
 import { EditableContent } from '../../components/EditableContent';
 import { ListImages } from '../../ListImages';
-import { OpinionDetailAdder } from './OpinionDetailAdder';
+//import { OpinionDetailAdder } from './OpinionDetailAdder';
 
 import Col from 'antd/lib/col';
 import Row from 'antd/lib/row';
+import Divider from 'antd/lib/divider';
 
 export const Picture = ( { item, permissions, first, last } ) => {
     const { _id, depth, files, printTitle, text, deleted } = item;
@@ -42,6 +43,7 @@ export const Picture = ( { item, permissions, first, last } ) => {
                                     />
                                 </div>
                             </Col>
+                            <Divider />
                         </Row>      
                     </div>
                 </div>

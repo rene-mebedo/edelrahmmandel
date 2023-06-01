@@ -1,20 +1,20 @@
 import React, { Fragment , useState } from 'react';
 
-//import { PictureSortable } from './PictureSortable';
+import { PictureSortable } from './PictureSortable';
 import {
     DndContext,
-    /*DragOverlay,
+    DragOverlay,
     closestCenter,
     KeyboardSensor,
     PointerSensor,
     useSensor,
-    useSensors*/
+    useSensors
 } from '@dnd-kit/core';
 import {
-    /*arrayMove,
+    arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
-    verticalListSortingStrategy*/
+    verticalListSortingStrategy
 } from '@dnd-kit/sortable';
 
 //import {Draggable} from './Draggable';
@@ -24,12 +24,12 @@ import Modal from 'antd/lib/modal';
 export const ListOpinionDetails_ModalSort = ({ pictures }) => {
     const [activeId, setActiveId] = useState(null);
     const [items, setItems] = useState( pictures );
-    /*const sensors = useSensors(
+    const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
         coordinateGetter: sortableKeyboardCoordinates
         })
-    );*/
+    );
 
     const handleDragStart = ( event ) => {
         const {active} = event;
@@ -47,7 +47,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
                 const oldIndex = items.indexOf(oldElem);
                 const newIndex = items.indexOf(newElem);
 
-                //pictures = arrayMove( items , oldIndex , newIndex );
+                pictures = arrayMove( items , oldIndex , newIndex );
 
                 // Hier auch DB Änderungen durchführen?!
                 Meteor.call( 'opinionDetails.rePosition', active.id, newIndex+1 , (err, res) => {
@@ -75,7 +75,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
                 const oldIndex = items.indexOf(oldElem);
                 const newIndex = items.indexOf(newElem);
 
-                //pictures = arrayMove( items , oldIndex , newIndex );
+                pictures = arrayMove( items , oldIndex , newIndex );
 
                 // Hier auch DB Änderungen durchführen?!
                 Meteor.call( 'opinionDetails.rePosition', active.id, newIndex+1 , (err, res) => {
@@ -93,7 +93,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
     }
     
     return (
-        /*<DndContext 
+        <DndContext 
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}
@@ -107,19 +107,14 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
                 <Fragment>
                 <div id={detail._id}>
                     { items.map( (detail) =>
-                        123
+                        <PictureSortable id={detail._id} detail={detail} />
                     )}
                 </div>
                 </Fragment>
             </SortableContext>
             <DragOverlay>
-                
+                {activeId ? <PictureSortable id={activeId} detail={items.find( ( elem ) => { return elem._id == activeId } )} /> : null}
             </DragOverlay>
-        </DndContext>*/
-        123
+        </DndContext>
     )
 };
-
-//<PictureSortable id={detail._id} detail={detail} />
-
-//{activeId ? <PictureSortable id={activeId} detail={items.find( ( elem ) => { return elem._id == activeId } )} /> : null}

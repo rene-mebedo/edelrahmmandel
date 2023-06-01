@@ -39,6 +39,8 @@ import {
 import { ModalShareWith } from './modals/share-with';
 import { useAppState } from '../client/AppState';
 
+
+
 export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
     const [opinion, opinionIsLoading] = useOpinion(refOpinion);
     const [detail, detailIsLoading] = useOpinionDetail(refOpinion, refDetail);
