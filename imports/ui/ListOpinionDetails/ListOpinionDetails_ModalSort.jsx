@@ -1,7 +1,7 @@
 import React, { Fragment , useState } from 'react';
 
 //import { PictureSortable } from './PictureSortable';
-import {
+/*import {
     DndContext,
     DragOverlay,
     closestCenter,
@@ -9,13 +9,13 @@ import {
     PointerSensor,
     useSensor,
     useSensors
-} from '@dnd-kit/core';
-/*import {
+} from '@dnd-kit/core';*/
+import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
     verticalListSortingStrategy
-} from '@dnd-kit/sortable';*/
+} from '@dnd-kit/sortable';
 
 //import {Draggable} from './Draggable';
 
