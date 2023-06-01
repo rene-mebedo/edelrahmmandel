@@ -1,18 +1,18 @@
 import React, { Fragment , useState } from 'react';
 
 //import { PictureSortable } from './PictureSortable';
-/*import {
+import {
     DndContext,
-    DragOverlay,
+    /*DragOverlay,
     closestCenter,
     KeyboardSensor,
     PointerSensor,
     useSensor,
-    useSensors
-} from '@dnd-kit/core';*/
+    useSensors*/
+} from '@dnd-kit/core';
 import {
-    arrayMove,
-    /*SortableContext,
+    /*arrayMove,
+    SortableContext,
     sortableKeyboardCoordinates,
     verticalListSortingStrategy*/
 } from '@dnd-kit/sortable';
