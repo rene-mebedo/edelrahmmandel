@@ -24,12 +24,12 @@ import Modal from 'antd/lib/modal';
 export const ListOpinionDetails_ModalSort = ({ pictures }) => {
     const [activeId, setActiveId] = useState(null);
     const [items, setItems] = useState( pictures );
-    const sensors = useSensors(
+    /*const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
         coordinateGetter: sortableKeyboardCoordinates
         })
-    );
+    );*/
 
     const handleDragStart = ( event ) => {
         const {active} = event;
