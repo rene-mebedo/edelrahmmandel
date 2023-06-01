@@ -12,9 +12,9 @@ import React, { Fragment , useState } from 'react';
 } from '@dnd-kit/core';*/
 import {
     arrayMove,
-    SortableContext,
+    /*SortableContext,
     sortableKeyboardCoordinates,
-    verticalListSortingStrategy
+    verticalListSortingStrategy*/
 } from '@dnd-kit/sortable';
 
 //import {Draggable} from './Draggable';
