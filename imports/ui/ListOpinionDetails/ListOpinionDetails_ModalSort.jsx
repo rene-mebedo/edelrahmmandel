@@ -10,12 +10,12 @@ import {
     useSensor,
     useSensors
 } from '@dnd-kit/core';
-import {
+/*import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
     verticalListSortingStrategy
-} from '@dnd-kit/sortable';
+} from '@dnd-kit/sortable';*/
 
 //import {Draggable} from './Draggable';
 
