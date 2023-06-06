@@ -65,7 +65,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
         setActiveId(null);
     }
 
-    const handleDragMove = ( event ) => {
+    /*const handleDragMove = ( event ) => {
         const {active, over} = event;
         if ( active.id !== over.id ) {
             setItems( ( items ) => {
@@ -90,7 +90,7 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
                 return pictures;
             });
         }
-    }
+    }*/
     
     return (
         <DndContext 
@@ -98,18 +98,18 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            onDragMove={handleDragMove}
+            //onDragMove={handleDragMove}
         >
             <SortableContext 
                 items={items}
                 strategy={verticalListSortingStrategy}
             >
                 <Fragment>
-                <div id={detail._id}>
-                    { items.map( (detail) =>
-                        <PictureSortable id={detail._id} detail={detail} />
-                    )}
-                </div>
+                    <div>
+                        { items.map( (detail) =>
+                            <PictureSortable key={detail._id} id={detail._id} detail={detail} />
+                        )}
+                    </div>
                 </Fragment>
             </SortableContext>
             <DragOverlay>
