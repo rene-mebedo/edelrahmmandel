@@ -9,7 +9,7 @@ import { useOpinionDetails } from '../../client/trackers';
 import { ModalBackground } from '../components/ModalBackground';
 import { ListOpinionDetails_ModalSort } from '../ListOpinionDetails/ListOpinionDetails_ModalSort';
 
-export const ModalSortPictures = ( { refOpinion, refParentDetail, refDetail }) => {
+export const ModalSortPictures = ( { refOpinion, refDetail }) => {
     const [ showModal, setShowModal ] = useState(false);
     const [ opinionDetails, isLoading ] = useOpinionDetails(refOpinion, refDetail);
 

@@ -14,6 +14,8 @@ import Tooltip from 'antd/lib/tooltip';
 import { useOpinions } from '../client/trackers';
 import { MediaQuery, useMediaQueries } from '../client/mediaQueries';
 
+import Input from 'antd/lib/input';
+
 const lower = a => {
     if (!a) return '';
 
@@ -21,7 +23,8 @@ const lower = a => {
 }
 
 export const ListOpinions = () => {
-    const [ opinions, isLoading ] = useOpinions();
+    const [ opinions , isLoading ] = useOpinions();
+    const [ filteredOpinions , setFilteredOpinions ] = useState( opinions );
 
     const { isPhone, isTablet, isDesktop } = useMediaQueries();
 
@@ -126,13 +129,38 @@ export const ListOpinions = () => {
             }
         }
     ]);
+
+    // Filter zurücksetzen über useEffect:
+    // - Wenn isLoading sich ändert, also nachdem alle Gutachten geladen sind. Ansonsten wäre beim ersten Öffnen bzw. neu Laden die Liste leer.
+    // - Wenn sich die Anzahl der Gutachten ändert, also nach Neuanlage oder Löschen eines Gutachtens.
+    useEffect( () => {
+        setFilteredOpinions( opinions )
+      } , [ isLoading , opinions.length ]);
     
+    const onChangeText = ( val ) => {        
+        if ( val ) {
+            const filterText = val.target.value;
+            if ( filterText == '' )
+                setFilteredOpinions( opinions );
+            else
+                setFilteredOpinions( opinions.filter( detail => { 
+                    return detail.title.toLowerCase().includes( filterText.toLowerCase() );
+                }));
+        }
+    };
+      
     return (
         <Fragment>
+            <Input
+                placeholder="Hier tippen, um die Gutachtenliste nach Titel zu filtern"
+                allowClear
+                onChange={onChangeText}
+            />
             <MediaQuery showAtPhone={true}>
                 <List
                     itemLayout="horizontal"
-                    dataSource={opinions}
+                    //dataSource={opinions}
+                    dataSource={filteredOpinions}
                     loading={isLoading}
                     renderItem={opinion => (
                         <List.Item>
@@ -158,7 +186,8 @@ export const ListOpinions = () => {
             <MediaQuery showAtTablet={true} showAtDesktop={true}>
                 <Table
                     columns={columns} 
-                    dataSource={opinions} 
+                    //dataSource={opinions} 
+                    dataSource={filteredOpinions}
                     loading={isLoading}
                     rowKey="_id"
                     pagination={false}

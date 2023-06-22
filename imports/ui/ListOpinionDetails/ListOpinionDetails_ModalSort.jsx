@@ -65,7 +65,8 @@ export const ListOpinionDetails_ModalSort = ({ pictures }) => {
         setActiveId(null);
     }
 
-    /*const handleDragMove = ( event ) => {
+    /*// Auskommentiert, weil mit "Drag-Animation" Sortierung leider nicht richtig funktioniert.
+    const handleDragMove = ( event ) => {
         const {active, over} = event;
         if ( active.id !== over.id ) {
             setItems( ( items ) => {

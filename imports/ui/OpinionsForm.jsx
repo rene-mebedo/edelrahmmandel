@@ -9,7 +9,6 @@ const { Content } = Layout;
 
 import { ModalOpinion } from './modals/Opinion';
 import { ListOpinions } from './ListOpinions';
-import Tooltip from 'antd/lib/tooltip';
 
 import { hasPermission } from './../api/helpers/roles';
 
