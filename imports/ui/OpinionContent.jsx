@@ -220,13 +220,18 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
 
     function onItemClick({ pageNumber: itemPageNumber }) {
         setPageNumber(itemPageNumber);
-      }
+    }
+
+    let width = window.innerWidth;
+    console.log(width);
+    width = width * 0.28;
+    console.log(width);
 
     return (
         <Tabs onChange={onTabPaneChanged} size="large" tabPosition={window.innerWidth > 800 ? 'left':'top'}>
             <TabPane tab={<span><FormOutlined />Dokument</span>} key="DOCUMENT">
                 { !livePdfPreview ? children :
-                    <Row gutter={8}>
+                    <Row gutter={8} >
                         <Col key="firstCol" span={12}>
                             {children}
                         </Col>
@@ -251,7 +256,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                             onLoadSuccess={onDocumentLoadSuccess}
                                             onItemClick={onItemClick}
                                         >
-                                            <Page key={'p'+pageNumber} pageNumber={pageNumber} />
+                                            <Page key={'p'+pageNumber} pageNumber={pageNumber} width={width} />
                                         </Document>
                                     }
                                 </div>
