@@ -222,10 +222,8 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
         setPageNumber(itemPageNumber);
     }
 
-    let width = window.innerWidth;
-    console.log(width);
-    width = width * 0.28;
-    console.log(width);
+    let pdfWidth = window.innerWidth;
+    pdfWidth *= 0.28;
 
     return (
         <Tabs onChange={onTabPaneChanged} size="large" tabPosition={window.innerWidth > 800 ? 'left':'top'}>
@@ -256,7 +254,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                             onLoadSuccess={onDocumentLoadSuccess}
                                             onItemClick={onItemClick}
                                         >
-                                            <Page key={'p'+pageNumber} pageNumber={pageNumber} width={width} />
+                                            <Page key={'p'+pageNumber} pageNumber={pageNumber} width={pdfWidth} />
                                         </Document>
                                     }
                                 </div>
