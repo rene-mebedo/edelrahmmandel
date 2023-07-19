@@ -222,8 +222,9 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
         setPageNumber(itemPageNumber);
     }
 
+    // Breite der PDF-Vorschau dynamisch 30 % der Gesamtbreite
     let pdfWidth = window.innerWidth;
-    pdfWidth *= 0.28;
+    pdfWidth *= 0.3;
 
     return (
         <Tabs onChange={onTabPaneChanged} size="large" tabPosition={window.innerWidth > 800 ? 'left':'top'}>
@@ -236,7 +237,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                         <Col key="secondCol" span={12}>
                             <Affix offsetTop={120}>
                                 <div key="pager"
-                                    style={{marginBottom:16, textAlign:'center'}}
+                                    style={{margin:0, textAlign:'center'}}
                                 >
                                     { previewUrlBusy ? <Space /> :
                                         <Space>
@@ -277,6 +278,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                 </Document>
                             </div>*/
                             }
+                            
                         </Col>
                     </Row>
                 }
