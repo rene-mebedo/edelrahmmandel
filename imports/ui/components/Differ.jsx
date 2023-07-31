@@ -185,7 +185,7 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
                     title="Details"
                     width={720}
                     onClose={closeDiffDrawer}
-                    visible={visibleDiffDrawer}
+                    open={visibleDiffDrawer}
                     bodyStyle={{ paddingBottom: 80 }}
                     footer={
                         <div

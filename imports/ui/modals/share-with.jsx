@@ -130,7 +130,7 @@ export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } )
                 <ModalBackground>
                     <Modal
                         title={<span><ShareAltOutlined /> Dokument teilen</span>}
-                        visible={ showModal }
+                        open={ showModal }
                         onOk={ handleOk }
                         onCancel={ closeDialog }
                         maskClosable={false}

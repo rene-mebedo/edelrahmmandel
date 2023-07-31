@@ -124,22 +124,24 @@ export class UserProfileForm extends React.Component {
         return (
             <Fragment>
                 <Affix className="mbac-affix-pageheader" offsetTop={0}>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>
-                            <a href="/">Start</a>
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item>
-                            <a href="/profile">Mein Profil</a>
-                        </Breadcrumb.Item>
-                    </Breadcrumb>
-                    <PageHeader
-                        className="site-page-header"
-                        title="Mein Profil"
-                        onBack={() => history.back()}
-                        extra={[
-                            <Button key="1" type="primary" onClick={saveProfile}>Speichern</Button>
-                        ]}
-                    />
+                    <div>
+                        <Breadcrumb>
+                            <Breadcrumb.Item>
+                                <a href="/">Start</a>
+                            </Breadcrumb.Item>
+                            <Breadcrumb.Item>
+                                <a href="/profile">Mein Profil</a>
+                            </Breadcrumb.Item>
+                        </Breadcrumb>
+                        <PageHeader
+                            className="site-page-header"
+                            title="Mein Profil"
+                            onBack={() => history.back()}
+                            extra={[
+                                <Button key="1" type="primary" onClick={saveProfile}>Speichern</Button>
+                            ]}
+                        />
+                    </div>
                 </Affix>
 
                 <Form

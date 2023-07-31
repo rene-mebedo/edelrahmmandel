@@ -92,6 +92,229 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
 
     if (createTemplate) btnCaption = 'Vorlage';
 
+    let items = [
+        {
+            key: "Allgemein",
+            label: 'Allgemein',
+            children: (
+                <>
+                    <Form.Item
+                        label="Gutachten"
+                        name="title"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie einen Namen für das Gutachten ein.',
+                            },
+                        ]}
+                    >
+                        <Input autoFocus placeholder="Eindeutiger Name des Gutachtens"/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Beschreibung"
+                        name="description"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie eine kurze Beschreibung zu diesem Gutachten ein.',
+                            },
+                        ]}
+                    >
+                        <Input.TextArea placeholder="Beschreibung" autoSize={{minRows:3}} />
+                    </Form.Item>
+
+                    <ConfigProvider locale={locale_deDE}>
+                        <Form.Item
+                            label="Zeitraum"
+                            name="dateFromTill"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Bitte geben Sie den Zeitraum des Gutachtens an.',
+                                },
+                            ]}
+                        >
+                            <DatePicker.RangePicker format="DD.MM.YYYY"/>
+                        </Form.Item>
+                    </ConfigProvider>
+
+                    { mode === 'EDIT'
+                        ?
+                        <Form.Item
+                            label="Status"
+                            name="status"
+                        >
+                            <Select allowClear={true} showArrow={true}>
+                            <Option key="Ungültig">Ungültig</Option>
+                            <Option key="Angelegt">Angelegt</Option>
+                            <Option key="Bearbeitung">Bearbeitung</Option>
+                            <Option key="Korrektur">Korrektur</Option>
+                            <Option key="Vorabversion">Vorabversion</Option>
+                            <Option key="Fertig">Fertig</Option>
+                        </Select>
+                        </Form.Item>
+                        :
+                        <Form.Item
+                            label="Vorlage"
+                            name="refTemplate"
+                        >
+                            <OpinionSearchInput />
+                        </Form.Item>
+                    }
+
+                    <Form.Item
+                        label="Ausgabeformat"
+                        name="outputTemplate"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie das Ausgabeformat an.',
+                            },
+                        ]}
+                    >
+                        <Select allowClear={true} showArrow={true}>
+                            <Option key="mebedo-gutachten">MEBEDO Gutachtliche Stellungnahme/Assessment</Option>
+                            <Option key="ensmann-gutachten">ENSMANN Gutachtliche Stellungnahme/Assessment</Option>
+                        </Select>
+                    </Form.Item>
+                </>
+            )
+        },
+        {
+            key: "Kunde",
+            label: 'Kunde',
+            children: (
+                <>
+                    <Form.Item
+                        label="Firma"
+                        name={['customer', 'name']}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie den Firmennamen des Auftraggebers ein.',
+                            },
+                        ]}
+                    >
+                        <Input autoFocus placeholder="Firmenname"/>
+                    </Form.Item>
+                    
+                    <Form.Item
+                        label="Straße"
+                        name={['customer', 'street']}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie die Straße des Auftraggebers an.',
+                            },
+                        ]}
+                    >
+                        <Input placeholder="Straße"/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Postleitzahl"
+                        name={['customer', 'postalCode']}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie die Postleitzahl des Auftraggebers an.',                                    
+                            },
+                            {
+                                len: 5,
+                                message: 'Bitte geben Sie eine 5-stellig Postleitzahl ein.', 
+                            },
+                        ]}
+                    >
+                        <Input placeholder="PLZ"/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Ort"
+                        name={['customer', 'city']}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie den Ort des Auftraggebers an.',
+                            },
+                        ]}
+                    >
+                        <Input placeholder="Ort"/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Keine Fotografiererlaubnis"
+                        name="disableCopyright"
+                        valuePropName="checked"
+                        initialValue={false}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie an ob eine Fotografiererlaubnis vorliegt.',
+                            },
+                        ]}
+                    >
+                        <Switch />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Ausgabe mit Abkürzungsverzeichnis"
+                        name="hasAbbreviationsPage"
+                        valuePropName="checked"
+                        initialValue={true}
+                        rules={[
+                            {
+                                required: false,
+                                message: 'Abkürzungsverzeichnis ist in der Ausgabe (PDF) Enthalten.',
+                            },
+                        ]}
+                    >
+                        <Switch defaultChecked/>
+                    </Form.Item>
+                </>
+            )
+        }
+    ];
+
+    if ( mode === 'EDIT' ) {
+        items.push( {
+            key: "Erweitert",
+            label: 'Erweitert',
+            children: (
+                <>
+                    <Form.Item
+                        label="Gutachter 1"
+                        name="expert1"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Bitte geben Sie einen Gutachter an.',
+                            },
+                        ]}
+                    >
+                        <UserSearchInput 
+                            autoFocus={true}
+                            placeholder="Gutachter 1"
+                            refOpinion={refOpinion}
+                            searchMethod="getExperts"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Gutachter 2"
+                        name="expert2"
+                    >
+                        <UserSearchInput 
+                            placeholder="Gutachter 2"
+                            refOpinion={refOpinion}
+                            searchMethod="getExperts"
+                        />
+                    </Form.Item>
+                </>
+            )
+        });
+    }
+
     return (
         <Fragment>
             <Button
@@ -106,7 +329,7 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                 <ModalBackground>
                     <Modal
                         title={ mode === 'EDIT' ? 'Gutachten bearbeiten' : 'Neues Gutachten' }
-                        visible={ showModal }
+                        open={ showModal }
                         onOk={ handleOk }
                         onCancel={ handleCancel }
                         maskClosable={false}
@@ -122,212 +345,7 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                             onFinish={handleOk}
                         >
 
-                            <Tabs defaultActiveKey={defaultTab || "Allgemein"} style={{ minHeight: 300 }}>
-                                <TabPane tab="Allgemein" key="Allgemein">
-                                    <Form.Item
-                                        label="Gutachten"
-                                        name="title"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Bitte geben Sie einen Namen für das Gutachten ein.',
-                                            },
-                                        ]}
-                                    >
-                                        <Input autoFocus placeholder="Eindeutiger Name des Gutachtens"/>
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        label="Beschreibung"
-                                        name="description"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Bitte geben Sie eine kurze Beschreibung zu diesem Gutachten ein.',
-                                            },
-                                        ]}
-                                    >
-                                        <Input.TextArea placeholder="Beschreibung" autoSize={{minRows:3}} />
-                                    </Form.Item>
-
-                                    <ConfigProvider locale={locale_deDE}>
-                                        <Form.Item
-                                            label="Zeitraum"
-                                            name="dateFromTill"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Bitte geben Sie den Zeitraum des Gutachtens an.',
-                                                },
-                                            ]}
-                                        >
-                                            <DatePicker.RangePicker format="DD.MM.YYYY"/>
-                                        </Form.Item>
-                                    </ConfigProvider>
-
-                                    { mode === 'EDIT'
-                                        ?
-                                        <Form.Item
-                                            label="Status"
-                                            name="status"
-                                        >
-                                            <Select allowClear={true} showArrow={true}>
-                                            <Option key="Ungültig">Ungültig</Option>
-                                            <Option key="Angelegt">Angelegt</Option>
-                                            <Option key="Bearbeitung">Bearbeitung</Option>
-                                            <Option key="Korrektur">Korrektur</Option>
-                                            <Option key="Vorabversion">Vorabversion</Option>
-                                            <Option key="Fertig">Fertig</Option>
-                                        </Select>
-                                        </Form.Item>
-                                        :
-                                        <Form.Item
-                                            label="Vorlage"
-                                            name="refTemplate"
-                                        >
-                                            <OpinionSearchInput />
-                                        </Form.Item>
-                                    }
-
-                                    <Form.Item
-                                        label="Ausgabeformat"
-                                        name="outputTemplate"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Bitte geben Sie das Ausgabeformat an.',
-                                            },
-                                        ]}
-                                    >
-                                        <Select allowClear={true} showArrow={true}>
-                                            <Option key="mebedo-gutachten">MEBEDO Gutachtliche Stellungnahme/Assessment</Option>
-                                            <Option key="ensmann-gutachten">ENSMANN Gutachtliche Stellungnahme/Assessment</Option>
-                                        </Select>
-                                    </Form.Item>
-                                </TabPane>
-
-                                <TabPane tab="Kunde" key="Kunde">
-                                    <Form.Item
-                                        label="Firma"
-                                        name={['customer', 'name']}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Bitte geben Sie den Firmennamen des Auftraggebers ein.',
-                                            },
-                                        ]}
-                                    >
-                                        <Input autoFocus placeholder="Firmenname"/>
-                                    </Form.Item>
-                                    
-                                    <Form.Item
-                                        label="Straße"
-                                        name={['customer', 'street']}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Bitte geben Sie die Straße des Auftraggebers an.',
-                                            },
-                                        ]}
-                                    >
-                                        <Input placeholder="Straße"/>
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        label="Postleitzahl"
-                                        name={['customer', 'postalCode']}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Bitte geben Sie die Postleitzahl des Auftraggebers an.',                                    
-                                            },
-                                            {
-                                                len: 5,
-                                                message: 'Bitte geben Sie eine 5-stellig Postleitzahl ein.', 
-                                            },
-                                        ]}
-                                    >
-                                        <Input placeholder="PLZ"/>
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        label="Ort"
-                                        name={['customer', 'city']}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Bitte geben Sie den Ort des Auftraggebers an.',
-                                            },
-                                        ]}
-                                    >
-                                        <Input placeholder="Ort"/>
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        label="Keine Fotografiererlaubnis"
-                                        name="disableCopyright"
-                                        valuePropName="checked"
-                                        initialValue={false}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Bitte geben Sie an ob eine Fotografiererlaubnis vorliegt.',
-                                            },
-                                        ]}
-                                    >
-                                        <Switch />
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        label="Ausgabe mit Abkürzungsverzeichnis"
-                                        name="hasAbbreviationsPage"
-                                        valuePropName="checked"
-                                        initialValue={true}
-                                        rules={[
-                                            {
-                                                required: false,
-                                                message: 'Abkürzungsverzeichnis ist in der Ausgabe (PDF) Enthalten.',
-                                            },
-                                        ]}
-                                    >
-                                        <Switch defaultChecked/>
-                                    </Form.Item>
-                                </TabPane>
-
-                                { mode !== 'EDIT' ? null :
-                                    <TabPane tab="Erweitert" key="Erweitert">
-                                        <Form.Item
-                                            label="Gutachter 1"
-                                            name="expert1"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Bitte geben Sie einen Gutachter an.',
-                                                },
-                                            ]}
-                                        >
-                                            <UserSearchInput 
-                                                autoFocus={true}
-                                                placeholder="Gutachter 1"
-                                                refOpinion={refOpinion}
-                                                searchMethod="getExperts"
-                                            />
-                                        </Form.Item>
-
-                                        <Form.Item
-                                            label="Gutachter 2"
-                                            name="expert2"
-                                        >
-                                            <UserSearchInput 
-                                                placeholder="Gutachter 2"
-                                                refOpinion={refOpinion}
-                                                searchMethod="getExperts"
-                                            />
-                                        </Form.Item>
-                                    </TabPane>
-                                }
-                            </Tabs>
-
+                            <Tabs items={items} defaultActiveKey={defaultTab || "Allgemein"} style={{ minHeight: 300 }} />
                         </Form>
                     </Modal>
                 </ModalBackground>

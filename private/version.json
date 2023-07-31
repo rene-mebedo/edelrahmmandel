@@ -1,8 +1,20 @@
 {
-    "version": "1.2.1",
-    "timestamp": "2023-06-22",
+    "version": "1.2.2",
+    "timestamp": "2023-07-19",
     
     "details": [
+        { 
+            "version": "1.3", 
+            "description": [
+                "Package Updates und Refactoring"
+            ]
+        },
+        { 
+            "version": "1.2.2", 
+            "description": [
+                "Breite der PDF-Vorschau jetzt dynamisch in Abhängigkeit des Browserfensters und kleinere Anpassungen (insbesondere Package Updates)"
+            ]
+        },
         { 
             "version": "1.2.1", 
             "description": [

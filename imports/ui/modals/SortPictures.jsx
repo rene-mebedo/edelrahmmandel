@@ -51,7 +51,7 @@ export const ModalSortPictures = ( { refOpinion, refDetail }) => {
                     <Modal
                         className="mbac-modal-upload-pictures"
                         title="Reihenfolge der Bilder anpassen durch Verschieben"
-                        visible={ showModal }
+                        open={ showModal }
                         onOk={ closeModal }
                         onCancel={ closeModal }
                         cancelButtonProps={{className:"mbac-btn-cancel"}}

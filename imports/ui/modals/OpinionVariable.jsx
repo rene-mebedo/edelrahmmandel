@@ -123,7 +123,7 @@ export const ModalOpinionVariable = ( { mode/*NEW|EDIT|DELETE*/, refOpinion, var
             <ModalBackground>
                 <Modal
                     title={ mode === 'EDIT' ? 'Variable bearbeiten' : 'Neue Variable' }
-                    visible={ true }
+                    open={ true }
                     onOk={ handleModalOk }
                     onCancel={ handleModalCancel }
                     maskClosable={false}

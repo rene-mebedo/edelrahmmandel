@@ -96,7 +96,7 @@ export const ModalOpinionParticipant = ( { mode/*NEW|EDIT*/, refOpinion, partici
             <ModalBackground>
                 <Modal
                     title={ mode === 'EDIT' ? 'Teilnehmer bearbeiten' : 'Neuer Teilnehmer' }
-                    visible={ true }
+                    open={ true }
                     onOk={ handleModalOk }
                     onCancel={ handleModalCancel }
                     maskClosable={false}

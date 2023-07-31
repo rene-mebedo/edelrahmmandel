@@ -20,21 +20,35 @@ export const UserMenu = ({ currentUser }) => {
         }
     }
 
-    const menu = <Menu onClick={handleUserMenuClick}>
-        <Menu.Item key="PROFILE">
-            <a href="/profile">Mein Profil</a>
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="CHANGE-PASSWORD">
-            <ModalChangePassword currentUser={currentUser} />
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="LOGOUT"><LogoutOutlined /> Abmelden</Menu.Item>
-    </Menu>;
+    const items = [
+        {
+            key: "PROFILE",
+            label: (<a href="/profile">Mein Profil</a>)
+        },
+        {
+            type: 'divider',
+        },
+        {
+            key: "CHANGE-PASSWORD",
+            label: (<ModalChangePassword currentUser={currentUser} />)
+        },
+        {
+            type: 'divider',
+        },
+        {
+            key: "LOGOUT",
+            label: (<a><LogoutOutlined /> Abmelden</a>)
+        }
+    ];
+
+    const menuProps = {
+        items,
+        onClick: handleUserMenuClick
+    };
 
     return (
         <div className="mbac-usermenu">
-            <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" arrow >
+            <Dropdown menu={menuProps} trigger={['click']} placement="bottomRight" arrow >
                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()} >
                     <Space>
                         <Avatar style={{ backgroundColor: 'orange', color: '#fff', verticalAlign: 'middle' }} /*size="large" gap={16}*/>

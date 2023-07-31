@@ -88,25 +88,25 @@ export const OpinionDetailAdder = ({pseudoItem, item, permissions, after}) => {
         createItem(key);
     }
 
-    const menu = (
-        <Menu onClick={menuClick}>
-            {   
-                selectableLayouttypes.map( ({_id, title}) => {
-                    return (
-                        <Menu.Item key={_id}>
-                            {title}
-                        </Menu.Item>
-                    )
-                })
+    const items = selectableLayouttypes.map( ({_id, title}) => {
+        return (
+            {
+                key: _id,
+                label: title
             }
-        </Menu>
-    );
+        )
+    })
+
+    const menuProps = {
+        items,
+        onClick: menuClick
+    };
     
     return (
         <Fragment>           
            
             <div className={`mbac-action-plus mbac-action-add ${selectedDetail ? 'mbac-edit-mode-active':''} depth-${data.depth}`}>
-                <Dropdown overlay={menu} 
+                <Dropdown menu={menuProps}
                     trigger={['click']}
                  >
                     <PlusCircleOutlined 

@@ -103,7 +103,7 @@ export const UserActivitiesDrawer = ({ visible, onClose }) => {
             title="Meine Aktivitäten"
             width={500}
             onClose={onClose || null}
-            visible={visible}
+            open={visible}
             placement="left"
         >
             <List

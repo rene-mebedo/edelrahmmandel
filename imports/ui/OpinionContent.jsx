@@ -226,338 +226,354 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
     let pdfWidth = window.innerWidth;
     pdfWidth *= 0.3;
 
-    return (
-        <Tabs onChange={onTabPaneChanged} size="large" tabPosition={window.innerWidth > 800 ? 'left':'top'}>
-            <TabPane tab={<span><FormOutlined />Dokument</span>} key="DOCUMENT">
-                { !livePdfPreview ? children :
-                    <Row gutter={8} >
-                        <Col key="firstCol" span={12}>
-                            {children}
-                        </Col>
-                        <Col key="secondCol" span={12}>
-                            <Affix offsetTop={120}>
-                                <div key="pager"
-                                    style={{margin:0, textAlign:'center'}}
-                                >
-                                    { previewUrlBusy ? <Space /> :
-                                        <Space>
-                                            <span>Seite <InputNumber min={1} defaultValue={pageNumber} value={pageNumber} max={numPages} onChange={value => { setPageNumber( value )}} /> von {numPages}</span>
-                                        </Space>
-                                    }
-                                </div>
-                                <div key="content"
-                                    //style={{position:'fixed', marginTop:32}}
-                                    //style={{border:'1px solid #eee'}}
-                                >
-                                    { previewUrlBusy ? <Spin /> : 
-                                        <Document
-                                            file={previewUrl}
-                                            onLoadSuccess={onDocumentLoadSuccess}
-                                            onItemClick={onItemClick}
+    const items = [
+        {
+            key: "DOCUMENT",
+            label: (<span><FormOutlined />Dokument</span>),
+            children: (
+                <>
+                    {!livePdfPreview ? children :
+                        <Row gutter={8} >
+                            <Col key="firstCol" span={12}>
+                                {children}
+                            </Col>
+                            <Col key="secondCol" span={12}>
+                                <Affix offsetTop={120}>
+                                    <div>
+                                        <div key="pager"
+                                            style={{margin:0, textAlign:'center'}}
                                         >
-                                            <Page key={'p'+pageNumber} pageNumber={pageNumber} width={pdfWidth} />
-                                        </Document>
-                                    }
-                                </div>
-                            </Affix>
-                            {/*
-                            <div style={{position:'fixed', marginBottom:16}}>
-                                <Space>
-                                    <Button onClick={ () => {setPageNumber(pageNumber-1)} }>vorherige Seite</Button>
-                                    <span>Seite {pageNumber} von {numPages}</span>
-                                    <Button onClick={ () => {setPageNumber(pageNumber+1)} }>nächste Seite</Button>
-                                </Space>
-                            </div>
-                            <div style={{position:'fixed', marginTop:32}}>
-                                <Document
-                                    file={previewUrl}
-                                    onLoadSuccess={onDocumentLoadSuccess}
-                                    onItemClick={onItemClick}
-                                >
-                                    { previewUrlBusy ? <Spin /> : <Page pageNumber={pageNumber} />}
-                                </Document>
-                            </div>*/
-                            }
-                            
-                        </Col>
-                    </Row>
-                }
-                {/*children*/}
-            </TabPane>
-
-            <TabPane disabled={disableTabPanes} tab={<span><ContactsOutlined />Allgemein</span>} key="GENERAL">
-                { !opinion.isTemplate ? null :
-                    <p><Tag size="large" color="green">Vorlage</Tag></p>
-                }
-
-                <Descriptions 
-                    layout="vertical"
-                    size="small"
-                    bordered
-                    column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
-                >
-                    <Descriptions.Item label="Titel">{opinion.title} Nr. {opinion.opinionNo}</Descriptions.Item>
-                    <Descriptions.Item label="Beschreibung">{opinion.description}</Descriptions.Item>
-                    
-                    
-                    <Descriptions.Item label="Kunde">
-                        <div>{opinion.customer.name}</div>
-                        <div>{opinion.customer.street}</div>
-                        <div>{opinion.customer.postalCode + ' ' + opinion.customer.city}</div>
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Status">{opinion.status}</Descriptions.Item>
-
-                    <Descriptions.Item label="Datum von">{moment(opinion.dateFrom).format('DD. MMMM YYYY')}</Descriptions.Item>
-                    <Descriptions.Item label="Datum bis">{moment(opinion.dateTill).format('DD. MMMM YYYY')}</Descriptions.Item>
-
-                    { opinion.isTemplate ? null :  /* keine Teilnehmer und Gutachter in einer Vorlage */
-                        <Fragment>
-                            <Descriptions.Item label="Teilnehmer" span={2}>
-                                <OpinionParticipants 
-                                    refOpinion={refOpinion} 
-                                    participants={opinion.participants} 
-                                    currentUser={currentUser} 
-                                    canEdit={canEdit} 
-                                    canDelete={canDelete} 
-                                />
-                            </Descriptions.Item>
-
-                            <Descriptions.Item label="Gutachter 1">
-                                { opinion.expert1 
-                                    ? <Expert user={opinion.expert1} />
-                                    : <ModalOpinion 
-                                            mode='EDIT' refOpinion={refOpinion} 
-                                            buttonCaption="Jetzt Gutachter festlegen" 
-                                            buttonType="dashed"
-                                            defaultTab="Erweitert"
-                                    />
-                                }
-                            </Descriptions.Item>
-
-                            <Descriptions.Item label="Gutachter 2">
-                                <Expert user={opinion.expert2} />
-                            </Descriptions.Item>
-                        </Fragment>
+                                            { previewUrlBusy ? <Space /> :
+                                                <Space>
+                                                    <span>Seite <InputNumber min={1} defaultValue={pageNumber} value={pageNumber} max={numPages} onChange={value => { setPageNumber( value )}} /> von {numPages}</span>
+                                                </Space>
+                                            }
+                                        </div>
+                                        <div key="content"
+                                            //style={{position:'fixed', marginTop:32}}
+                                            //style={{border:'1px solid #eee'}}
+                                        >
+                                            { previewUrlBusy ? <Spin /> : 
+                                                <Document
+                                                    file={previewUrl}
+                                                    onLoadSuccess={onDocumentLoadSuccess}
+                                                    onItemClick={onItemClick}
+                                                >
+                                                    <Page key={'p'+pageNumber} pageNumber={pageNumber} width={pdfWidth} />
+                                                </Document>
+                                            }
+                                        </div>
+                                    </div>
+                                </Affix>                            
+                            </Col>
+                        </Row>
                     }
-                    <Descriptions.Item label="Fotografiererlaubnis vorhanden">{!!!opinion.disableCopyright ? 'Ja, vorhanden' : 'Nein, nicht vorhanden'}</Descriptions.Item>
-                    <Descriptions.Item label="Ausgabe mit Abkürzungsverzeichnis">{opinion.hasAbbreviationsPage ? 'Ja' : 'Nein'}</Descriptions.Item>
-                </Descriptions>
-            </TabPane>
+                </>
+            )
+        },
+        {
+            key: "GENERAL",
+            label: (<span><ContactsOutlined />Allgemein</span>),
+            disabled: disableTabPanes,
+            children: (
+                <>
+                    {!opinion.isTemplate ? null :
+                        <p><Tag size="large" color="green">Vorlage</Tag></p>
+                    }
 
-            <TabPane tab={<span><ImportOutlined />Variablen</span>} key="VARS" disabled={disableTabPanes} >
+                    <Descriptions 
+                        layout="vertical"
+                        size="small"
+                        bordered
+                        column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
+                    >
+                        <Descriptions.Item label="Titel">{opinion.title} Nr. {opinion.opinionNo}</Descriptions.Item>
+                        <Descriptions.Item label="Beschreibung">{opinion.description}</Descriptions.Item>
+                        
+                        
+                        <Descriptions.Item label="Kunde">
+                            <div>{opinion.customer.name}</div>
+                            <div>{opinion.customer.street}</div>
+                            <div>{opinion.customer.postalCode + ' ' + opinion.customer.city}</div>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Status">{opinion.status}</Descriptions.Item>
+
+                        <Descriptions.Item label="Datum von">{moment(opinion.dateFrom).format('DD. MMMM YYYY')}</Descriptions.Item>
+                        <Descriptions.Item label="Datum bis">{moment(opinion.dateTill).format('DD. MMMM YYYY')}</Descriptions.Item>
+
+                        { opinion.isTemplate ? null :  /* keine Teilnehmer und Gutachter in einer Vorlage */
+                            <Fragment>
+                                <Descriptions.Item label="Teilnehmer" span={2}>
+                                    <OpinionParticipants 
+                                        refOpinion={refOpinion} 
+                                        participants={opinion.participants} 
+                                        currentUser={currentUser} 
+                                        canEdit={canEdit} 
+                                        canDelete={canDelete} 
+                                    />
+                                </Descriptions.Item>
+
+                                <Descriptions.Item label="Gutachter 1">
+                                    { opinion.expert1 
+                                        ? <Expert user={opinion.expert1} />
+                                        : <ModalOpinion 
+                                                mode='EDIT' refOpinion={refOpinion} 
+                                                buttonCaption="Jetzt Gutachter festlegen" 
+                                                buttonType="dashed"
+                                                defaultTab="Erweitert"
+                                        />
+                                    }
+                                </Descriptions.Item>
+
+                                <Descriptions.Item label="Gutachter 2">
+                                    <Expert user={opinion.expert2} />
+                                </Descriptions.Item>
+                            </Fragment>
+                        }
+                        <Descriptions.Item label="Fotografiererlaubnis vorhanden">{!!!opinion.disableCopyright ? 'Ja, vorhanden' : 'Nein, nicht vorhanden'}</Descriptions.Item>
+                        <Descriptions.Item label="Ausgabe mit Abkürzungsverzeichnis">{opinion.hasAbbreviationsPage ? 'Ja' : 'Nein'}</Descriptions.Item>
+                    </Descriptions>
+                </>
+            )
+        },
+        {
+            key: "VARS",
+            label: (<span><ImportOutlined />Variablen</span>),
+            disabled: disableTabPanes,
+            children: (
                 <OpinionVariables
                     refOpinion={refOpinion}
                     data={opinion.userVariables || []} 
                     permissions={{canEdit, canDelete}}
                 />
-            </TabPane>
-
-            <TabPane tab={<span><FilePdfOutlined />PDF</span>} key="PDF" disabled={disableTabPanes} >
-                <Table
-                    //bordered
-                    size="small"
-                    loading={isPdfLoading}
-                    pagination={false}
-                    dataSource={pdfs}
-                    rowKey="_id"
-                    showHeader={false}
-                    columns={[
-                        {
-                            title: 'Titel',
-                            dataIndex: 'title',
-                            key: 'title',
-                            render: (text, item) => <a href={item.link} target="_blank">
-                                <Tooltip title="PDF öffnen">
-                                    <Space><FilePdfOutlined /><span>Gutachtliche Stellungnahme</span></Space>
-                                </Tooltip>
-                            </a>
-                        }, {
-                            title: 'Erstellt am',
-                            dataIndex: 'meta.createdAt',
-                            key: 'createdAt',
-                            render: (text, item) => moment(item.meta.createdAt).format('DD.MM.YYYY HH:mm:ss')
-                        }, {
-                            title: 'Erstellt von',
-                            dataIndex: 'meta.createdBy',
-                            key: 'createdBy',
-                            render: (text, item) => {
-                                if (!item.meta.createdBy) return 'Unbekannt';
-                                
-                                const { firstName, lastName } = item.meta.createdBy;
-                                
-                                return `${firstName} ${lastName}`
-                            }
-                        }, {
-                            title: 'Größe',
-                            dataIndex: 'size',
-                            key: 'size',
-                            align:"right",
-                            render: size => filesize(size)
-                        }, {
-                            title: 'Status',
-                            dataIndex: '_id',
-                            key: '_id',
-                            align:"center",
-                            render: (_id, item, index) => <Space>
-                                <Tag color={item.meta.preview ? "red" : (index==0?"green":"orange")}>{item.meta.preview ? 'temp. Vorschau' : (index == 0 ? 'Aktuell':'Entwurf')}</Tag>
-                                <Tag color="blue">v{pdfs.length - index}</Tag>
-                            </Space>
-                        }, {
-                            title: 'Delete',
-                            dataIndex: 'deletePDF',
-                            key: 'deletePDF',
-                            align:"right",
-                            render: (_id, item, index) => {
-                                return <Space size='small'>
-                                {
-                                    !canShareWithExplicitRole ? null :
-                                    <Tooltip title="PDF löschen">
-                                        <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)} />
+            )
+        },
+        {
+            key: "PDF",
+            label: (<span><FilePdfOutlined />PDF</span>),
+            disabled: disableTabPanes,
+            children: (
+                <>
+                    <Table
+                        //bordered
+                        size="small"
+                        loading={isPdfLoading}
+                        pagination={false}
+                        dataSource={pdfs}
+                        rowKey="_id"
+                        showHeader={false}
+                        columns={[
+                            {
+                                title: 'Titel',
+                                dataIndex: 'title',
+                                key: 'title',
+                                render: (text, item) => <a href={item.link} target="_blank">
+                                    <Tooltip title="PDF öffnen">
+                                        <Space><FilePdfOutlined /><span>Gutachtliche Stellungnahme</span></Space>
                                     </Tooltip>
+                                </a>
+                            }, {
+                                title: 'Erstellt am',
+                                dataIndex: 'meta.createdAt',
+                                key: 'createdAt',
+                                render: (text, item) => moment(item.meta.createdAt).format('DD.MM.YYYY HH:mm:ss')
+                            }, {
+                                title: 'Erstellt von',
+                                dataIndex: 'meta.createdBy',
+                                key: 'createdBy',
+                                render: (text, item) => {
+                                    if (!item.meta.createdBy) return 'Unbekannt';
+                                    
+                                    const { firstName, lastName } = item.meta.createdBy;
+                                    
+                                    return `${firstName} ${lastName}`
                                 }
+                            }, {
+                                title: 'Größe',
+                                dataIndex: 'size',
+                                key: 'size',
+                                align:"right",
+                                render: size => filesize(size)
+                            }, {
+                                title: 'Status',
+                                dataIndex: '_id',
+                                key: '_id',
+                                align:"center",
+                                render: (_id, item, index) => <Space>
+                                    <Tag color={item.meta.preview ? "red" : (index==0?"green":"orange")}>{item.meta.preview ? 'temp. Vorschau' : (index == 0 ? 'Aktuell':'Entwurf')}</Tag>
+                                    <Tag color="blue">v{pdfs.length - index}</Tag>
                                 </Space>
-                            }
-                        }, {
-                            title: 'Archivieren',
-                            dataIndex: 'archive',
-                            key: 'archive',
-                            align:"right",
-                            render: (_id, item, index) => {
-                                return <Space size='small'>
-                                {
-                                    !canShareWithExplicitRole ? null :
-                                    <Tooltip title="PDF archivieren">
-                                        <ClockCircleOutlined key="archive" onClick={_=>archivePDF(item._id)}/>
-                                    </Tooltip>
+                            }, {
+                                title: 'Delete',
+                                dataIndex: 'deletePDF',
+                                key: 'deletePDF',
+                                align:"right",
+                                render: (_id, item, index) => {
+                                    return <Space size='small'>
+                                    {
+                                        !canShareWithExplicitRole ? null :
+                                        <Tooltip title="PDF löschen">
+                                            <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)} />
+                                        </Tooltip>
+                                    }
+                                    </Space>
                                 }
-                                </Space>
+                            }, {
+                                title: 'Archivieren',
+                                dataIndex: 'archive',
+                                key: 'archive',
+                                align:"right",
+                                render: (_id, item, index) => {
+                                    return <Space size='small'>
+                                    {
+                                        !canShareWithExplicitRole ? null :
+                                        <Tooltip title="PDF archivieren">
+                                            <ClockCircleOutlined key="archive" onClick={_=>archivePDF(item._id)}/>
+                                        </Tooltip>
+                                    }
+                                    </Space>
+                                }
                             }
-                        }
-                    ]}
-                />
-                <Divider dashed>Archivierte PDFs</Divider>
-                <Table
-                    //bordered
-                    size="small"
-                    loading={isPdfLoading_archive}
-                    pagination={false}
-                    dataSource={pdfs_archive}
-                    rowKey="_id"
-                    showHeader={false}
-                    columns={[
-                        {
-                            
-                            title: 'Titel',
-                            dataIndex: 'title',
-                            key: 'title',
-                            render: (text, item) => <Space><FilePdfOutlined /><span>Gutachtliche Stellungnahme (Archivdatei)</span></Space>
-                        }, {
-                            title: 'Erstellt am',
-                            dataIndex: 'meta.createdAt',
-                            key: 'createdAt',
-                            render: (text, item) => moment(item.meta.createdAt).format('DD.MM.YYYY HH:mm:ss')
-                        }, {
-                            title: 'Erstellt von',
-                            dataIndex: 'meta.createdBy',
-                            key: 'createdBy',
-                            render: (text, item) => {
-                                if (!item.meta.createdBy) return 'Unbekannt';
+                        ]}
+                    />
+                    <Divider dashed>Archivierte PDFs</Divider>
+                    <Table
+                        //bordered
+                        size="small"
+                        loading={isPdfLoading_archive}
+                        pagination={false}
+                        dataSource={pdfs_archive}
+                        rowKey="_id"
+                        showHeader={false}
+                        columns={[
+                            {
                                 
-                                const { firstName, lastName } = item.meta.createdBy;
-                                
-                                return `${firstName} ${lastName}`
-                            }
-                        }, {
-                            title: 'Größe',
-                            dataIndex: 'size',
-                            key: 'size',
-                            align:"right",
-                            render: size => filesize(size)
-                        }, {
-                            title: 'Status',
-                            dataIndex: '_id',
-                            key: '_id',
-                            align:"center",
-                            render: (_id, item, index) => null
-                        }, {
-                            title: 'Delete',
-                            dataIndex: 'deletePDF',
-                            key: 'deletePDF',
-                            align:"right",
-                            render: (_id, item, index) => {
-                                return <Space size='small'>
-                                {   
-                                    <Tooltip title="PDF löschen">
-                                        <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)}/>
-                                    </Tooltip>
+                                title: 'Titel',
+                                dataIndex: 'title',
+                                key: 'title',
+                                render: (text, item) => <Space><FilePdfOutlined /><span>Gutachtliche Stellungnahme (Archivdatei)</span></Space>
+                            }, {
+                                title: 'Erstellt am',
+                                dataIndex: 'meta.createdAt',
+                                key: 'createdAt',
+                                render: (text, item) => moment(item.meta.createdAt).format('DD.MM.YYYY HH:mm:ss')
+                            }, {
+                                title: 'Erstellt von',
+                                dataIndex: 'meta.createdBy',
+                                key: 'createdBy',
+                                render: (text, item) => {
+                                    if (!item.meta.createdBy) return 'Unbekannt';
+                                    
+                                    const { firstName, lastName } = item.meta.createdBy;
+                                    
+                                    return `${firstName} ${lastName}`
                                 }
-                                </Space>
-                            }
-                        }, {
-                            title: 'Dearchivieren',
-                            dataIndex: 'dearchive',
-                            key: 'dearchive',
-                            align:"right",
-                            render: (_id, item, index) => {
-                                return <Space size='small'>
-                                {
-                                    <Tooltip title="PDF Archivierung zurücknehmen">
-                                        <ArrowUpOutlined key="dearchive" onClick={_=>dearchivePDF(item._id)}/>
-                                    </Tooltip>
+                            }, {
+                                title: 'Größe',
+                                dataIndex: 'size',
+                                key: 'size',
+                                align:"right",
+                                render: size => filesize(size)
+                            }, {
+                                title: 'Status',
+                                dataIndex: '_id',
+                                key: '_id',
+                                align:"center",
+                                render: (_id, item, index) => null
+                            }, {
+                                title: 'Delete',
+                                dataIndex: 'deletePDF',
+                                key: 'deletePDF',
+                                align:"right",
+                                render: (_id, item, index) => {
+                                    return <Space size='small'>
+                                    {   
+                                        <Tooltip title="PDF löschen">
+                                            <DeleteOutlined key="deletePDF" onClick={_=>deletePDF(item._id)}/>
+                                        </Tooltip>
+                                    }
+                                    </Space>
                                 }
-                                </Space>
+                            }, {
+                                title: 'Dearchivieren',
+                                dataIndex: 'dearchive',
+                                key: 'dearchive',
+                                align:"right",
+                                render: (_id, item, index) => {
+                                    return <Space size='small'>
+                                    {
+                                        <Tooltip title="PDF Archivierung zurücknehmen">
+                                            <ArrowUpOutlined key="dearchive" onClick={_=>dearchivePDF(item._id)}/>
+                                        </Tooltip>
+                                    }
+                                    </Space>
+                                }
                             }
-                        }
-                    ]}
-                />
-            </TabPane>
-
-            <TabPane tab={<span><FileDoneOutlined />Spellcheck</span>} key="SPELLCHECK" disabled={disableTabPanes} >
+                        ]}
+                    />
+                </>
+            )
+        },
+        {
+            key: "SPELLCHECK",
+            label: (<span><FileDoneOutlined />Spellcheck</span>),
+            disabled: disableTabPanes,
+            children: (
                 <OpinionSpellcheckList refOpinion={refOpinion} currentUser={currentUser} />
-            </TabPane>
+            )
+        },
+        {
+            key: "SHARE",
+            label: (<span><ShareAltOutlined />geteilt mit</span>),
+            disabled: disableTabPanes,
+            children: (
+                <>
+                    <Table
+                        size="small"
+                        loading={false}
+                        pagination={false}
+                        dataSource={opinion.sharedWith}
+                        rowKey={ shw => shw.user.userId }
+                        showHeader={false}
+                        columns={[
+                            {
+                                title: 'Benutzer',
+                                dataIndex: 'title',
+                                key: 'title',
+                                render: (text, shw) => {
+                                    const { userId, firstName, lastName } = shw.user;
+                                    return <Expert key={userId} user={{userId, firstName, lastName}} />
+                                }
+                            }, {
+                                title: 'Rolle',
+                                dataIndex: 'role',
+                                key: 'role',
+                                render: (text, shd) => <Tag color="orange">{shd.role}</Tag>
+                            }, {
+                                title: 'Rolle',
+                                dataIndex: 'role',
+                                key: 'role',
+                                align: 'right',
+                                render: (text, shw) => {
+                                    const { userId, firstName, lastName } = shw.user;
 
-            <TabPane tab={<span><ShareAltOutlined />geteilt mit</span>} key="SHARE" disabled={disableTabPanes}>
-                <Table
-                    size="small"
-                    loading={false}
-                    pagination={false}
-                    dataSource={opinion.sharedWith}
-                    rowKey={ shw => shw.user.userId }
-                    showHeader={false}
-                    columns={[
-                        {
-                            title: 'Benutzer',
-                            dataIndex: 'title',
-                            key: 'title',
-                            render: (text, shw) => {
-                                const { userId, firstName, lastName } = shw.user;
-                                return <Expert key={userId} user={{userId, firstName, lastName}} />
+                                    return <Space size='large'>
+                                        {//<EditOutlined key="edit" />
+                                        }
+                                        { !canCancelShareWith || Meteor.userId() === userId ? null :
+                                            <DeleteOutlined key="remove" onClick={_=>cancelSharedWith(shw)} />
+                                        }
+                                    </Space>
+                                }
                             }
-                        }, {
-                            title: 'Rolle',
-                            dataIndex: 'role',
-                            key: 'role',
-                            render: (text, shd) => <Tag color="orange">{shd.role}</Tag>
-                        }, {
-                            title: 'Rolle',
-                            dataIndex: 'role',
-                            key: 'role',
-                            align: 'right',
-                            render: (text, shw) => {
-                                const { userId, firstName, lastName } = shw.user;
+                        ]}
+                    />
+                </>
+            )
+        }    
+    ];
 
-                                return <Space size='large'>
-                                    {//<EditOutlined key="edit" />
-                                    }
-                                    { !canCancelShareWith || Meteor.userId() === userId ? null :
-                                        <DeleteOutlined key="remove" onClick={_=>cancelSharedWith(shw)} />
-                                    }
-                                </Space>
-                            }
-                        }
-                    ]}
-                />
-            </TabPane>
-        </Tabs>
+    return (
+        <Tabs items={items} onChange={onTabPaneChanged} size="large" tabPosition={window.innerWidth > 800 ? 'left':'top'} />
     )
 }

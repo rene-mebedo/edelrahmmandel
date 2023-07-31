@@ -68,19 +68,23 @@ export class ActionCodeDropdown extends React.Component {
             value: props.value || 'unset'
         }
 
-        this.menu =
-            <Menu onClick={this.handleMenuClick.bind(this)}>
+        const items = Object.keys(actionCodes).map( k => {
+            const item = actionCodes[k];
+            return (
                 {
-                    Object.keys(actionCodes).map( k => {
-                        const item = actionCodes[k];
-                        return (
-                            <Menu.Item key={k} style={{color:item.color}}>
-                                {item.longtext}
-                            </Menu.Item>
-                        );
-                    })
+                    key: k,
+                    label: item.longtext,
+                    style:{color:item.color}
                 }
-            </Menu>
+            );
+        })
+    
+        const menuProps = {
+            items,
+            onClick: this.handleMenuClick.bind(this)
+        };
+
+        this.menu = menuProps;
     }
 
     handleMenuClick = (e) => {
@@ -122,7 +126,7 @@ export class ActionCodeDropdown extends React.Component {
         const className = `mbac-actioncode-dropdown ${this.props.className}`;
         
         return (
-            <Dropdown className={className} trigger={['click']} overlay={this.menu}>
+            <Dropdown menu={this.menu} className={className} trigger={['click']} >
                 <Button type="text" style={{color}} >
                     {longtext} <DownOutlined />
                 </Button>

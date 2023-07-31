@@ -40,20 +40,22 @@ export class InfoForm extends React.Component {
             <Layout>
                 <Content>
                     <Affix className="affix-opiniondetail" offsetTop={0}>
-                        <Breadcrumb>
-                            <Breadcrumb.Item>
-                                <a href="/">Start</a>
-                            </Breadcrumb.Item>
-                            <Breadcrumb.Item>
-                                <a href="">Info</a>
-                            </Breadcrumb.Item>
-                        </Breadcrumb>
+                        <div>
+                            <Breadcrumb>
+                                <Breadcrumb.Item>
+                                    <a href="/">Start</a>
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item>
+                                    <a href="">Info</a>
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
 
-                        <PageHeader
-                            className="site-page-header"
-                            title="Systeminformationen"
-                            onBack={() => history.back()}
-                        />
+                            <PageHeader
+                                className="site-page-header"
+                                title="Systeminformationen"
+                                onBack={() => history.back()}
+                            />
+                        </div>
                     </Affix>
 
                     <Result

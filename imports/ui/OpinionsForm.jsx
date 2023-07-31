@@ -22,21 +22,23 @@ export const OpinionsForm = ({currentUser}) => {
         <Layout>
             <Content>
                 <Affix className="affix-opiniondetail" offsetTop={0}>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>
-                            <a href="/">Start</a>
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item>
-                            <a href="">Gutachten</a>
-                        </Breadcrumb.Item>
-                    </Breadcrumb>
+                    <div>
+                        <Breadcrumb>
+                            <Breadcrumb.Item>
+                                <a href="/">Start</a>
+                            </Breadcrumb.Item>
+                            <Breadcrumb.Item>
+                                <a href="">Gutachten</a>
+                            </Breadcrumb.Item>
+                        </Breadcrumb>
 
-                    <PageHeader
-                        className="site-page-header"
-                        title="Gutachten"
-                        subTitle="Übersicht der Ihnen zugewiesenen oder von Ihnen erstellten Gutachten."
-                        extra={pageHeaderButtons}
-                    />
+                        <PageHeader
+                            className="site-page-header"
+                            title="Gutachten"
+                            subTitle="Übersicht der Ihnen zugewiesenen oder von Ihnen erstellten Gutachten."
+                            extra={pageHeaderButtons}
+                        />
+                    </div>
                 </Affix>
 
                 <ListOpinions />

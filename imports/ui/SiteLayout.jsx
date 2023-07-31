@@ -68,8 +68,8 @@ export const SiteLayout = props => {
 
         if (activitiesCount !== null && activitiesCount > 0) {
             return (
-                <Badge count={activitiesCount} size="small" offset={[10, 0]}>
-                    <UserActivitiesLink />
+                <Badge count={activitiesCount} size="small" offset={[10, 0]} >
+                    <div style={{color:"white"}}><UserActivitiesLink /></div>
                 </Badge>
             );
         }
@@ -77,7 +77,23 @@ export const SiteLayout = props => {
         return <UserActivitiesLink />;
     }
 
-    
+    const items = [
+        {
+            key: "USERACTIVITIES",
+            label: ( renderUserActivitiesMenuItem() ),
+            icon: <UserOutlined />
+        },
+        {
+            key: "OPINIONS",
+            label: ( <Link href="/opinions" canCancel>Gutachten</Link> ),
+            icon: <VideoCameraOutlined />
+        },
+        {
+            key: "INFO",
+            label: ( <Link href="/info" canCancel>Info</Link> ),
+            icon: <InfoCircleOutlined />
+        }
+    ];
 
     return (
 
@@ -94,20 +110,13 @@ export const SiteLayout = props => {
                     <img className="large" src="/MEBEDO_LOGO_PRINT_RGB-300x88.jpg" />
                 </div></a>
 
-                <Menu 
+                <Menu
+                    items={items}
                     theme="dark" mode="inline"
                     selectedKeys={ props.activeMenuKey ? [props.activeMenuKey]: []}
                     onClick={onMenuClick}
                 >
-                    <Menu.Item key="USERACTIVITIES" icon={<UserOutlined />}>
-                        { renderUserActivitiesMenuItem() }
-                    </Menu.Item>
-                    <Menu.Item key="OPINIONS" icon={<VideoCameraOutlined />}>
-                        <Link href="/opinions" canCancel>Gutachten</Link>
-                    </Menu.Item>
-                    <Menu.Item key="INFO" icon={<InfoCircleOutlined />}>
-                        <Link href="/info" canCancel>Info</Link>
-                    </Menu.Item>
+                    
                 </Menu>
             </Sider>
 

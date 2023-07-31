@@ -115,7 +115,14 @@ export class MentionsWithEmojis extends React.Component {
 
         const renderEmojiList = () => {
             return emojisMap.map(
-                e => <Option key={e.emoji} value={e.emoji} search={e.s}>{e.emoji}</Option>
+                e => 
+                ({
+                    key: e.emoji,
+                    label: e.emoji,
+                    value: e.emoji,
+                    search: e.s                    
+                })
+                
             )
         }
 
@@ -129,17 +136,17 @@ export class MentionsWithEmojis extends React.Component {
                 loading={loading}
                 onSearch={onSearch} onSelect={onSelect} onChange={onChange}
                 filterOption={filterEmojis}
-            >
-                {prefix == '@' ?
-                    users.map(({ userId, firstName, lastName }) => (
-                        <Option key={userId} value={firstName + ' ' + lastName} >
-                            {firstName + ' ' + lastName} 
-                        </Option>
-                    ))
+
+                options= {prefix == '@' ?
+                    users.map(({ userId, firstName, lastName }) => ({
+                        key: userId,
+                        value: firstName + ' ' + lastName,
+                        label: firstName + ' ' + lastName
+                    }))
                 :
                     renderEmojiList()
                 }
-            </Mentions>
+            />
         );
     }
 }

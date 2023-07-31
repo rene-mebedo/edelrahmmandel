@@ -12,7 +12,7 @@ export const ListImages_ModalSort = forwardRef(({imageOrImages, id, ...props}, r
     return (
         <Fragment>
             {
-                images.map( image => <Image key={image._id} src={image.link} /> )
+                images.map( image => <Image key={image._id} src={image.link} preview={false}/> )
                 //images.map( image => <Image key={image._id} src={image.link} width="100%" {...props} ref={ref} >{id} </Image> )
                 //images.map( image => <div {...props} ref={ref}>{id} <Image key={image._id} src={image.link} width="100%" /> </div> )
                 //images.map( image => <ImageAnnotation key={image._id} src={image.link} src2={image.link2} refOpinion={image.meta.refOpinion} imageId={image._id} annotationState={image.meta.annotState} /> )

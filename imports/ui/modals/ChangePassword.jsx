@@ -50,7 +50,7 @@ export const ModalChangePassword = ( { currentUser } ) => {
                 <ModalBackground>
                     <Modal
                         title="Passwort ändern"
-                        visible={ showModal }
+                        open={ showModal }
                         onOk={ handleOk }
                         onCancel={ closeDialog }
                         maskClosable={false}
