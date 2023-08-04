@@ -1,8 +1,14 @@
 {
-    "version": "1.2.2",
-    "timestamp": "2023-07-19",
+    "version": "1.3.1",
+    "timestamp": "2023-08-04",
     
     "details": [
+        { 
+            "version": "1.3.1", 
+            "description": [
+                "Maximale Bildbreite limitiert für Bilder im Bildtext im Bildcontainer, damit DIN A4 Format beibehalten wird"
+            ]
+        },
         { 
             "version": "1.3", 
             "description": [
