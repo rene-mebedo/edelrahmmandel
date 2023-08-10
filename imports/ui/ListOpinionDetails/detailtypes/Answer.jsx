@@ -1,8 +1,6 @@
-import React, {Fragment, useState, useEffect, useRef} from 'react';
+import React, {Fragment} from 'react';
 import { ListOpinionDetails } from '../ListOpinionDetails';
 import { OpinionDetailAdder } from './OpinionDetailAdder';
-
-//import RightCircleOutlined from '@ant-design/icons/RightCircleOutlined';
 
 import { EditableContent } from '../../components/EditableContent';
 

@@ -1,7 +1,5 @@
 import React from 'react';
 import Input from 'antd/lib/input';
-//import Form from 'antd/lib/form';
-//import Button from 'antd/lib/button';
 import Mentions from 'antd/lib/mentions';
 
 const { TextArea } = Input;
@@ -56,7 +54,7 @@ export class MentionsWithEmojis extends React.Component {
             if (loading) return;
             this.setState( { loading: true } );
 
-            Meteor.call(method /*'opinion.getSharedWith'*/, methodParams, text, (err, users) => {
+            Meteor.call(method , methodParams, text, (err, users) => {
                 this.setState({
                     loading: false, 
                     users: err ? [] : users
@@ -104,7 +102,7 @@ export class MentionsWithEmojis extends React.Component {
     render() {
         const [ onSearch, onSelect, onChange ] = [ 'onSearch', 'onSelect', 'onChange' ].map( fn => this[fn].bind(this) );
         const { value, loading, users, prefix } = this.state;
-
+        
         const filterEmojis = (input, option) => {
             if (prefix == '@') return true;
 

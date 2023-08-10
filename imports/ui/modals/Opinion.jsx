@@ -156,7 +156,7 @@ export const ModalOpinion = ( { mode /*EDIT|NEW*/, refOpinion, buttonCaption, bu
                         </Form.Item>
                         :
                         <Form.Item
-                            label="Vorlage"
+                            label="Vorlage - im Standardfall bitte 'ROE' eingeben"
                             name="refTemplate"
                         >
                             <OpinionSearchInput />

@@ -26,8 +26,15 @@ export const ListOpinions = () => {
     const [ opinions , isLoading ] = useOpinions();
     const [ filteredOpinions , setFilteredOpinions ] = useState( opinions );
 
-    const { isPhone, isTablet, isDesktop } = useMediaQueries();
+    const { isDesktop } = useMediaQueries();
 
+    // Filter zurücksetzen über useEffect:
+    // - Wenn isLoading sich ändert, also nachdem alle Gutachten geladen sind. Ansonsten wäre beim ersten Öffnen bzw. neu Laden die Liste leer.
+    // - Wenn sich die Anzahl der Gutachten ändert, also nach Neuanlage oder Löschen eines Gutachtens.
+    useEffect( () => {
+        setFilteredOpinions( opinions );
+      } , [ isLoading , opinions.length ]);
+    
     const deleteOpinion = id => {
         Modal.confirm({
             title: 'L Ö S C H E N',
@@ -129,13 +136,6 @@ export const ListOpinions = () => {
             }
         }
     ]);
-
-    // Filter zurücksetzen über useEffect:
-    // - Wenn isLoading sich ändert, also nachdem alle Gutachten geladen sind. Ansonsten wäre beim ersten Öffnen bzw. neu Laden die Liste leer.
-    // - Wenn sich die Anzahl der Gutachten ändert, also nach Neuanlage oder Löschen eines Gutachtens.
-    useEffect( () => {
-        setFilteredOpinions( opinions )
-      } , [ isLoading , opinions.length ]);
     
     const onChangeText = ( val ) => {        
         if ( val ) {

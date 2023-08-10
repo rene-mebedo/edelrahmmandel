@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 
 import Descriptions from 'antd/lib/descriptions';
 import Skeleton from 'antd/lib/skeleton';
@@ -22,7 +22,6 @@ const { Paragraph, Text } = Typography;
 
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import FileDoneOutlined from '@ant-design/icons/FileDoneOutlined';
-//import EditOutlined from '@ant-design/icons/EditOutlined';
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import FormOutlined from '@ant-design/icons/FormOutlined';
 import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';

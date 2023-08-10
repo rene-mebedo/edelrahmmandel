@@ -16,7 +16,7 @@ import { ModalBackground } from '../components/ModalBackground';
 
 import Compressor from 'compressorjs';
 
-export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetail, refDetail }) => {
+export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refDetail }) => {
     const [ images, imagesLoading ] = useImages();
     const [ showModal, setShowModal ] = useState(false);
 
@@ -96,7 +96,10 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
                 
                 context.fillStyle = '#fff';
                 context.font = '11pt Arial';
-                context.fillText('© MEBEDO Consulting GmbH', 20, canvas.height - 20);
+                if ( opinion.outputTemplate.indexOf( 'mebedo' ) > -1 )
+                    context.fillText('© MEBEDO Consulting GmbH', 20, canvas.height - 20);
+                else
+                    context.fillText('© Ensmann Consulting GmbH', 20, canvas.height - 20);
             },
             success(compressedImage) {
                 uploadImage(compressedImage);
@@ -110,6 +113,7 @@ export const ModalFileUpload = ( { mode/*NEW||EDIT*/, refOpinion, refParentDetai
     const props = {
         name: 'file',
         multiple: true,
+        customRequest:({ onSuccess }) => setTimeout(() => { onSuccess( 'ok' , null ); } , 0 ),//Wichtig, damit keine POST 405 Fehlermeldung kommt vom Webserver
         action: doUpload,
         onChange(info) {
             const { status } = info.file;

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React from 'react';
 import { Meteor } from 'meteor/meteor';
 
 import Table from 'antd/lib/table';

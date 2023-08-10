@@ -29,7 +29,7 @@ export const Picture = ( { item, permissions, first, last } ) => {
                                         field="printTitle"
                                         refDetail={_id}
                                         item={item}
-                                        permissions={permissions}
+                                        permissions={{canEdit:false, canDelete:permissions.canDelete}}
                                     />
                                 </div>
 
