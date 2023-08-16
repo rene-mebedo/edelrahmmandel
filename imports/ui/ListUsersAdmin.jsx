@@ -39,11 +39,10 @@ export const ListUsersAdmin = () => {
             dataIndex: 'emails',
             key: 'emails',
             render: (text, row) => {
-                if ( typeof row.emails == "undefined" ) {
+                if ( typeof row.emails == "undefined" )
                     return '';
-                }
                 else
-                    row.emails.toString();
+                    return JSON.stringify( row.emails );
             }
         },
         {
@@ -55,12 +54,10 @@ export const ListUsersAdmin = () => {
                     // 'active' Feld existiert nicht => aktiv
                     return '1';
                 }
-                else if ( row.active ) {
+                else if ( row.active )
                     return '1';
-                }
-                else {
+                else
                     return '0';
-                }
             },
         },
         {
@@ -81,7 +78,7 @@ export const ListUsersAdmin = () => {
             dataIndex: 'createdAt',
             key: 'createdAt',
             render: (text, row) => moment(row.createdAt).format( 'DD.MM.YYYY HH:mm' ),
-            sorter: (a, b) => lower(a.toString().createdAt).localeCompare(lower(b.toString().createdAt)),
+            sorter: (a, b) => lower(moment(a).format( 'DD.MM.YYYY HH:mm' )).localeCompare(moment(b).format( 'DD.MM.YYYY HH:mm' )),
         }
     ];
     
