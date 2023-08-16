@@ -15,7 +15,6 @@ import { UserActivities } from '../imports/api/collections/userActivities';
 
 Accounts.validateLoginAttempt( loginData => {
     const { allowed, methodName } = loginData;
-
     if (methodName == 'verifyEmail' || methodName == 'resetPassword') {
         return allowed;
     }
@@ -24,19 +23,30 @@ Accounts.validateLoginAttempt( loginData => {
         if (loginData.methodArguments[0].resume && allowed) return true;
 
         const { user } = loginData.methodArguments[0];
-        
         if (!user)
             return false;
-            
+
         // check if we got a user like "admin" that signed in without email
         if (user.username && !user.email && allowed) {
             return true;
         }
-
         const verifiedUser = Meteor.users.findOne({
             'emails.address': user.email,
             'emails.verified': true
         });
+
+        // Prüfung, ob Benutzer aktiv ist!
+        if ( typeof verifiedUser.active == "undefined" ) {
+            // 'active' Feld existiert nicht => aktiv
+        }
+        else if ( verifiedUser.active ) {
+            // aktiv
+        }
+        else {
+            // NICHT aktiv
+            console.log( 'Dieser Benutzer ist nicht aktiv.' );
+            return false;
+        }
 
         return !!verifiedUser;
     }

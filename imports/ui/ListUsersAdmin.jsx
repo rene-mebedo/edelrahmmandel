@@ -8,6 +8,7 @@ import { useAllUsersForAdmin } from '../client/trackers';
 import { MediaQuery, useMediaQueries } from '../client/mediaQueries';
 
 import Input from 'antd/lib/input';
+import { contains } from 'jquery';
 
 const lower = a => {
     if (!a) return '';
@@ -32,13 +33,35 @@ export const ListUsersAdmin = () => {
             title: 'username',
             dataIndex: 'username',
             key: 'username',
-            sorter: (a, b) => lower(a.username).localeCompare(lower(b.username)),
+        },
+        {
+            title: 'email(s)',
+            dataIndex: 'emails',
+            key: 'emails',
+            render: (text, row) => {
+                if ( typeof row.emails == "undefined" ) {
+                    return '';
+                }
+                else
+                    row.emails.toString();
+            }
         },
         {
             title: 'active',
             dataIndex: 'active',
             key: 'active',
-            sorter: (a, b) => lower(a.active).localeCompare(lower(b.active)),
+            render: (text, row) => {
+                if ( typeof row.active == "undefined" ) {
+                    // 'active' Feld existiert nicht => aktiv
+                    return '1';
+                }
+                else if ( row.active ) {
+                    return '1';
+                }
+                else {
+                    return '0';
+                }
+            },
         },
         {
             title: 'name',
@@ -58,7 +81,7 @@ export const ListUsersAdmin = () => {
             dataIndex: 'createdAt',
             key: 'createdAt',
             render: (text, row) => moment(row.createdAt).format( 'DD.MM.YYYY HH:mm' ),
-            sorter: (a, b) => lower(a.createdAt).localeCompare(lower(b.createdAt)),
+            sorter: (a, b) => lower(a.toString().createdAt).localeCompare(lower(b.toString().createdAt)),
         }
     ];
     

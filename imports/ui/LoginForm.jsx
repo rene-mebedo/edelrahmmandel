@@ -36,8 +36,8 @@ export const LoginForm = () => {
       if (err) {
         Modal.error({
           title: 'Login fehlgeschlagen',
-          content: 'Bitte überprüfen Sie Ihren Benutzernamen und/oder Ihr Passwort und versuchen Sie es erneut.',
-        });  
+          content: 'Bitte überprüfen Sie Ihren Benutzernamen (E-Mail Adresse) und/oder Ihr Passwort und versuchen Sie es erneut.',
+        });
       }
     });
   };
@@ -52,8 +52,7 @@ export const LoginForm = () => {
           Herzlich Willkommen zu MEBEDO GutachtenPlus!
         </p>
         <p>
-          Bitte melden Sie sich mit Ihren Benutzerdaten an oder registrieren Sie 
-          sich, falls Sie noch keine Zugangsdaten haben.
+          Bitte melden Sie sich mit Ihren Benutzerdaten an, Benutzername = E-Mail Adresse.
         </p>
         <Form
           {...layout}
@@ -67,7 +66,7 @@ export const LoginForm = () => {
               rules={[
                   {
                   required: true,
-                  message: 'Bitte geben Sie Ihren Benutzernamen ein.',
+                  message: 'Bitte geben Sie Ihren Benutzernamen (die E-Mail Adresse) ein.',
                   },
               ]}
           >

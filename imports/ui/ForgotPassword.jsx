@@ -56,10 +56,10 @@ export const ForgotPassword = () => {
       <Col xs={20} sm={20} md={16} lg={12} xl={8} id="Login">
         <Divider orientation="left">Passwort vergessen</Divider>
         <p>
-          HOPLA, nicht schlimm! So etwas kann passieren :)
+          So etwas kann passieren :)
         </p>
         <p>
-          Bitte geben Sie Ihre EMail-Adresse ein. Wir senden Ihnen einen Link per E-Mail über diesen Sie ein
+          Bitte geben Sie Ihre E-Mail Adresse ein. Wir senden Ihnen einen Link per E-Mail, über den Sie ein
           neues Passwort vergeben können.
         </p>
         <Form
