@@ -30,6 +30,13 @@ export const ListUsersAdmin = () => {
 
     let columns = [
         {
+            title: 'name',
+            dataIndex: 'name',
+            key: 'name',
+            render: (text, row) => ( row.userData.firstName + ' ' + row.userData.lastName ),
+            sorter: (a, b) => lower(a.userData.lastName).localeCompare(lower(b.userData.lastName)),
+        },
+        {
             title: 'username',
             dataIndex: 'username',
             key: 'username',
@@ -61,13 +68,6 @@ export const ListUsersAdmin = () => {
             },
         },
         {
-            title: 'name',
-            dataIndex: 'name',
-            key: 'name',
-            render: (text, row) => (row.userData.firstName + ' ' + row.userData.lastName ),
-            sorter: (a, b) => lower(a.userData.lastName).localeCompare(lower(b.userData.lastName)),
-        },
-        {
             title: 'roles',
             dataIndex: 'roles',
             key: 'roles',
@@ -78,7 +78,6 @@ export const ListUsersAdmin = () => {
             dataIndex: 'createdAt',
             key: 'createdAt',
             render: (text, row) => moment(row.createdAt).format( 'DD.MM.YYYY HH:mm' ),
-            sorter: (a, b) => lower(moment(a).format( 'DD.MM.YYYY HH:mm' )).localeCompare(moment(b).format( 'DD.MM.YYYY HH:mm' )),
         }
     ];
     
@@ -87,10 +86,11 @@ export const ListUsersAdmin = () => {
             const filterText = val.target.value;
             if ( filterText == '' )
                 setFilteredUsers( users );
-            else
+            else {
                 setFilteredUsers( users.filter( detail => { 
-                    return detail.username.toLowerCase().includes( filterText.toLowerCase() );
+                    return ( detail.userData.firstName + ' ' + detail.userData.lastName ).toLowerCase().includes( filterText.toLowerCase() );
                 }));
+            }
         }
     };
       
