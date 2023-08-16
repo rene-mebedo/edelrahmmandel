@@ -1,14 +1,21 @@
 {
-    "version": "1.4.0",
-    "timestamp": "2023-08-10",
+    "version": "1.4.1",
+    "timestamp": "2023-08-16",
     
     "details": [
+        { 
+            "version": "1.4.1", 
+            "description": [
+                "Menüpunkt zur Administration hinzugefügt, im 1. Schritt nur zur Ansicht der Benutzer",
+                "Kleinere Anpassungen"
+            ]
+        },
         { 
             "version": "1.4.0", 
             "description": [
                 "Das Hochladen von Bildern im Bildcontainer funktioniert jetzt ohne Fehlermeldung",
                 "Die Dateinamen hochgeladener Bilder im Bildcontainer sind jetzt nicht mehr änderbar",
-                "Jetzt wird als Copyright MEBEDO bzw. ENSMANN gesetzt in Bildern in Abhängigkeit des ausgewählten Ausgabeformats. Vorher wurde immer fest MEBEDO gesetzt."
+                "Jetzt wird das richtige Copyright (MEBEDO oder ENSMANN) gesetzt in Bildern in Abhängigkeit des ausgewählten Ausgabeformats. Vorher war es immer fest MEBEDO."
             ]
         },
         { 

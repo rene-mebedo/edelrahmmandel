@@ -137,7 +137,7 @@ export const SiteLayout = props => {
                         })
                     }
 
-                    <UserMenu currentUser={props.currentUser} />
+                    <UserMenu currentUser={props.currentUser} hasAdminRole={props.hasAdminRole} />
 
                 </Header>
                 <Content className="site-layout-content">

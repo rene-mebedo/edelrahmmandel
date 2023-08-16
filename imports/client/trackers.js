@@ -29,15 +29,46 @@ export const useAccount = () => useTracker(() => {
     if (subscription.ready()) {
         currentUser = Meteor.users.findOne({_id:userId}, { fields: { username: 1, userData: 1 }});
     }
+    let hasAdminRole = false;
+    if ( currentUser )
+    {
+        currentUser.userData.roles.forEach( role => {
+            if ( role === 'ADMIN' )
+                hasAdminRole = true;
+        });
+    }
 
     return {
         user,
         userId,
         currentUser,
         isLoggedIn: !!userId,
-        accountsReady: user !== undefined && subscription.ready()
+        accountsReady: user !== undefined && subscription.ready(),
+        hasAdminRole
     }
 }, [])
+
+/**
+ * Load all users for administration reactively
+ * 
+ */
+export const useAllUsersForAdmin = () => useTracker( () => {
+    const noDataAvailable = [ [] /*users*/,  true /*loading*/ ];
+
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+
+    const handler = Meteor.subscribe('allUsersforAdmin');
+    if (!handler.ready()) {
+        return noDataAvailable;
+    }
+
+    const usrs = Meteor.users.find({}).fetch();
+    //const users = users.find({}, { sort: { opinionNo: -1 } }).fetch();
+
+    return [usrs, false];
+});
 
 /**
  * Reactive Roles handling

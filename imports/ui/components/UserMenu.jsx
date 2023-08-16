@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Menu from 'antd/lib/menu';
 import Dropdown from 'antd/lib/dropdown';
 import Space from 'antd/lib/space';
 import Avatar from 'antd/lib/avatar';
@@ -9,10 +8,13 @@ import { ModalChangePassword } from '../modals/ChangePassword';
 
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 
-export const UserMenu = ({ currentUser }) => {
+import { Link } from './Link';
+
+export const UserMenu = ({ currentUser , hasAdminRole }) => {
     const { firstName, lastName } = currentUser && currentUser.userData || { firstName: '?', lastName: '?' };
 
-    const handleUserMenuClick = ({ item, key, keyPath, domEvent }) => {
+    const handleUserMenuClick = ({ key }) => {
+        //console.log( key );
         switch (key) {
             case "LOGOUT":
                 Meteor.logout();
@@ -20,7 +22,7 @@ export const UserMenu = ({ currentUser }) => {
         }
     }
 
-    const items = [
+    let items = [
         {
             key: "PROFILE",
             label: (<a href="/profile">Mein Profil</a>)
@@ -40,6 +42,19 @@ export const UserMenu = ({ currentUser }) => {
             label: (<a><LogoutOutlined /> Abmelden</a>)
         }
     ];
+    if ( hasAdminRole ) {
+        // Benutzer hat Admin-Rechte.
+        items = items.concat([
+            {
+                type: 'divider',
+            },
+            {
+                key: "ADMIN",
+                //label: (<a><UsersAdminForm currentUser={currentUser} /> Administration</a>)
+                label: (<Link href="/usersAdmin">Administration</Link>)
+            }
+        ]);
+    }
 
     const menuProps = {
         items,
@@ -48,7 +63,7 @@ export const UserMenu = ({ currentUser }) => {
 
     return (
         <div className="mbac-usermenu">
-            <Dropdown menu={menuProps} trigger={['click']} placement="bottomRight" arrow >
+            <Dropdown menu={menuProps} trigger={['click']} placement="bottomRight" arrow>
                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()} >
                     <Space>
                         <Avatar style={{ backgroundColor: 'orange', color: '#fff', verticalAlign: 'middle' }} /*size="large" gap={16}*/>

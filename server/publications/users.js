@@ -15,3 +15,7 @@ Meteor.publish('avatar', function publishAvatar(userId) {
 
     return Avatars.find({ userId }).cursor;
 });
+
+Meteor.publish('allUsersforAdmin', function publishAllUsersforAdmin() {
+    return Meteor.users.find({});
+});

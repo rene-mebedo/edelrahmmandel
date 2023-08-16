@@ -1,4 +1,3 @@
-import React from 'react';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { mount } from 'react-mounter';
 
@@ -16,6 +15,7 @@ import { VerifyEMail } from '../imports/ui/components/VerifyEMail';
 import { UserProfileForm } from '../imports/ui/components/user-profile-form';
 import { ForgotPassword } from '../imports/ui/ForgotPassword';
 import { ResetPassword } from '../imports/ui/ResetPassword';
+import { UsersAdminForm } from '../imports/ui/UsersAdminForm';
 
 // https://github.com/kadirahq/flow-router/issues/318
 // Prevent routing when there are unsaved changes
@@ -182,6 +182,17 @@ FlowRouter.route('/opinions', {
         mount(App, {
             content: OpinionsForm,
             activeMenuKey: 'OPINIONS',
+            authenticatedRoute: true
+        });
+    },
+});
+
+FlowRouter.route('/usersAdmin', {
+    name: 'usersAdmin.show',
+    action() {
+               
+        mount(App, {
+            content: UsersAdminForm,
             authenticatedRoute: true
         });
     },

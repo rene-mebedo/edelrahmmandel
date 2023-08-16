@@ -33,7 +33,7 @@ import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
 
 import Tooltip from 'antd/lib/tooltip';
 
-import { useOpinion, useOpinionDetails, useOpinionDetailsSpellcheck, useOpinionPdfs } from '../client/trackers';
+import { useOpinion, useOpinionDetailsSpellcheck, useOpinionPdfs } from '../client/trackers';
 
 import { OpinionParticipants } from './components/OpinionParticipants';
 import { OpinionVariables } from './components/OpinionVariables';

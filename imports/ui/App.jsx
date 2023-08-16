@@ -10,13 +10,11 @@ import { useAppState } from '../client/AppState';
 
 
 export const App = ({content, refOpinion, refDetail, activeMenuKey, ...props}) => {
-    const { currentUser, isLoggedIn, accountsReady } = useAccount();
-    const { roles, rolesLoading } = useRoles();
+    const { currentUser, isLoggedIn, accountsReady, hasAdminRole } = useAccount();
 
     const [ appIsBusy ] = useAppState('appIsBusy');
 
     var keys = {37: 1, 38: 1, 39: 1, 40: 1, 27:1, 83:1, 115:1 };
-
     function preventDefault(e) {
         if (appIsBusy) {
             console.log('preventDefault', appIsBusy)
@@ -25,18 +23,18 @@ export const App = ({content, refOpinion, refDetail, activeMenuKey, ...props}) =
     }
 
     function preventDefaultForScrollKeys(e) {
-    if (keys[e.keyCode]) {
-        preventDefault(e);
-        return false;
-    }
+        if (keys[e.keyCode]) {
+            preventDefault(e);
+            return false;
+        }
     }
 
     // modern Chrome requires { passive: false } when adding event
     var supportsPassive = false;
     try {
-    window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
-        get: function () { supportsPassive = true; } 
-    }));
+        window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
+            get: function () { supportsPassive = true; } 
+        }));
     } catch(e) {}
 
     var wheelOpt = supportsPassive ? { passive: false } : false;
@@ -64,7 +62,7 @@ export const App = ({content, refOpinion, refDetail, activeMenuKey, ...props}) =
         // add done for the initial loading
         reactRoot.classList.add('done');
 
-        disableScrollWhenBusy();
+        disableScrollWhenBusy();  
 
         return () => {
             enableScroll();
@@ -108,6 +106,7 @@ export const App = ({content, refOpinion, refDetail, activeMenuKey, ...props}) =
                 refOpinion={refOpinion}
                 refDetail={refDetail}
                 currentUser={currentUser}
+                hasAdminRole={hasAdminRole}
             >
                 {
                     //content || null

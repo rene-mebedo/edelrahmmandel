@@ -128,6 +128,22 @@ Meteor.methods({
     },
 
     /**
+     * Returns, if the current user has the admin role
+     */
+    /*'users.getcurrentUserHasAdminRole'() {
+        if (!this.userId) {
+            throw new Meteor.Error('Sie sind nicht angemeldet.');
+        }
+        let ok = false;
+        const currentUser = Meteor.users.findOne(this.userId);
+        currentUser.userData.roles.forEach( role => {
+            if ( role === 'ADMIN' )
+                ok = true;
+        });
+        return ok;
+    },*/
+
+    /**
      * Return all Roles, that could be used by the current User
      * to assign as explicit role to a User
      */

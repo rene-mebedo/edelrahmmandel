@@ -6,14 +6,12 @@ import Affix from 'antd/lib/affix';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import Select from 'antd/lib/select';
-import Layout from 'antd/lib/layout';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import Card from 'antd/lib/card';
 import Button from 'antd/lib/button';
 import message from 'antd/lib/message';
 
-const { Content } = Layout;
 const { Option } = Select;
 
 import UserAddOutlined from '@ant-design/icons/UserAddOutlined';
@@ -249,7 +247,7 @@ export class UserProfileForm extends React.Component {
                                     <Input prefix={null} />
                                 </Form.Item>
                                 <Form.Item
-                                    label="Weiterführende Qualifikation"
+                                    label="Weiterf. Qualifikation bzgl. Gutachter, hier 'BDSH e. V. geprüfter Sachverständiger' eintragen"
                                     name="advancedQualification"
                                 >
                                     <Input prefix={null} />
