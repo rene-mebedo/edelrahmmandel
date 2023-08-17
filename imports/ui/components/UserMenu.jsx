@@ -7,6 +7,7 @@ import Avatar from 'antd/lib/avatar';
 import { ModalChangePassword } from '../modals/ChangePassword';
 
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
+import SettingOutlined from '@ant-design/icons/SettingOutlined';
 
 import { Link } from './Link';
 
@@ -49,9 +50,12 @@ export const UserMenu = ({ currentUser , hasAdminRole }) => {
                 type: 'divider',
             },
             {
+                type: 'divider',
+            },
+            {
                 key: "ADMIN",
                 //label: (<a><UsersAdminForm currentUser={currentUser} /> Administration</a>)
-                label: (<Link href="/usersAdmin">Administration</Link>)
+                label: (<Link href="/usersAdmin"><SettingOutlined /> Administration</Link>)
             }
         ]);
     }

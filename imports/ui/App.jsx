@@ -11,7 +11,8 @@ import { useAppState } from '../client/AppState';
 
 export const App = ({content, refOpinion, refDetail, activeMenuKey, ...props}) => {
     const { currentUser, isLoggedIn, accountsReady, hasAdminRole } = useAccount();
-
+    const { roles, rolesLoading } = useRoles();
+    
     const [ appIsBusy ] = useAppState('appIsBusy');
 
     var keys = {37: 1, 38: 1, 39: 1, 40: 1, 27:1, 83:1, 115:1 };
