@@ -241,7 +241,10 @@ export const useOpinionDetails = (refOpinion, refParentDetail, callback) => useT
                 ]
             }
         ]
-    }, { sort: { printParentPosition:1, printPosition:1 }}).fetch();
+    }, { sort: { printParentPosition:1 }}).fetch();
+    //}, { sort: { printParentPosition:1 }}).collation({locale: "en_US", numericOrdering: true}).fetch();
+    //}, { sort: { printParentPosition:1, printPosition:1, depth:1 }}).fetch();
+    //.collation({locale: "en_US", numericOrdering: true})
 
     return [opinionDetails, false];
 }, [refOpinion]);

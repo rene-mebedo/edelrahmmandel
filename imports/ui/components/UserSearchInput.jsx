@@ -51,18 +51,22 @@ export class UserSearchInput extends React.Component {
             return;
         }
 
-        if (prevProps.value !== this.props.value) {
+        
+        // MT, 17.10.2023 - Auskommentiert, da dies folgende Warnung ergibt: "Can't perform a React state update on an unmounted component. (...)"
+        /*if (prevProps.value !== this.props.value) {
             // value changed from outside the component
             this.setState({
                 value: this.props.value,
                 data: [ this.props.value ]
             })
-        }
+        }*/
     }
 
     render() {
         const { value } = this.state;
-        const options = this.state.data.map(d => <Option key={d.userId} value={d.userId}>{(d.firstName || '') + (d.firstName ? ' ':'') + d.lastName + ' (' + d.username + ')'}</Option>);
+        const options = this.state.data.map( d =>
+            //if ( d )
+                <Option key={d.userId} value={d.userId}>{(d.firstName || '') + (d.firstName ? ' ':'') + d.lastName + ' (' + d.username + ')'}</Option>)
 
         return (
             <Select

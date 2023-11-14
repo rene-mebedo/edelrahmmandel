@@ -1,5 +1,4 @@
 import React from 'react';
-import { Meteor } from 'meteor/meteor';
 
 import Table from 'antd/lib/table';
 
@@ -14,17 +13,13 @@ export class InvitableRoles extends React.Component{
             loading: true
         }
 
-        if (this.props.onChange) this.props.onChange(defaultValue);
-    }
+        if (this.props.onChange)
+            this.props.onChange(defaultValue);
+    }    
 
     componentDidMount(){
-        Meteor.call('users.getInvitableRoles', (err, roles) => {
-            if (!err) {
-                this.setState({ invitableRoles: roles, loading: false });
-            } else {
-                console.log(err)
-            }
-        });
+        if ( this.props.iInvRoles )
+            this.setState({ invitableRoles: this.props.iInvRoles , loading: false });
     }
 
     render() {

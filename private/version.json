@@ -1,8 +1,15 @@
 {
-    "version": "1.4.2",
-    "timestamp": "2023-08-17",
+    "version": "1.4.3",
+    "timestamp": "2023-11-14",
     
     "details": [
+        { 
+            "version": "1.4.3", 
+            "description": [
+                "Optimierungen durchgeführt. Folgende Warnung erscheint jetzt nicht mehr beim Teilen eines Gutachtens mit einem Benutzer, und zwar sowohl bei bestehenden Benutzern als auch bei neuen Benutzern: 'Can't perform a React state update on an unmounted component. (...)'",
+                "Sortierreihenfolge der Spellcheck Liste angepasst"
+            ]
+        },
         { 
             "version": "1.4.2", 
             "description": [

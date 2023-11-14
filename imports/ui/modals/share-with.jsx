@@ -28,7 +28,7 @@ const { Option } = Select;
 const { Panel } = Collapse;
 
 
-const ShareWithForm = ({ validateFields, resetFields }) => {
+/*const ShareWithForm = ({ validateFields, resetFields }) => {
     const [ form ] = useForm();
 
     return (
@@ -48,7 +48,7 @@ const ShareWithForm = ({ validateFields, resetFields }) => {
             </Form.Item>
         </Form>
     );
-}
+}*/
 
 export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } ) => {
     const [ showModal, setShowModal ] = useState(false);
@@ -56,6 +56,8 @@ export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } )
 
     const [ explicitInvitableRoles, setExplicitInvitableRoles ] = useState([]);
     const [ explicitInvitableRolesLoading, setExplicitInvitableRolesLoading ] = useState(true);
+
+    const [ invRoles, setInvRoles ] = useState([]);
 
     const [ form ] = useForm();
 
@@ -85,6 +87,14 @@ export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } )
         } else {
             setExplicitInvitableRolesLoading(false);
         }
+
+        Meteor.call('users.getInvitableRoles', (err, roles) => {
+            if (!err) {
+                setInvRoles( roles );
+            } else {
+                console.log(err)
+            }
+        });
     }, []);
 
     const handleOk = e => {
@@ -230,7 +240,7 @@ export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } )
                                     <Form.Item
                                         name="roles"
                                     >
-                                        <InvitableRoles />
+                                        <InvitableRoles iInvRoles={invRoles} />
                                         
                                     </Form.Item>
                                 </Panel>
