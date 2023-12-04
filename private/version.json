@@ -1,8 +1,14 @@
 {
-    "version": "1.4.3",
-    "timestamp": "2023-11-14",
+    "version": "1.4.4",
+    "timestamp": "2023-12-04",
     
     "details": [
+        { 
+            "version": "1.4.4", 
+            "description": [
+                "Update Opinion-Documenter auf 1.0.47 - 1. Spalte in Tabelle des Bildcontainers etwas verbreitert. Ist der Text \"[noHeader]\" irgendwo im Untertext des Bildcontainers enthalten, wird die Überschrift der Tabelle in der Ausgabe nicht angezeigt"
+            ]
+        },
         { 
             "version": "1.4.3", 
             "description": [
