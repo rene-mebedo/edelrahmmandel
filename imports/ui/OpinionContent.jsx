@@ -30,7 +30,7 @@ import ImportOutlined from '@ant-design/icons/ImportOutlined';
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 import ClockCircleOutlined from '@ant-design/icons/ClockCircleOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
-//import UnLockOutlined from '@ant-design/icons/UnLockOutlined';
+import UnLockOutlined from '@ant-design/icons/UnLockOutlined';
 import LockFilled from '@ant-design/icons/LockFilled';
 
 import Tooltip from 'antd/lib/tooltip';
@@ -370,7 +370,9 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                 key: 'protect',
                                 render: (text, item) =>
                                     !item.meta.protected
-                                        ? null
+                                        ? <Tooltip title="PDF nicht geschützt">
+                                        <UnLockOutlined />
+                                    </Tooltip>
                                         : <Tooltip title="PDF geschützt">
                                         <LockFilled />
                                     </Tooltip>
@@ -464,7 +466,9 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                 key: 'protect',
                                 render: (text, item) =>
                                     !item.meta.protected
-                                        ? null
+                                        ? <Tooltip title="PDF nicht geschützt">
+                                        <UnLockOutlined />
+                                    </Tooltip>
                                         : <Tooltip title="PDF geschützt">
                                         <LockFilled />
                                     </Tooltip>
