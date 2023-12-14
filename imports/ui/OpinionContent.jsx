@@ -30,6 +30,8 @@ import ImportOutlined from '@ant-design/icons/ImportOutlined';
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 import ClockCircleOutlined from '@ant-design/icons/ClockCircleOutlined';
 import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
+import LockFilled from '@ant-design/icons/LockFilled';
+import UnLockOutlined from '@ant-design/icons/UnLockOutlined';
 
 import Tooltip from 'antd/lib/tooltip';
 
@@ -363,6 +365,19 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                         showHeader={false}
                         columns={[
                             {
+                                title: 'Protected',
+                                dataIndex: 'protect',
+                                key: 'protect',
+                                render: (text, item) =>
+                                    !item.meta.protected
+                                        ? <Tooltip title="PDF nicht geschützt">
+                                        <UnLockOutlined />
+                                    </Tooltip>
+                                        : <Tooltip title="PDF geschützt">
+                                        <LockFilled />
+                                    </Tooltip>
+                            },
+                            {
                                 title: 'Titel',
                                 dataIndex: 'title',
                                 key: 'title',
@@ -445,6 +460,19 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                         rowKey="_id"
                         showHeader={false}
                         columns={[
+                            {
+                                title: 'Protected',
+                                dataIndex: 'protect',
+                                key: 'protect',
+                                render: (text, item) =>
+                                    !item.meta.protected
+                                        ? <Tooltip title="PDF nicht geschützt">
+                                        <UnLockOutlined />
+                                    </Tooltip>
+                                        : <Tooltip title="PDF geschützt">
+                                        <LockFilled />
+                                    </Tooltip>
+                            },
                             {
                                 
                                 title: 'Titel',

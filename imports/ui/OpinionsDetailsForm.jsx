@@ -75,11 +75,11 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
 
 
 
-    const createPDF = previewOnly => {
+    const createPDF = ( previewOnly , iProtected = false ) => {
         return () => {
             setPendingPdfCreation(true);
 
-            Meteor.call('opinion.createPDF', refOpinion, previewOnly, (err, res) => {
+            Meteor.call('opinion.createPDF', refOpinion, previewOnly, iProtected, (err, res) => {
                 console.log(res);
                 if (err) console.log(err);
         
@@ -192,6 +192,11 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                     pageHeaderButtons.push(
                         <Button key="pdf" type="dashed" onClick={createPDF(false)} loading={pendingPdfCreation}>
                             <FilePdfOutlined /> PDF erstellen
+                        </Button>
+                    );
+                    pageHeaderButtons.push(
+                        <Button key="pdf" type="dashed" onClick={createPDF(false,true)} loading={pendingPdfCreation}>
+                            <FilePdfOutlined /> Geschütztes PDF erstellen
                         </Button>
                     );
                 } else if (activeTabPane == 'SHARE' && canShare) {

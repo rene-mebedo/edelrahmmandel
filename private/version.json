@@ -1,8 +1,14 @@
 {
-    "version": "1.4.4",
-    "timestamp": "2023-12-04",
+    "version": "1.5.0",
+    "timestamp": "2023-12-14",
     
     "details": [
+        { 
+            "version": "1.5.0", 
+            "description": [
+                "Erstellung von geschützten PDF Dateien ermöglicht"
+            ]
+        },
         { 
             "version": "1.4.4", 
             "description": [

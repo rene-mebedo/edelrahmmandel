@@ -22,6 +22,8 @@ import fs_extra from 'fs-extra';
 
 import moment from 'moment';
 
+import pdfence from 'pdfence';
+
 const readFile = Meteor.wrapAsync(fs.readFile, fs);
 const writePdf = Meteor.wrapAsync(OpinionPdfs.write, OpinionPdfs);
 
@@ -350,7 +352,7 @@ Meteor.methods({
      *                              be renderd as preview and will not saved 
      *                              to disk or without preview stored in the system
      */
-    async 'opinion.createPDF'(refOpinion, previewOnly = false) {
+    async 'opinion.createPDF'(refOpinion, previewOnly = false , iProtected = false ) {
         check(refOpinion, String);
         check(previewOnly, Match.OneOf(String, Boolean));
 
@@ -451,6 +453,19 @@ Meteor.methods({
 
             fileData = readFile(filename);
 
+            if ( iProtected && !previewOnly ) {
+                // Verschlüsselung...
+                // https://medium.com/aia-sg-techblog/implementing-encryption-feature-in-pdf-lib-112091bce9af
+                // 1000 0000 1100 => 2060
+                // 1000 0010 0100 => 2084
+                fileData = pdfence.fromBufferToBuffer(fileData, {
+                    userPassword: refOpinion.substring( 0 , 4 ),//'123', // required
+                    ownerPassword: refOpinion,//'12345', // optional
+                    //userProtectionFlag: 4
+                    userProtectionFlag: 2084
+                })
+        }   
+
             ///**/OpinionPdfs.config.storagePath = storagePath.config.storagePath + '/12345';
             fileRef = writePdf(fileData, {
                 fileName: `${refOpinion}.pdf`,
@@ -464,6 +479,7 @@ Meteor.methods({
                         firstName: currentUser.userData.firstName,
                         lastName: currentUser.userData.lastName
                     },
+                    protected: iProtected && !previewOnly
                     //archive: false
                 }
             });
