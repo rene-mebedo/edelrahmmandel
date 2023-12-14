@@ -10,6 +10,7 @@ import Spin from 'antd/lib/spin';
 import Button from 'antd/lib/button';
 import Switch from 'antd/lib/switch';
 //import Icon from 'antd/lib/icon';
+import Tooltip from 'antd/lib/tooltip';
 
 const { Content } = Layout;
 
@@ -195,9 +196,9 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                         </Button>
                     );
                     pageHeaderButtons.push(
-                        <Button key="pdf" type="dashed" onClick={createPDF(false,true)} loading={pendingPdfCreation}>
+                        <Tooltip title="Eigentümerkennwort: ID Benutzerkennwort: Die ersten 4 Zeichen der ID"> <Button key="pdfProtected" type="dashed" onClick={createPDF(false,true)} loading={pendingPdfCreation}>
                             <FilePdfOutlined /> Geschütztes PDF erstellen
-                        </Button>
+                        </Button> </Tooltip>
                     );
                 } else if (activeTabPane == 'SHARE' && canShare) {
                     pageHeaderButtons.push(<ModalShareWith key="share" refOpinion={refOpinion} canShareWithExplicitRole={canShareWithExplicitRole}/>);
