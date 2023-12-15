@@ -17,7 +17,7 @@ const { Content } = Layout;
 //import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import FilePdfOutlined from '@ant-design/icons/FilePdfOutlined';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
-
+import InfoCircleOutlined from '@ant-design/icons/InfoCircleOutlined';
 
 import { layouttypesObject } from '../api/constData/layouttypes';
 
@@ -196,9 +196,13 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                         </Button>
                     );
                     pageHeaderButtons.push(
-                        <Tooltip title="Eigentümerkennwort: ID Benutzerkennwort: Die ersten 4 Zeichen der ID"> <Button key="pdfProtected" type="dashed" onClick={createPDF(false,true)} loading={pendingPdfCreation}>
+                        <Button key="pdfProtected" type="dashed" onClick={createPDF(false,true)} loading={pendingPdfCreation}>
                             <FilePdfOutlined /> Geschütztes PDF erstellen
-                        </Button> </Tooltip>
+                            <Tooltip title="Eigentümerkennwort: ID Benutzerkennwort: Die ersten 4 Zeichen der ID"> 
+                                <InfoCircleOutlined />
+                            </Tooltip>
+                        </Button>
+                        
                     );
                 } else if (activeTabPane == 'SHARE' && canShare) {
                     pageHeaderButtons.push(<ModalShareWith key="share" refOpinion={refOpinion} canShareWithExplicitRole={canShareWithExplicitRole}/>);
