@@ -71,6 +71,75 @@ Meteor.methods({
     },
 
     /**
+     * Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+     * getExpertsAsync wird nicht verwendet, da synchroner Aufruf notwendig ist
+    */
+    async 'users.getExpertsAsync'(refOpinion, searchText){
+        check(refOpinion, String);
+        check(searchText, String);
+
+        let currentUser = await Meteor.users.findOneAsync(this.userId);
+        
+        // check if opinion was sharedWith the current User
+        const shared = await Opinions.findOneAsync({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt. Sie können keinen Gutachter auswählen.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.edit')) {
+            throw new Meteor.Error('Keine Berechtigung zum Bearbeiten des Gutachtens. Sie können keinen Gutachter auswählen.');
+        }
+        
+        
+        try {
+            const op = await Opinions.findOneAsync({
+                _id: refOpinion
+            });
+            const sharedWith = op.sharedWith;
+            const opinionOwners = sharedWith.filter( item => {
+                return item.role === 'OWNER';
+            }).map( item => item.user.userId );
+
+            const escapedText = escapeRegExp(searchText);
+    
+            /* Wer kann alles Gutachter sein?
+                - Der Owner des Gutachtens
+                - Jeder Mitarbeiter von MEBEDO -> Rolle EMPLOYEE
+                - Und ggf. der Admin -> Rolle ADMIN
+            */
+            const users = Meteor.users.find({
+                $and: [
+                    { 'active': true },// nur aktive Benutzer
+                    {'userData.roles': { $in: ['EMPLOYEE', 'ADMIN', 'OWNER'] }},
+                    { 
+                        $or: [
+                            { 'username': { $regex : escapedText, $options:"i" } },
+                            { 'userData.firstName': { $regex : escapedText, $options:"i" } },
+                            { 'userData.lastName': { $regex : escapedText, $options:"i" } },
+                            { _id: { $in: opinionOwners } }
+                        ]
+                    }
+                ]
+            }, { fields: { 'userData.roles': 0 }, limit: 10 }).fetch().map( user => {
+                const { _id, username, userData } = user;
+                return { userId: _id, username, ...userData};
+            });
+            
+            return users;
+        }
+        catch ( error ) {
+            console.log( error );
+            return [];
+        }        
+    },
+
+    /**
      * Lists all users that are currently in the system
      * 
      * @param {*} refOpinion 
@@ -113,6 +182,33 @@ Meteor.methods({
 
         let inviteableRoles = {};
         const currentUser = Meteor.users.findOne(this.userId);
+
+        Roles.find({
+            _id: { $in: currentUser.userData.roles }
+        }, { fields: { _id: 1, invitableRoles: 1 } }).fetch().map( role => {
+            role.invitableRoles.forEach( ir => {
+                inviteableRoles[ir.roleId] = ir.displayName
+            })
+        });
+        
+        return Object.keys(inviteableRoles).map( k => {
+            return { roleId: k, displayName: inviteableRoles[k] }
+        });
+    },
+
+    /**
+     * Returns alle Roles, that could be used by the current User
+     * to assign to a new User
+     * Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+     * Nein, da hier synchron notwendig.
+     */
+    async 'users.getInvitableRolesAsync'() {
+        if (!this.userId) {
+            throw new Meteor.Error('Sie sind nicht angemeldet.');
+        }
+
+        let inviteableRoles = {};
+        const currentUser = await Meteor.users.findOneAsync (this.userId);
 
         Roles.find({
             _id: { $in: currentUser.userData.roles }

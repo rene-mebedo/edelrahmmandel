@@ -17,6 +17,9 @@ export class UserSearchInput extends React.Component {
             value: props.value || null,
         };
       
+        // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+        // Nein, da hier synchron notwendig.
+        //const searchMethod = 'users.' + this.props.searchMethod || 'getExpertsAsync';
         const searchMethod = 'users.' + this.props.searchMethod || 'getExperts';
 
         this.handleSearch = debounce( userSearchStr => {
@@ -30,6 +33,12 @@ export class UserSearchInput extends React.Component {
                     data: err ? [] : users
                 });
             });
+            /*Meteor.callAsync(searchMethod, refOpinion, userSearchStr).then( (err, users) => {
+                this.setState({
+                    loading: false, 
+                    data: err ? [] : users
+                });
+            });*/
         }, 300);
     }
 

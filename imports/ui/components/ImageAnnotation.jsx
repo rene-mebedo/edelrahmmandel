@@ -47,7 +47,11 @@ export class ImageAnnotation extends React.Component {
                     } else {
                         console.log(`File successfully uploaded`, fileObj);
 
-                        Meteor.call( 'images.update.annotState' , this.props.imageId , state , fileObj._id , err => {
+                        /*Meteor.call( 'images.update.annotState' , this.props.imageId , state , fileObj._id , err => {
+                            if (err) console.log( 'Update Image mit Fehler' , err );
+                        });*/
+                        // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+                        Meteor.callAsync( 'images.update.annotState' , this.props.imageId , state , fileObj._id ).then( err => {
                             if (err) console.log( 'Update Image mit Fehler' , err );
                         });
                     }

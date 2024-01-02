@@ -46,7 +46,13 @@ export const ListOpinions = () => {
             onOk: closeConfirm => {
                 closeConfirm();
                 console.log( id );
-                Meteor.call('opinions.unshareOpinionUser' , id , ( err ) => {
+                /*Meteor.call('opinions.unshareOpinionUser' , id , ( err ) => {
+                    if ( err ) {
+                        console.log( `Fehler beim Löschen des Gutachtens mit ID ${id}`, err );
+                    }
+                });*/
+                // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+                Meteor.callAsync('opinions.unshareOpinionUserAsync' , id ).then( ( err ) => {
                     if ( err ) {
                         console.log( `Fehler beim Löschen des Gutachtens mit ID ${id}`, err );
                     }

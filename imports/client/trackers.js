@@ -168,7 +168,9 @@ export const useOpinionDetail = (refOpinion, refDetail) => useTracker( () => {
     if (!Meteor.user()) {
         return noDataAvailable;
     }
-    const handler = Meteor.subscribe('opinionDetail', { refOpinion, refDetail });
+    // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+//    const handler = Meteor.subscribe('opinionDetail', { refOpinion, refDetail });
+const handler = Meteor.subscribe('opinionDetailAsync', { refOpinion, refDetail });
 
     if (!handler.ready()) {
         return noDataAvailable;
@@ -193,7 +195,9 @@ export const useOpinionDetails = (refOpinion, refParentDetail, callback) => useT
     if (!Meteor.user()) {
         return noDataAvailable;
     }
-    const handler = Meteor.subscribe('opinionDetails', { refOpinion, refParentDetail });
+    // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+    //const handler = Meteor.subscribe('opinionDetails', { refOpinion, refParentDetail });
+    const handler = Meteor.subscribe('opinionDetailsAsync', { refOpinion, refParentDetail });
 
     if (!handler.ready()) { 
         return noDataAvailable;
@@ -222,7 +226,9 @@ export const useOpinionDetails = (refOpinion, refParentDetail, callback) => useT
     if (!Meteor.user()) {
         return noDataAvailable;
     }
-    const handler = Meteor.subscribe('opinionDetailsSpellcheck', { refOpinion });
+    // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+    //const handler = Meteor.subscribe('opinionDetailsSpellcheck', { refOpinion });
+    const handler = Meteor.subscribe('opinionDetailsSpellcheckAsync', { refOpinion });
 
     if (!handler.ready()) { 
         return noDataAvailable;
@@ -262,7 +268,9 @@ export const useActivities = (refOpinion, refDetail) => useTracker( () => {
     if (!Meteor.user()) {
         return noDataAvailable;
     }
-    const subscription = Meteor.subscribe('activities', { refOpinion, refDetail });
+    // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+    //const subscription = Meteor.subscribe('activities', { refOpinion, refDetail });
+    const subscription = Meteor.subscribe('activitiesAsync', { refOpinion, refDetail });
 
     if (!subscription.ready()) {
         return noDataAvailable;
@@ -383,7 +391,9 @@ export const useOpinionActionList = refOpinion => useTracker( () => {
     if (!Meteor.user()) {
         return noDataAvailable;
     }
-    const subscription = Meteor.subscribe('opinionDetailsActionListitems', refOpinion);
+    // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+    //const subscription = Meteor.subscribe('opinionDetailsActionListitems', refOpinion);
+    const subscription = Meteor.subscribe('opinionDetailsActionListitemsAsync', refOpinion);
 
     if (!subscription.ready()) {
         return noDataAvailable;

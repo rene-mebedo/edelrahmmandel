@@ -1,9 +1,14 @@
 {
-    "version": "1.5.0",
-    "timestamp": "2023-12-14",
+    "version": "2.0.0",
+    "timestamp": "2024-01-02",
     
     "details": [
         { 
+            "version": "2.0.0", 
+            "description": [
+                "Umstellung des Projekts auf Meteor Version 2.14 (von 2.7.1)"
+            ]
+        },{ 
             "version": "1.5.0", 
             "description": [
                 "Erstellung von geschützten PDF Dateien ermöglicht"

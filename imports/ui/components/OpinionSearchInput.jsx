@@ -16,12 +16,19 @@ export class OpinionSearchInput extends React.Component {
             value: props.value || null,
         };
       
-        const searchMethod = 'opinions.getSharedOpinions';
+        const searchMethod = 'opinions.getSharedOpinionsAsync';
 
         this.handleSearch = debounce( userSearchStr => {
             this.setState({ loading: true });
 
-            Meteor.call(searchMethod, userSearchStr, (err, data) => {
+            /*Meteor.call(searchMethod, userSearchStr, (err, data) => {
+                this.setState({
+                    loading: false, 
+                    data: err ? [] : data
+                });
+            });*/
+            // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+            Meteor.callAsync(searchMethod, userSearchStr).then( (err, data) => {
                 this.setState({
                     loading: false, 
                     data: err ? [] : data

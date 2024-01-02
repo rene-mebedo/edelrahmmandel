@@ -170,7 +170,13 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
             cancelText: 'Abbruch',
             onOk: closeConfirm => {
                 closeConfirm();
-                Meteor.call('opinions.archivePDF', refOpinion, id, (err) => {
+                /*Meteor.call('opinions.archivePDF', refOpinion, id, (err) => {
+                    if (err) {
+                        console.log(`Fehler bei der Archivierung des PDFs mit ID ${id}`, err);
+                    }
+                });*/
+                // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+                Meteor.callAsync('opinions.archivePDFAsync', refOpinion, id).then( (err) => {
                     if (err) {
                         console.log(`Fehler bei der Archivierung des PDFs mit ID ${id}`, err);
                     }
@@ -188,7 +194,13 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
             cancelText: 'Abbruch',
             onOk: closeConfirm => {
                 closeConfirm();
-                Meteor.call('opinions.dearchivePDF', refOpinion, id, (err) => {
+                /*Meteor.call('opinions.dearchivePDF', refOpinion, id, (err) => {
+                    if (err) {
+                        console.log(`Fehler bei der Rücknahme der Archivierung des PDFs mit ID ${id}`, err);
+                    }
+                });*/
+                // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+                Meteor.callAsync('opinions.dearchivePDFAsync', refOpinion, id).then( (err) => {
                     if (err) {
                         console.log(`Fehler bei der Rücknahme der Archivierung des PDFs mit ID ${id}`, err);
                     }
@@ -207,7 +219,13 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
             cancelText: 'Abbruch',
             onOk: closeConfirm => {
                 closeConfirm();
-                Meteor.call('opinions.deletePDF', refOpinion, id, (err) => {
+                /*Meteor.call('opinions.deletePDF', refOpinion, id, (err) => {
+                    if (err) {
+                        console.log(`Fehler beim Löschen des PDFs mit ID ${id}`, err);
+                    }
+                });*/
+                // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+                Meteor.callAsync('opinions.deletePDFAsync', refOpinion, id ).then( (err) => {
                     if (err) {
                         console.log(`Fehler beim Löschen des PDFs mit ID ${id}`, err);
                     }

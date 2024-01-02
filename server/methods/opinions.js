@@ -22,7 +22,7 @@ import fs_extra from 'fs-extra';
 
 import moment from 'moment';
 
-import pdfence from 'pdfence';
+//import pdfence from 'pdfence';
 
 const readFile = Meteor.wrapAsync(fs.readFile, fs);
 const writePdf = Meteor.wrapAsync(OpinionPdfs.write, OpinionPdfs);
@@ -60,6 +60,48 @@ Meteor.methods({
                 ]}
             ]
         }).map( o => {
+            const calcTitle = o.customer
+                ? o.title + ' Nr. ' + o.opinionNo + ' (' + o.customer.name + ' ' + o.customer.city + ')'
+                : o.title;
+
+            return {
+                _id: o._id,
+                title: calcTitle
+            }
+        });
+        
+        return shared;
+    },
+
+    /**
+     * Returns all Opinions that are shared with the current user
+     * Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+     * 
+     * @param {String} searchText Specifies a searchText
+     */
+    async 'opinions.getSharedOpinionsAsync'(searchText){
+        if (searchText !== undefined && searchText !== null) {
+            check(searchText, String);
+        }
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+        
+        const escapedText = escapeRegExp(searchText);
+        
+        // check if opinion was sharedWith the current User
+        const shared = await Opinions.find({
+            $and: [
+                { "sharedWith.user.userId": this.userId },
+                { $or: [
+                    { 'title': { $regex : escapedText, $options:"i" } },
+                    { 'description': { $regex : escapedText, $options:"i" } },
+                    { 'opinionNo': { $regex : escapedText, $options:"i" } },
+                    { 'customer.name': { $regex : escapedText, $options:"i" } },
+                ]}
+            ]
+        }).mapAsync( o => {
             const calcTitle = o.customer
                 ? o.title + ' Nr. ' + o.opinionNo + ' (' + o.customer.name + ' ' + o.customer.city + ')'
                 : o.title;
@@ -124,6 +166,65 @@ Meteor.methods({
         }, { created: true });
         
         Activities.insert(activity);
+    },
+
+    /**
+     * Opinion löschen - Geteilt mit für aktuellen Benutzer entfernen
+     * Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+     * 
+     * @param {String} refOpinion Specifies the opinion
+     */
+    async 'opinions.unshareOpinionUserAsync'( refOpinion ) {
+        check(refOpinion, String);
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        let currentUser = await Meteor.users.findOneAsync(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = await Opinions.findOneAsync({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieses Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        //console.log( shared.sharedWith );
+
+        // Für das eigene rausnehmen "geteilt mit" werden keine besonderen Rollen benötigt.
+        /*const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        // Die Berechtigung shareWithExplicitRole wird hier verwendet.
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWithExplicitRole')) {
+            throw new Meteor.Error('Sie besitzen keine Berechtigung für das Löschen von PDFs.');
+        }*/
+        const shW = shared.sharedWith.find(s => s.user.userId == this.userId);
+        const { firstName, lastName} = shW.user;
+
+        /*await Opinions.updateAsync(refOpinion).then( {
+            $pull: { 
+                sharedWith: shW
+            }
+        });*/
+        await Opinions.updateAsync(refOpinion, {
+            $pull: { 
+                sharedWith: shW
+            }
+        });
+
+        // post a new activity to this opinion
+        const activity = injectUserData({ currentUser }, {
+            refOpinion,
+            refDetail: null,
+            type: 'SYSTEM-POST',
+            message: `hat das Gutachten mit ID ${refOpinion} für den Benutzer <strong>${firstName + ' ' + lastName}</strong> gelöscht.`
+        }, { created: true });
+        
+        await Activities.insertAsync(activity);
     },
 
     /**
@@ -203,6 +304,90 @@ Meteor.methods({
             }, { created: true });
             
             Activities.insert(activity);
+        })
+        .catch( err => {
+            console.error( err )
+        })
+    },
+
+    /**
+     * Archive PDF - Zurücknehmen der Archivierung eines PDFs
+     * Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+     * 
+     * @param {String} refOpinion Specifies the opinion
+     * @param {String} PDFId Specifies the PDF
+     */
+    async 'opinions.archivePDFAsync'(refOpinion, PDFId) {
+        check(refOpinion, String);
+        check(PDFId, String);
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        let currentUser = await Meteor.users.findOneAsync(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = await Opinions.findOneAsync({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieses Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        // Die Berechtigung shareWithExplicitRole wird hier verwendet.
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWithExplicitRole')) {
+            throw new Meteor.Error('Sie besitzen keine Berechtigung für die Archivierung von PDFs in diesem Gutachten.');
+        }
+
+        /* 
+        1. Datei auf Speicher/FS verschieben.
+        2. Pfade in Collection anpassen.
+            Zur Sicherheit werden folgende Eigenschaften aktualisiert:
+            - path (Pfad inkl. Dateiname)
+            - _storagePath (nur Pfad!)
+            - versions.original.path (Pfad inkl. Dateiname)
+        3. meta.archive auf true setzen.
+        */
+        // Aktuellen Dateipfad auslesen.
+        let opinionPdf = OpinionPdfs.findOne({ _id: PDFId , 'meta.refOpinion': refOpinion });
+        const src = opinionPdf.versions.original.path;
+        // Archivpfad.
+        //const archivePath = 'C:/Users/marc.tomaschoff/meteor/DATA/PDF/_Archiv';
+        const settings = JSON.parse( process.env.MGP_SETTINGS );
+        const archivePath = `${settings.PdfArchivePath}/${moment(opinionPdf.meta.createdAt).format('YYYY')}`;
+        // Zielpfad = archivePath inkl. [Jahr der Erstellung des PDFs] + _id.pdf
+        const dest = `${archivePath}/${opinionPdf._id}.pdf`;
+        //const dest = 'C:/Users/marc.tomaschoff/meteor/DATA/PDF/_Archiv/2022/6xEXNRaJTHd7jnhan.pdf';
+        //console.log( dest )
+        
+        // 1. Datei auf Speicher/FS verschieben
+        fs_extra.move( src , dest )
+        .then(() => {
+            console.log( 'file move successfull!' );
+            // Pfade in Collection anpassen und meta.archive auf true setzen.
+            OpinionPdfs.update({ _id: PDFId , 'meta.refOpinion': refOpinion }, {
+                $set: {
+                    'meta.archive': true,
+                    'path': dest,
+                    '_storagePath': archivePath,
+                    'versions.original.path': dest
+                }
+            });            
+
+            // post a new activity to this opinion
+            const activity = injectUserData({ currentUser }, {
+                refOpinion,
+                refDetail: null,
+                type: 'SYSTEM-POST',
+                message: `hat das PDF mit ID <strong>${PDFId}</strong> archiviert.`
+            }, { created: true });
+            
+            Activities.insertAsync(activity);
         })
         .catch( err => {
             console.error( err )
@@ -292,6 +477,89 @@ Meteor.methods({
     },
 
     /**
+     * Dearchive PDF - Zurücknehmen der Archivierung eines PDFs
+     * Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+     * 
+     * @param {String} refOpinion Specifies the opinion
+     * @param {String} PDFId Specifies the PDF
+     */
+    async 'opinions.dearchivePDFAsync'(refOpinion, PDFId) {
+        check(refOpinion, String);
+        check(PDFId, String);
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        let currentUser = await Meteor.users.findOneAsync(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = await Opinions.findOneAsync({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Dieses Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        // Die Berechtigung shareWithExplicitRole wird hier verwendet.
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWithExplicitRole')) {
+            throw new Meteor.Error('Sie besitzen keine Berechtigung für das Zurücknehmen der Archivierung von PDFs in diesem Gutachten.');
+        }
+
+        /* 
+        1. Datei auf Speicher/FS verschieben.
+        2. Pfade in Collection anpassen.
+            Zur Sicherheit werden folgende Eigenschaften aktualisiert:
+            - path (Pfad inkl. Dateiname)
+            - _storagePath (nur Pfad!)
+            - versions.original.path (Pfad inkl. Dateiname)
+        3. meta.archive auf false setzen.
+        */
+        // Aktuellen Dateipfad im Archiv auslesen.
+        let opinionPdf = OpinionPdfs.findOne({ _id: PDFId , 'meta.refOpinion': refOpinion });
+        const src = opinionPdf.versions.original.path;
+        // Zielpfad.
+        //const dest = `${opinionPdf._storagePath}/${opinionPdf._id}.pdf`;
+        const settings = JSON.parse( process.env.MGP_SETTINGS );
+        const origPath = `${settings.PdfPath}/${moment(opinionPdf.meta.createdAt).format('YYYY')}`;
+        // Zielpfad = origPath inkl. [Jahr der Erstellung des PDFs] + _id.pdf
+        const dest = `${origPath}/${opinionPdf._id}.pdf`;
+        //console.log( dest )
+
+        // 1. Datei auf Speicher/FS verschieben
+        fs_extra.move( src , dest )
+        .then(() => {
+            console.log( 'file move successfull!' );
+            // Pfade in Collection anpassen und meta.archive auf false setzen.
+            OpinionPdfs.update({ _id: PDFId , 'meta.refOpinion': refOpinion }, {
+                $set: {
+                    'meta.archive': false,
+                    'path': dest,
+                    '_storagePath': origPath,
+                    'versions.original.path': dest
+                }
+            });
+
+            // post a new activity to this opinion
+            const activity = injectUserData({ currentUser }, {
+                refOpinion,
+                refDetail: null,
+                type: 'SYSTEM-POST',
+                message: `hat das PDF mit ID <strong>${PDFId}</strong> aus dem Archiv zurückgenommen.`
+            }, { created: true });
+            
+            Activities.insertAsync(activity);
+        })
+        .catch( err => {
+            console.error( err )
+        })
+    },
+
+    /**
      * PDF löschen - Löschen eines PDFs
      * 
      * @param {String} refOpinion Specifies the opinion
@@ -344,6 +612,59 @@ Meteor.methods({
     },
 
     /**
+     * PDF löschen - Löschen eines PDFs
+     * Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+     * 
+     * @param {String} refOpinion Specifies the opinion
+     * @param {String} PDFId Specifies the PDF
+     */
+    async 'opinions.deletePDFAsync'(refOpinion, PDFId) {
+        check(refOpinion, String);
+        check(PDFId, String);
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not Authorized.');
+        }
+
+        let currentUser = await Meteor.users.findOneAsync(this.userId);
+
+        // check if opinion was sharedWith the current User
+        const shared = await Opinions.findOneAsync({
+            _id: refOpinion,
+            "sharedWith.user.userId": this.userId
+        });
+
+        if (!shared) {
+            throw new Meteor.Error('Das angegebene Gutachten wurde nicht mit Ihnen geteilt.');
+        }
+
+        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+        
+        // Die Berechtigung shareWithExplicitRole wird hier verwendet.
+        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'shareWithExplicitRole')) {
+            throw new Meteor.Error('Sie besitzen keine Berechtigung für das Löschen von PDFs.');
+        }
+
+        OpinionPdfs.remove({_id: PDFId}, (error) => {
+            if (error) {
+              console.error(`File wasn't removed, error:  ${error.reason}`);
+            } else {
+              console.info('File successfully removed');
+            }
+        });
+
+        // post a new activity to this opinion
+        const activity = injectUserData({ currentUser }, {
+            refOpinion,
+            refDetail: null,
+            type: 'SYSTEM-POST',
+            message: `hat das PDF mit ID <strong>${PDFId}</strong> GELÖSCHT.`
+        }, { created: true });
+        
+        await Activities.insertAsync(activity);
+    },
+
+    /**
      * Creates a new PDF for the given Opinion and store the
      * file in the files collection to get a secure download
      * 
@@ -359,10 +680,10 @@ Meteor.methods({
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
-        const currentUser = Meteor.users.findOne(this.userId);
+        const currentUser = await Meteor.users.findOneAsync(this.userId);
 
         // ... and check then if the current-user is member of sharedWith
-        const opinion = Opinions.findOne({
+        const opinion = await Opinions.findOneAsync({
             _id: refOpinion,
             'sharedWith.user.userId': this.userId
         });
@@ -378,13 +699,13 @@ Meteor.methods({
         }
 
         rePositionDetails(refOpinion, { reRenderHtmlContent: true });
-        const details = OpinionDetails.find({
+        const details = await OpinionDetails.find({
             refOpinion,
             deleted: false,
             finallyRemoved: false
-        }).fetch();
+        }).fetchAsync();
         
-        let detailsTodolist = OpinionDetails.find({
+        let detailsTodolist = await OpinionDetails.find({
             refOpinion,
             type: 'QUESTION',
             deleted: false,
@@ -405,7 +726,7 @@ Meteor.methods({
                 parentPosition: 1,
                 position: 1
             }
-        }).fetch();
+        }).fetchAsync();
 
         // Sortierung der detailsTodolist numerisch.
         /* Das (Sortierung des Arrays) ist notwendig, weil leider Funktionalität Mongo collation nicht enthalten ist unter Meteor.
@@ -453,7 +774,7 @@ Meteor.methods({
 
             fileData = readFile(filename);
 
-            if ( iProtected && !previewOnly ) {
+            /*if ( iProtected && !previewOnly ) {
                 // Verschlüsselung...
                 // https://medium.com/aia-sg-techblog/implementing-encryption-feature-in-pdf-lib-112091bce9af
                 // 1000 0000 1100 => 2060
@@ -464,7 +785,7 @@ Meteor.methods({
                     //userProtectionFlag: 4
                     userProtectionFlag: 2084
                 })
-        }   
+            }*/
 
             ///**/OpinionPdfs.config.storagePath = storagePath.config.storagePath + '/12345';
             fileRef = writePdf(fileData, {

@@ -88,6 +88,8 @@ export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } )
             setExplicitInvitableRolesLoading(false);
         }
 
+        // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
+        // Nein, da hier synchron notwendig.
         Meteor.call('users.getInvitableRoles', (err, roles) => {
             if (!err) {
                 setInvRoles( roles );
@@ -95,6 +97,13 @@ export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } )
                 console.log(err)
             }
         });
+        /*Meteor.callAsync('users.getInvitableRolesAsync').then( (err, roles) => {
+            if (!err) {
+                setInvRoles( roles );
+            } else {
+                console.log(err)
+            }
+        });*/
     }, []);
 
     const handleOk = e => {
