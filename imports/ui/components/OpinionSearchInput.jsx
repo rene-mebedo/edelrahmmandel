@@ -21,19 +21,20 @@ export class OpinionSearchInput extends React.Component {
         this.handleSearch = debounce( userSearchStr => {
             this.setState({ loading: true });
 
-            /*Meteor.call(searchMethod, userSearchStr, (err, data) => {
-                this.setState({
-                    loading: false, 
-                    data: err ? [] : data
-                });
-            });*/
             // Umstellung auf Async für Meteor Version 2.8, https://guide.meteor.com/2.8-migration
-            Meteor.callAsync(searchMethod, userSearchStr).then( (err, data) => {
+            // Nein, da hier synchron notwendig.
+            Meteor.call(searchMethod, userSearchStr, (err, data) => {
                 this.setState({
                     loading: false, 
                     data: err ? [] : data
                 });
             });
+            /*Meteor.callAsync(searchMethod, userSearchStr).then( (err, data) => {
+                this.setState({
+                    loading: false, 
+                    data: err ? [] : data
+                });
+            });*/
         }, 300);
     }
 
