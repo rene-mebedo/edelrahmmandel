@@ -1,8 +1,15 @@
 {
-    "version": "2.0.0",
-    "timestamp": "2024-01-02",
+    "version": "2.0.1",
+    "timestamp": "2024-01-05",
     
     "details": [
+        { 
+            "version": "2.0.1", 
+            "description": [
+                "Fehlerbehebung nach Meteor Update Umstellungen: Bei Neuerstellung von Gutachten ist Vorlagenauswahl wieder möglich",
+                "PDF Schutz entfernt"
+            ]
+        },
         { 
             "version": "2.0.0", 
             "description": [

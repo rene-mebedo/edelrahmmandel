@@ -195,7 +195,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                             <FilePdfOutlined /> PDF erstellen
                         </Button>
                     );
-                    pageHeaderButtons.push(
+                    /*pageHeaderButtons.push(
                         <Button key="pdfProtected" type="dashed" onClick={createPDF(false,true)} loading={pendingPdfCreation}>
                             <FilePdfOutlined /> Geschütztes PDF erstellen
                             <Tooltip title="Eigentümerkennwort: ID Benutzerkennwort: Die ersten 4 Zeichen der ID"> 
@@ -203,7 +203,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                             </Tooltip>
                         </Button>
                         
-                    );
+                    );*/
                 } else if (activeTabPane == 'SHARE' && canShare) {
                     pageHeaderButtons.push(<ModalShareWith key="share" refOpinion={refOpinion} canShareWithExplicitRole={canShareWithExplicitRole}/>);
                         /*<Button type="dashed" onClick={null}>

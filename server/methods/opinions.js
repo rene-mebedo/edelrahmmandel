@@ -800,7 +800,7 @@ Meteor.methods({
                         firstName: currentUser.userData.firstName,
                         lastName: currentUser.userData.lastName
                     },
-                    protected: iProtected && !previewOnly
+                    //protected: iProtected && !previewOnly
                     //archive: false
                 }
             });

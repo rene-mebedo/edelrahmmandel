@@ -381,7 +381,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                         rowKey="_id"
                         showHeader={false}
                         columns={[
-                            {
+                            /*{
                                 title: 'Protected',
                                 dataIndex: 'protect',
                                 key: 'protect',
@@ -391,7 +391,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                         : <Tooltip title="PDF geschützt">
                                         <LockFilled />
                                     </Tooltip>
-                            },
+                            },*/
                             {
                                 title: 'Titel',
                                 dataIndex: 'title',
@@ -475,7 +475,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                         rowKey="_id"
                         showHeader={false}
                         columns={[
-                            {
+                            /*{
                                 title: 'Protected',
                                 dataIndex: 'protect',
                                 key: 'protect',
@@ -485,7 +485,7 @@ export const OpinionContent = ({refOpinion, currentUser, canEdit=false, canDelet
                                         : <Tooltip title="PDF geschützt">
                                         <LockFilled />
                                     </Tooltip>
-                            },
+                            },*/
                             {
                                 
                                 title: 'Titel',
