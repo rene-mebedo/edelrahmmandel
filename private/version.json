@@ -1,8 +1,16 @@
 {
-    "version": "2.0.1",
-    "timestamp": "2024-01-05",
+    "version": "2.1.0",
+    "timestamp": "2024-01-10",
     
     "details": [
+        { 
+            "version": "2.1.0", 
+            "description": [
+                "Nur Admin darf neue User ins System hinzufügen",
+                "Update Opinion-Documenter auf 1.0.49 - 1. Spalte in Tabellen auf feste Größe eingestellt, damit u. a. in Kapitel 'Gesichtete Unterlagen' Tabelle bei längeren Texten richtig dargestellt wird.",
+                "Kontaktpersonen sind jetzt in Info Dialog enthalten"
+            ]
+        },
         { 
             "version": "2.0.1", 
             "description": [

@@ -32,6 +32,8 @@ import { ModalSortPictures } from './modals/SortPictures';
 import { ListOpinionDetails } from './ListOpinionDetails/ListOpinionDetails';
 import { hasPermission } from '../api/helpers/roles';
 
+import { useAccount } from '../client/trackers';
+
 import { 
     useOpinion,
     useOpinionDetail
@@ -43,6 +45,7 @@ import { useAppState } from '../client/AppState';
 
 
 export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
+    const { hasAdminRole } = useAccount();
     const [opinion, opinionIsLoading] = useOpinion(refOpinion);
     const [detail, detailIsLoading] = useOpinionDetail(refOpinion, refDetail);
 
@@ -205,7 +208,7 @@ export const OpinionsDetailsForm = ({refOpinion, refDetail, currentUser}) => {
                         
                     );*/
                 } else if (activeTabPane == 'SHARE' && canShare) {
-                    pageHeaderButtons.push(<ModalShareWith key="share" refOpinion={refOpinion} canShareWithExplicitRole={canShareWithExplicitRole}/>);
+                    pageHeaderButtons.push(<ModalShareWith key="share" refOpinion={refOpinion} canShareWithExplicitRole={canShareWithExplicitRole} adminUser={hasAdminRole} />);
                         /*<Button type="dashed" onClick={null}>
                             <ShareAltOutlined /> Dokument teilen
                         </Button>*/

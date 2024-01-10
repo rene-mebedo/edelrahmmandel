@@ -50,7 +50,7 @@ const { Panel } = Collapse;
     );
 }*/
 
-export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } ) => {
+export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false , adminUser = false} ) => {
     const [ showModal, setShowModal ] = useState(false);
     const [ activePanel, setActivePanel ] = useState('INVITE-USER');
 
@@ -193,7 +193,7 @@ export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } )
                                         </div>
                                     }
                                 </Panel>
-
+                                { adminUser ? 
                                 <Panel key="INVITE-BYMAIL" header={<span><strong>Benutzer nicht gefunden?</strong> Dann laden Sie hier die entsprechende Person per E-Mail ein.</span>}>
                                     <Form.Item
                                         label="E-Mail"
@@ -252,7 +252,7 @@ export const ModalShareWith = ( { refOpinion, canShareWithExplicitRole=false } )
                                         <InvitableRoles iInvRoles={invRoles} />
                                         
                                     </Form.Item>
-                                </Panel>
+                                </Panel> : null }
                             </Collapse>
                         </Form>
                     </Modal>

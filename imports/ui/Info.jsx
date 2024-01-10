@@ -69,10 +69,13 @@ export class InfoForm extends React.Component {
                                     ? <Skeleton active />
                                     : <Descriptions column={ {xs: 1, sm: 1, md: 2, ld: 2} } bordered>
                                         <Descriptions.Item label="Version">{sysinfo.appVersion && sysinfo.appVersion.version}</Descriptions.Item>
-                                        <Descriptions.Item label="Timestamp">{sysinfo.appVersion && sysinfo.appVersion.timestamp}</Descriptions.Item>
+                                        <Descriptions.Item label="Timestamp der Version">{sysinfo.appVersion && sysinfo.appVersion.timestamp}</Descriptions.Item>
 
-                                        <Descriptions.Item label="Benutzername / E-Mail">{currentUser.username || currentUser.userData.email}</Descriptions.Item>
-                                        <Descriptions.Item label="Rollen">{currentUser.userData.roles.join(', ')}</Descriptions.Item>
+                                        <Descriptions.Item label="Eingeloggter Benutzer (Benutzername / E-Mail)">{currentUser.username || currentUser.userData.email}</Descriptions.Item>
+                                        <Descriptions.Item label="Rollen des eingeloggten Benutzers">{currentUser.userData.roles.join(', ')}</Descriptions.Item>
+
+                                        <Descriptions.Item label="GutachtenPlus Ansprechpartner technisch">Marc Tomaschoff</Descriptions.Item>
+                                        <Descriptions.Item label="GutachtenPlus Ansprechpartner inhaltlich/fachlich">Marc Schlüter, Oliver Steller</Descriptions.Item>
                                     </Descriptions>
                                 }
                             </Fragment>
