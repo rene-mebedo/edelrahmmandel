@@ -48,11 +48,19 @@ export const hasPermission = ({ userId, currentUser, sharedRole }, permissionNam
 
     // first getting the roles the user has assigned to
     let roles;
-    if (sharedRole) roles = [sharedRole];
-    if (!roles) {
-        if (currentUser.userData) roles = currentUser.userData.roles;
+    // Bei spellcheck soll Benutzerberechtigung nicht durch Rolle überschrieben werden können!
+    if ( permissionName == 'opinion.spellcheck' ) {
+        if ( currentUser.userData )
+            roles = currentUser.userData.roles;
     }
-    if (!roles || roles.length == 0) roles = ['EVERYBODY'];
+    else if ( sharedRole )
+        roles = [sharedRole];
+    if (!roles) {
+        if ( currentUser.userData )
+            roles = currentUser.userData.roles;
+    }
+    if (!roles || roles.length == 0)
+        roles = ['EVERYBODY'];
 
     let isPermitted = 0;
     assignedRoles = Roles.find({ _id: { $in: roles } }).map( role => {

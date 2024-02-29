@@ -1,8 +1,15 @@
 {
-    "version": "2.1.0",
-    "timestamp": "2024-01-10",
+    "version": "2.2.0",
+    "timestamp": "2024-02-29",
     
     "details": [
+        { 
+            "version": "2.2.0", 
+            "description": [
+                "Update Opinion-Documenter auf 1.0.50 - Abkürzungsverzeichnis angepasst und auf Seite 1 'der' entfernt vor dem Firmennamen",
+                "Die Rechte zur Durchführung der Rechtschreibprüfung (spellcheck) werden jetzt nicht mehr durch Teilen mit expliziter Rolle überschrieben"
+            ]
+        },
         { 
             "version": "2.1.0", 
             "description": [
