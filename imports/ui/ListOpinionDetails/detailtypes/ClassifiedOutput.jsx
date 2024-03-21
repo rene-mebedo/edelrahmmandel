@@ -16,11 +16,14 @@ export const ClassifiedOutput = ( { item, permissions, first, last } ) => {
         DEFINITION: { classType: 'definition', header: 'Definition' },
     }[item.type];
     const deletedClass = deleted ? 'mbac-opinion-detail-deleted':'';
+    // Bei Elementen auf erster Ebene wird Info angezeigt.
+    const isFirstPosition = (depth == 1);
 
     return (
         <Fragment>
             <OpinionDetailAdder item={item} permissions={permissions} />
             <div className={`mbac-opinion-detail depth-${depth} ${deletedClass}`}>
+                {isFirstPosition ? <span>[Info: Dieses Element wurde auf der ersten Ebene angelegt, ist das so gewollt? Dieser Text innerhalb [] wird in der (PDF) Ausgabe nicht angezeigt.]</span> : null}
                 <div id={_id} className={`mbac-item-type-${classType} depth-${depth}`}>
                     <div className="mbac-fix-title">
                         {header}

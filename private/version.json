@@ -1,8 +1,19 @@
 {
-    "version": "2.2.0",
-    "timestamp": "2024-02-29",
+    "version": "2.3.0",
+    "timestamp": "2024-03-21",
     
     "details": [
+        { 
+            "version": "2.3.0", 
+            "description": [
+                "Bugfix: Fehlermeldung 'Es ist ein internen Fehler aufgetreten. Internal server error [500]' kam regelmäßig beim Speichern, allerdings nur im Produktivsystem - diese Fehlermeldung wird nicht mehr angezeigt",
+                "Bugfix: Behoben: Löschen auf oberster Ebene (mit Unterpunkten) konnte nicht wiederhergestellt werden. Sämtliche Unterelemente wurden bisher nicht wiederhergestellt",
+                "Bugfix: Punkte auf oberster Ebene erhalten keine Kapitelnummer, im PDF aber schon => Bei Elementen auf erster Ebene erfolgt Infotext",
+                "Feature: Über Variable besteht jetzt die Möglichkeit, das Wort 'Teilnehmer' umzubenennen auf PDF Seite 2",
+                "Bugfix/Verbesserung: Leere Variablen werden jetzt nicht mehr als 'undefined' dargestellt im PDF, sondern als Leerzeichen",
+                "Feature Admin: Ein Infobanner zu einem Wartungsfenster kann jetzt eingeblendet werden"
+            ]
+        },
         { 
             "version": "2.2.0", 
             "description": [

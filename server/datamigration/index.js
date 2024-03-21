@@ -5,3 +5,4 @@ import './1.0.25.initOutputTemplate.js';
 import './1.0.28.initHasAbbreviationsPage.js';
 import './1.0.29.initUserActive.js';
 import './1.1.0.archiveAndDearchivePDFs.js';
+import './2.3.0.insertServiceMaintenance.js';

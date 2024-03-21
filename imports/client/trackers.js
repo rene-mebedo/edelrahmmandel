@@ -11,6 +11,8 @@ import { Layouttypes } from '../api/collections/layouttypes';
 import { OpinionPdfs } from '../api/collections/opinion-pdfs';
 import { Avatars } from '../api/collections/avatars';
 
+import { ServiceMaintenances } from '../api/collections/serviceMaintenances';
+
 export const useOpinionSubscription = id => useTracker( () => {
     const subscription = Meteor.subscribe('opinions', id)
     return !subscription.ready();
@@ -110,6 +112,26 @@ export const useLayouttypes = () => useTracker( () => {
     const layouttypes = Layouttypes.find({}).fetch();
 
     return [layouttypes, false];
+});
+
+/**
+ * Reactive ServiceMaintenances
+ * 
+ */
+export const useServiceMaintenances = () => useTracker( () => {
+    const noDataAvailable = [ [] , true /*loading*/];
+    if (!Meteor.user()) {
+        return noDataAvailable;
+    }
+    
+    const subscription = Meteor.subscribe('servicemaintenances');
+    if (!subscription.ready()) { 
+        return noDataAvailable;
+    }
+    
+    const servicemaintenances = ServiceMaintenances.findOne({active:true},{ sort: { dateStart: -1 } });
+    
+    return [servicemaintenances, false];
 });
 
 

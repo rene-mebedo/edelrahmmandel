@@ -635,7 +635,7 @@ Meteor.methods({
         // Prüfen ob es untergeordnete Details gibt, die ebenfalls gelöscht werden müssen
         // hierbei wird die ID vermerkt, welche für die Löschung verantwortlich ist als Kennung,
         // dass die Löschung automatisiert erfolgte
-        findDetails2bUpdate = refDetail => {
+        const findDetails2bUpdate = refDetail => {
             OpinionDetails.find({
                 $and: [
                     { refParentDetail: refDetail },
@@ -664,6 +664,18 @@ Meteor.methods({
             }
         }, { multi: true });
 
+        //const title = old.title == 'X' ? old.printTitle : old.title;
+        let title;
+        if ( !old.printTitle ) {
+            if ( old.text.length > 20 )
+                title = old.text.slice( 0 , 19 ) + '...';
+            else
+                title = old.text;
+        }
+        else if ( old.printTitle.length > 20 )
+            title = old.printTitle.slice( 0 , 19 ) + '...';
+        else
+            title = old.printTitle;
         let activity = injectUserData({ currentUser }, {
             refOpinion: old.refOpinion,
             // dieser Eintrag wird beim Parent angesiedelt
@@ -672,7 +684,7 @@ Meteor.methods({
             refDetailFinallyRemoved: id._str || id,
             type: 'SYSTEM-LOG',
             action: 'FINALLYREMOVE',
-            message: `hat den Baustein mit dem Titel <strong>${old.title}</strong> gelöscht.`,
+            message: `hat den Baustein mit dem Titel/Text <strong>${title}</strong> gelöscht.`,
             changes: [{
                 message: "Der Baustein wurde gelöscht.",
                 propName: "finallyRemoved",
@@ -687,102 +699,112 @@ Meteor.methods({
     },
 
     /**
-     * Undo finally mark delete the given opinions detail from the colection
+     * Undo finally mark delete the given opinions detail from the collection
      * 
      * @param {String} id Id of the detail to undo finallyRemove
      */
     'opinionDetail.undoFinallyRemove'(id) {
         check(id, String);
-        
         this.unblock();
 
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
-        
-        let currentUser = Meteor.users.findOne(this.userId);
-        const old = OpinionDetails.findOne(id);
-
-        if (!old) {
-            throw new Meteor.Error('Der angegebene Baustein mit der id ' + id + ' wurde nicht gefunden.');
-        }
-
-        // check if opinion was sharedWith the current User
-        const shared = Opinions.findOne({
-            _id: old.refOpinion,
-            "sharedWith.user.userId": this.userId
-        });
-
-        if (!shared) {
-            throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
-        }
-
-        const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
-        
-        if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
-            throw new Meteor.Error('Keine Berechtigung zum wiederherstellen dieses Bausteins zum Gutachten.');
-        }
-
-        OpinionDetails.update(id, {
-            $set:{ 
-                finallyRemoved: false,
-                finallyRemovedByDetail: null
+        if ( Meteor.isServer ) {
+            let currentUser = Meteor.users.findOne(this.userId);
+            const old = OpinionDetails.findOne(id);
+            
+            if (!old) {
+                throw new Meteor.Error('Der angegebene Baustein mit der id ' + id + ' wurde nicht gefunden.');
             }
-        });
-
-        let detailIds2bUpdate = [];
-        // Prüfen ob es untergeordnete Details gibt, die ebenfalls wiederhergestellt werden müssen
-        // hierbei wird die ID vermerkt, welche für die Löschung verantwortlich ist als Kennung,
-        // dass die Löschung automatisiert erfolgte
-        findDetails2bUpdate = refDetail => {
-            OpinionDetails.find({
-                $and: [
-                    { refParentDetail: refDetail },
-                    { finallyRemoved: true },
-                    { $or: [
-                        { finallyRemovedByDetail: id },
-                        { finallyRemovedByDetail: null },
-                        { finallyRemovedByDetail: { $exists: false } }
-                    ]}
-                ]
-            }).forEach( detail => {
-                findDetails2bUpdate(detail._id);
-
-                detailIds2bUpdate.push(detail._id);
+            // check if opinion was sharedWith the current User
+            const shared = Opinions.findOne({
+                _id: old.refOpinion,
+                "sharedWith.user.userId": this.userId
             });
-        }
-        findDetails2bUpdate(id);
 
-        // aktualisieren der betroffenen children Details
-        OpinionDetails.update({
-            _id: { $in: detailIds2bUpdate }
-        }, {
-            $set: { 
-                finallyRemoved: false,
-                finallyRemovedByDetail: null,
+            if (!shared) {
+                throw new Meteor.Error('Dieser Baustein zum Gutachten wurde nicht mit Ihnen geteilt.');
             }
-        }, { multi: true });
 
-        let activity = injectUserData({ currentUser }, {
-            refOpinion: old.refOpinion,
-            // dieser Eintrag wird beim Parent angesiedelt
-            // da der eigentlich betroffene Detailpunkt gelöscht ist
-            refDetail: old.refParentDetail,
-            //refDetailFinallyRemoved: id._str || id,
-            type: 'SYSTEM-LOG',
-            action: 'UNDOFINALLYREMOVE',
-            message: `hat den Baustein mit dem Titel <strong>${old.title}</strong> wiederhergestellt.`,
-            changes: [{
-                message: "Der Baustein wurde wiederhergestellt.",
-                propName: "finallyRemoved",
-                oldValue: true,
-                newValue: false
-            }]
-        }, { created: true });
+            const sharedWithRole = shared.sharedWith.find( s => s.user.userId == this.userId );
+            
+            if (!hasPermission({ currentUser, sharedRole: sharedWithRole.role }, 'opinion.remove')) {
+                throw new Meteor.Error('Keine Berechtigung zum wiederherstellen dieses Bausteins zum Gutachten.');
+            }
 
-        Activities.insert(activity);
+            OpinionDetails.update(id, {
+                $set:{ 
+                    finallyRemoved: false,
+                    finallyRemovedByDetail: null
+                }
+            });
+            let detailIds2bUpdate = [];
+            // Prüfen ob es untergeordnete Details gibt, die ebenfalls wiederhergestellt werden müssen
+            // hierbei wird die ID vermerkt, welche für die Löschung verantwortlich ist als Kennung,
+            // dass die Löschung automatisiert erfolgte
+            const findDetails2bUpdate = refDetail => {
+                OpinionDetails.find({
+                    $and: [
+                        { refParentDetail: refDetail },
+                        { finallyRemoved: true },
+                        { $or: [
+                            { finallyRemovedByDetail: id },
+                            { finallyRemovedByDetail: null },
+                            { finallyRemovedByDetail: { $exists: false } }
+                        ]}
+                    ]
+                }).forEach( detail => {
+                    findDetails2bUpdate(detail._id);
 
-        if (Meteor.isServer) rePositionDetails(old.refOpinion);
+                    detailIds2bUpdate.push(detail._id);
+                });
+            }
+            findDetails2bUpdate(id);
+            // aktualisieren der betroffenen children Details
+            OpinionDetails.update({
+                _id: { $in: detailIds2bUpdate }
+            }, {
+                $set: { 
+                    finallyRemoved: false,
+                    finallyRemovedByDetail: null,
+                }
+            }, { multi: true });
+            
+            //const title = old.title == 'X' ? old.printTitle : old.title;
+            let title;
+            if ( !old.printTitle ) {
+                if ( old.text.length > 20 )
+                    title = old.text.slice( 0 , 19 ) + '...';
+                else
+                    title = old.text;
+            }
+            else if ( old.printTitle.length > 20 )
+                title = old.printTitle.slice( 0 , 19 ) + '...';
+            else
+                title = old.printTitle;
+            let activity = injectUserData({ currentUser }, {
+                refOpinion: old.refOpinion,
+                // dieser Eintrag wird beim Parent angesiedelt
+                // da der eigentlich betroffene Detailpunkt gelöscht ist
+                refDetail: old.refParentDetail,
+                //refDetailFinallyRemoved: id._str || id,
+                type: 'SYSTEM-LOG',
+                action: 'UNDOFINALLYREMOVE',
+                message: `hat den Baustein mit dem Titel/Text <strong>${title}</strong> wiederhergestellt.`,
+                changes: [{
+                    message: "Der Baustein wurde wiederhergestellt.",
+                    propName: "finallyRemoved",
+                    oldValue: true,
+                    newValue: false
+                }]
+            }, { created: true });
+
+            Activities.insert(activity);
+
+            //if (Meteor.isServer)
+            rePositionDetails(old.refOpinion);
+        }
     },
 
     /**

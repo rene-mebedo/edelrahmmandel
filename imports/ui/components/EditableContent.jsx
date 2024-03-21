@@ -382,15 +382,14 @@ export class EditableContent extends React.Component {
             inp.focus({cursor: 'all', preventScroll: true});
             return message.error('Die Eingabe darf nicht leer sein.');
         }
-
         setAppState({appIsBusy: 'Speichern'});
         this.setState({saving:true})
         
         Meteor.call(method, { id: refDetail, data: { [field]: newValue }}, err => {
             setAppState({appIsBusy: false});
             this.setState({saving:false});
-
-            if (err) {
+            if ( err && !err.message.includes( '[500]' ) ) {
+                // Alle Fehler außer 'Internal server error [500]' ausgeben. Dieser [500] Fehler kommt regelmäßig im Produktivsystem.
                 return Modal.error({
                     title: 'Fehler',
                     content: 'Es ist ein interner Fehler aufgetreten. ' + err.message

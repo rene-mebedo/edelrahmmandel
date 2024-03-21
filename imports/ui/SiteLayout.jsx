@@ -17,7 +17,10 @@ import { useUserActivityCount } from '../client/trackers';
 import { UserActivitiesDrawer } from './components/UserActivitiesDrawer';
 
 import { UserMenu } from './components/UserMenu';
+import { MaintenanceNotice } from './components/MaintenanceNotice';
 import { Link } from './components/Link';
+
+import { useServiceMaintenances } from '../client/trackers';
 
 const {
     Header, 
@@ -31,7 +34,7 @@ export const SiteLayout = props => {
     const [showUserActivies, setShowUserActivies] = useState(false);
 
     const [activitiesCount, acLoading] = useUserActivityCount();
-
+    const [ serviceMaintenance , serviceMaintenanceLoading ] = useServiceMaintenances();
     const toggleMenuSider = () => {
         setMenuCollapsed(!menuCollapsed);
     };
@@ -138,7 +141,8 @@ export const SiteLayout = props => {
                     }
 
                     <UserMenu currentUser={props.currentUser} hasAdminRole={props.hasAdminRole} />
-
+                    { serviceMaintenance != null ? <MaintenanceNotice serviceMaintenance={serviceMaintenance} /> : null }
+                    
                 </Header>
                 <Content className="site-layout-content">
                     { props.children }

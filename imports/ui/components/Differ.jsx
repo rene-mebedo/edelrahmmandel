@@ -40,17 +40,17 @@ export const DiffDrawer = ( { refOpinion, opinionDetailId, action, changes } ) =
                     message: 'Speichern ...',
                     description: 'Die Änderung wurde erfolgreich rückgängig gemacht.'
                 });
-            } else {
+            }/* else {
                 notification.info({
                     message: 'Speichern ...',
                     description: 'Es wurden keine Änderungen durchgeführt, da der aktuelle Datensatz identisch ist.'
                 });
-            }
+            }*/
 
             closeDiffDrawer();
         }
-
-        if (action === 'FINALLYREMOVED') {
+        
+        if (action === 'FINALLYREMOVE') {
             Meteor.call('opinionDetail.undoFinallyRemove', opinionDetailId, handleResult);
         } else {
             if (key === 'participants') {

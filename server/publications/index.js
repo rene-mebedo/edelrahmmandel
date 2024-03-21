@@ -6,3 +6,4 @@ import './layouttypes';
 import './roles';
 import './userActivities';
 import './users';
+import './servicemaintenances';
