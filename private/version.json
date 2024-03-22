@@ -1,6 +1,6 @@
 {
     "version": "2.3.0",
-    "timestamp": "2024-03-21",
+    "timestamp": "2024-03-22",
     
     "details": [
         { 
@@ -10,8 +10,8 @@
                 "Bugfix: Behoben: Löschen auf oberster Ebene (mit Unterpunkten) konnte nicht wiederhergestellt werden. Sämtliche Unterelemente wurden bisher nicht wiederhergestellt",
                 "Bugfix: Punkte auf oberster Ebene erhalten keine Kapitelnummer, im PDF aber schon => Bei Elementen auf erster Ebene erfolgt Infotext",
                 "Feature: Über Variable besteht jetzt die Möglichkeit, das Wort 'Teilnehmer' umzubenennen auf PDF Seite 2",
-                "Bugfix/Verbesserung: Leere Variablen werden jetzt nicht mehr als 'undefined' dargestellt im PDF, sondern als Leerzeichen",
-                "Feature Admin: Ein Infobanner zu einem Wartungsfenster kann jetzt eingeblendet werden"
+                "Feature Admin: Ein Infobanner zu einem Wartungsfenster kann jetzt eingeblendet werden",
+                "Update Opinion-Documenter auf 1.0.51 - Bugfix/Verbesserung: Leere Variablen werden jetzt nicht mehr als 'undefined' dargestellt im PDF, sondern als Leerzeichen. Feature: Wort 'Teilnehmer' auf PDF Seite 2 kann jetzt umbenannt werden über Variable."
             ]
         },
         { 

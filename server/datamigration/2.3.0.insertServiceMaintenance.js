@@ -5,7 +5,7 @@ import { ServiceMaintenances } from '/imports/api/collections/serviceMaintenance
 //return;
 
 console.log( 'start insert initial ServiceMaintenances dataset' );
-
+ServiceMaintenances.remove({});
 ServiceMaintenances.insert({
     _id: '_initialDataset',
     dateStart: new Date('2024-03-20T08:52:15.244Z'),//ISODate('2024-03-20T08:52:15.244Z'),
