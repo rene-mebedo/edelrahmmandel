@@ -1,8 +1,14 @@
 {
-    "version": "2.3.0",
-    "timestamp": "2024-03-22",
+    "version": "2.3.1",
+    "timestamp": "2024-03-26",
     
     "details": [
+        { 
+            "version": "2.3.1", 
+            "description": [
+                "Update Opinion-Documenter auf 1.0.52 - Abkürzungsverzeichnis überarbeitet."
+            ]
+        },
         { 
             "version": "2.3.0", 
             "description": [
